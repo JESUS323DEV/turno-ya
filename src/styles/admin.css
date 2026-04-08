@@ -1,0 +1,821 @@
+/* Contador de caracteres */
+.admin-counter {
+  font-size: 11px;
+  color: var(--text);
+  text-align: right;
+  margin-top: -8px;
+
+
+}
+
+.admin-section {
+  display: flex;
+  justify-content: center;
+  overscroll-behavior-y: none;
+  padding: 2rem 0;
+}
+
+.admin-pin-form,
+.admin-form {
+  width: 100%;
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.admin-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+
+}
+
+.admin-title {
+  margin: 0;
+  text-align: left;
+}
+
+.admin-subtitle {
+  color: var(--text);
+  font-size: 14px;
+  margin-top: -12px;
+}
+
+.admin-back {
+  font-size: 14px;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.admin-back:hover {
+  text-decoration: underline;
+}
+
+/* Fieldset */
+.admin-fieldset {
+  border: none;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+
+
+}
+
+.admin-legend {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  padding: 0 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+
+
+}
+
+/* Labels e inputs */
+.admin-label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-h);
+  text-align: left;
+}
+
+.admin-label span {
+  padding-left: 0.3rem;
+}
+
+.admin-input {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-size: 15px;
+  font-family: var(--sans);
+  color: var(--text-h);
+  background: var(--bg);
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  color-scheme: light;
+}
+
+:root[data-tema="oscuro"] .admin-input {
+  color-scheme: dark;
+}
+
+.admin-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-bg);
+}
+
+.admin-input.input-bad {
+  border-color: #ef4444;
+}
+
+.admin-input-time {
+  width: auto;
+  flex: 1;
+}
+
+.admin-error {
+  color: #ef4444;
+  font-size: 13px;
+  margin-top: -10px;
+}
+
+/* Días */
+.admin-dia {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 12px;
+}
+
+.admin-dia:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.admin-dia-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.admin-dia-nombre {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-h);
+}
+
+.admin-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.admin-toggle input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+/* Turnos */
+.admin-turnos {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.admin-turno {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-turno-sep {
+  color: var(--text);
+  font-size: 13px;
+}
+
+.admin-btn-remove {
+  background: none;
+  border: none;
+  color: #ef4444;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 4px;
+}
+
+.admin-btn-remove:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.admin-btn-add {
+  background: none;
+  border: 1.5px dashed var(--accent);
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-size: 13px;
+  color: var(--accent);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+  text-align: left;
+  width: 100%;
+  font-weight: 500;
+}
+
+.admin-btn-add:hover {
+  background: var(--accent-bg);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Botón guardar */
+.admin-btn-primary {
+  padding: 13px;
+  background: var(--accent);
+  color: var(--btn-text, #fff);
+  border: none;
+  border-radius: 10px;
+  width: 80%;
+  margin: auto;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.admin-btn-primary:hover {
+  filter: brightness(1.1);
+}
+
+/* Fechas bloqueadas */
+.admin-hint {
+  font-size: 11px;
+  color: var(--text);
+  margin: 0;
+}
+
+.admin-fecha-add {
+  display: flex;
+  gap: 8px;
+}
+
+.admin-fecha-add .admin-input {
+  flex: 1;
+}
+
+.admin-btn-add-fecha {
+  padding: 9px 14px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.admin-btn-add-fecha:hover {
+  filter: brightness(1.1);
+}
+
+.admin-fechas-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.admin-fecha-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--code-bg);
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--text-h);
+}
+
+.admin-mensaje-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-preview {
+  background: var(--code-bg);
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+
+.admin-preview-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text);
+  margin: 0 0 8px;
+}
+
+.admin-preview-text {
+  font-family: var(--sans);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-h);
+  white-space: pre-wrap;
+  margin: 0;
+}
+
+.admin-textarea {
+  resize: vertical;
+  min-height: 160px;
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.admin-fieldset code {
+  font-size: 12px;
+  padding: 2px 6px;
+  background: var(--code-bg);
+  border-radius: 4px;
+  color: var(--accent);
+}
+
+/* Exportar widget */
+.admin-btn-export {
+  padding: 11px;
+  background: transparent;
+  color: var(--accent);
+  border: 1.5px solid var(--accent-border);
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.admin-btn-export:hover {
+  background: var(--accent-bg);
+}
+
+/* Vista previa */
+.admin-preview-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0 16px;
+}
+
+.admin-preview-phone {
+  width: 375px;
+  max-width: 100%;
+  border: 2px solid var(--border);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+/* Pestañas */
+.admin-tabs {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  margin-bottom: 4px;
+  scrollbar-width: none;
+  padding: 0.3rem 0.1rem;
+
+}
+
+.admin-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.admin-tema-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 5px;
+  flex-shrink: 0;
+}
+
+.admin-tab {
+  flex-shrink: 0;
+  padding: 8px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.admin-tab:hover {
+  border-color: var(--accent);
+  color: var(--text-h);
+}
+
+.admin-tab--active {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+  color: var(--text-h);
+  font-weight: 600;
+}
+
+/* Tema personalizado */
+.admin-tema-custom {
+  display: flex;
+  gap: 16px;
+  margin-top: 4px;
+}
+
+.admin-tema-custom-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text);
+  cursor: pointer;
+}
+
+/* Selector de tema */
+.admin-tema-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.admin-tema-btn {
+  display: flex;
+  align-items: center;
+  padding: 6px 10px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text-h);
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  white-space: nowrap;
+  justify-content: center;
+}
+
+.admin-tema-btn:hover {
+  border-color: var(--accent);
+}
+
+.admin-tema-btn--active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--btn-text, #fff);
+  font-weight: 600;
+}
+
+/* Logo preview */
+.admin-logo-preview {
+  display: block;
+  max-width: 80px;
+  max-height: 80px;
+  object-fit: contain;
+  border-radius: 8px;
+  margin-top: 8px;
+}
+
+/* Checkbox requerida */
+.admin-check-label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  color: var(--text-s);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+/* QR */
+.admin-qr-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 16px 0 8px;
+}
+
+/* Servicios */
+.admin-servicio {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.admin-servicio-rango {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.admin-servicio-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border: 1.5px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 10px;
+  background: var(--accent-bg);
+}
+
+.admin-servicio-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.admin-servicio-nombre {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+.admin-servicio-horario {
+  font-size: 12px;
+  color: var(--text);
+}
+
+.admin-servicio-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-servicio-activo {
+  color: #16a34a;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.admin-servicio-confirmar {
+  font-size: 12px;
+  color: var(--text);
+}
+
+.admin-pregunta-btns {
+  display: flex;
+  gap: 8px;
+
+}
+
+.admin-btn-secondary-sm {
+  padding: 5px 10px;
+  font-size: 12px;
+  background: none;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.admin-btn-secondary-sm:hover {
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+/* Preguntas personalizadas */
+.admin-pregunta {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-bottom: 10px;
+
+  border-bottom: 1px solid var(--border);
+}
+
+.admin-pregunta:last-of-type {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.admin-pregunta-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-input-tipo {
+  width: auto;
+  flex-shrink: 0;
+}
+
+/* Cierre temporal */
+.admin-cierre-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.admin-cierre-estado {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-h);
+}
+
+.admin-btn-cerrar {
+  padding: 9px 16px;
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.admin-btn-cerrar:hover {
+  filter: brightness(1.1);
+}
+
+.admin-btn-reabrir {
+  padding: 9px 16px;
+  background: #22c55e;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.admin-btn-reabrir:hover {
+  filter: brightness(1.1);
+}
+
+/* Color picker */
+.admin-color-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-input-color {
+  width: 48px;
+  height: 40px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 2px;
+  background: var(--bg);
+  cursor: pointer;
+}
+
+.admin-color-preview {
+  font-size: 0.7rem;
+  line-height: 1.4;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Modal tema personalizado */
+.admin-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 16px;
+}
+
+.admin-modal {
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 360px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+}
+
+.admin-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.admin-modal-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+.admin-modal-close {
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: var(--text);
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+}
+
+.admin-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.admin-color-hex {
+  font-size: 13px;
+  font-family: var(--mono);
+  color: var(--text);
+  text-transform: uppercase;
+}
+
+/* Favoritos */
+.admin-favoritos {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.admin-favoritos-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text);
+}
+
+.admin-favorito-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.admin-favorito-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  cursor: pointer;
+  transition: border-color 0.15s;
+  text-align: left;
+}
+
+.admin-favorito-btn:hover {
+  border-color: var(--accent);
+}
+
+.admin-favorito-dots {
+  display: flex;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.admin-favorito-dots span {
+  display: block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+}
+
+.admin-favorito-nombre {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-h);
+}
+
+.admin-modal-sep {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 2px 0;
+}
+
+.admin-favorito-save {
+  display: flex;
+  gap: 8px;
+}
+
+/* PIN form centrado */
+.admin-pin-form {
+  max-width: 320px;
+  margin: 80px auto 0;
+  text-align: center;
+}
+
+.admin-pin-form .admin-title {
+  text-align: center;
+}
+
+.admin-pin-form .admin-btn-primary {
+  margin-top: 4px;
+}
