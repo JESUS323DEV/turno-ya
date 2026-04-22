@@ -6,6 +6,7 @@ import { generarSlots } from "../utils/slots";
 const FORM_INICIAL = {
   nombre: "",
   telefono: "",
+  email: "",
   hora: "",
   dia: "",
   mensaje: "",
@@ -17,6 +18,7 @@ const FORM_INICIAL = {
 const TOUCHED_INICIAL = {
   nombre: false,
   telefono: false,
+  email: false,
   hora: false,
   dia: false,
   personas: false,
@@ -100,9 +102,12 @@ export function useReservaForm(configOverride = null) {
     [form.dia, horariosEfectivos, negocio.slotInterval, negocio.antelacionMinHoras, negocio.cierreTemporalFecha]
   );
 
+  const campos = { nombre: true, telefono: true, email: true, personas: true, fechaHora: true, ...negocio.camposActivos };
+
   // Validaciones
   const nombreOk = form.nombre.trim().length >= 2;
   const telefonoOk = /^\d{9,15}$/.test(form.telefono);
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email);
   const diaOk = form.dia !== "" && !isDiaCerrado(form.dia, negocio.horarios, negocio.fechasBloqueadas ?? []);
   const horaOk = slots.includes(form.hora);
   const personasOk = Number(form.personas) >= (negocio.minPersonas ?? 1) && Number(form.personas) <= negocio.maxPersonas;
@@ -111,7 +116,13 @@ export function useReservaForm(configOverride = null) {
     .filter((p) => p.requerida)
     .every((p) => !!form.extras?.[p.id]?.trim?.() || !!form.extras?.[p.id]);
 
-  const canSend = nombreOk && telefonoOk && diaOk && horaOk && personasOk && extrasOk;
+  const canSend =
+    (!campos.nombre    || nombreOk) &&
+    (!campos.telefono  || telefonoOk) &&
+    (!campos.email     || emailOk) &&
+    (!campos.personas  || personasOk) &&
+    (!campos.fechaHora || (diaOk && horaOk)) &&
+    extrasOk;
 
   const whatsappText = useMemo(() => generarMensaje(form, negocio), [form, negocio]);
   const whatsappLink = useMemo(() => generarLink(whatsappText, negocio.whatsapp), [whatsappText, negocio.whatsapp]);
@@ -199,6 +210,7 @@ export function useReservaForm(configOverride = null) {
     diaOk,
     nombreOk,
     telefonoOk,
+    emailOk,
     horaOk,
     personasOk,
     slots,
@@ -214,5 +226,6 @@ export function useReservaForm(configOverride = null) {
     maxDate,
     handleExtra,
     serviciosDisponibles,
+    campos,
   };
 }

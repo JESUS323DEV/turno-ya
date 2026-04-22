@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
+import iconWa from "../assets/icon-whatsapp.png";
 import { useAdminConfig, DIAS } from "../hooks/useAdminConfig";
 import ReservaWhatsApp from "./ReservaWhatsApp";
 import { TEMAS } from "../config/temas";
+import { PERFILES } from "../config/perfiles";
 import "../styles/admin.css";
 
 export default function AdminPanel() {
@@ -31,13 +33,56 @@ export default function AdminPanel() {
   } = useAdminConfig();
 
   const [copiado, setCopiado] = useState(false);
-  const [tab, setTab] = useState("negocio");
+  const [seccion, setSeccion] = useState(null);
+  const [tab, setTab] = useState("panel");
   const [modalCustom, setModalCustom] = useState(false);
   const [nombreTema, setNombreTema] = useState("");
   const [confirmarEliminar, setConfirmarEliminar] = useState(null);
   const [confirmarEliminarPregunta, setConfirmarEliminarPregunta] = useState(null);
+  const [filtroPanel, setFiltroPanel] = useState("todas");
+  const [modalMensaje, setModalMensaje] = useState(null);
+  const [reservasMock, setReservasMock] = useState([
+    { id: 1, nombre: "María García",    telefono: "612345678", fecha: "2026-04-20", hora: "13:00", personas: 2, servicio: "Menú del día", estado: "pendiente", mensaje: "Hola, somos dos personas, una de ellas es celíaca y necesita menú sin gluten. También me gustaría una mesa cerca de la ventana si es posible. Muchas gracias!" },
+    { id: 2, nombre: "Carlos López",    telefono: "698765432", fecha: "2026-04-20", hora: "14:30", personas: 4, servicio: "",             estado: "confirmada" },
+    { id: 3, nombre: "Ana Martínez",    telefono: "677123456", fecha: "2026-04-21", hora: "20:00", personas: 3, servicio: "",             estado: "pendiente" },
+    { id: 4, nombre: "Pedro Sánchez",   telefono: "655987654", fecha: "2026-04-19", hora: "13:30", personas: 2, servicio: "Menú del día", estado: "cancelada" },
+    { id: 5, nombre: "Laura Fernández", telefono: "644321987", fecha: "2026-04-22", hora: "21:00", personas: 5, servicio: "",             estado: "pendiente" },
+    { id: 6, nombre: "Sofía Ruiz",      telefono: "633112233", fecha: "2026-04-19", hora: "14:00", personas: 3, servicio: "",             estado: "confirmada" },
+    { id: 7, nombre: "Javier Moreno",   telefono: "611998877", fecha: "2026-04-18", hora: "13:00", personas: 2, servicio: "Menú del día", estado: "confirmada" },
+    { id: 8, nombre: "Elena Castro",    telefono: "699445566", fecha: "2026-04-18", hora: "14:30", personas: 6, servicio: "",             estado: "cancelada" },
+  ]);
 
-  const TABS = { negocio: "Negocio", horarios: "Horarios", reservas: "Reservas", servicios: "Servicios", ajustes: "Ajustes", preview: "Vista previa" };
+  const TABS = seccion === "reservas"
+    ? { panel: "Reservas", historial: "Historial" }
+    : { negocio: "Negocio", horarios: "Horarios", reservas: "Config", servicios: "Servicios", ajustes: "Ajustes", preview: "Vista previa" };
+
+  const hoyStr = new Date().toISOString().split("T")[0];
+  const hoyFormateado = hoyStr.split("-").reverse().join("-");
+
+  const reservasFiltradas = reservasMock.filter((r) => {
+    if (r.fecha !== hoyStr) return false;
+    if (filtroPanel === "pendientes") return r.estado === "pendiente";
+    if (filtroPanel === "confirmadas") return r.estado === "confirmada";
+    return r.estado !== "cancelada";
+  });
+
+  const canceladasHoy = reservasMock.filter(r => r.fecha === hoyStr && r.estado === "cancelada");
+  const reservasHoy = reservasMock.filter(r => r.fecha === hoyStr);
+  const reservasHistorial = reservasMock.filter(r => r.fecha < hoyStr && (r.estado === "confirmada" || r.estado === "cancelada"));
+  const historialPorFecha = reservasHistorial.reduce((acc, r) => {
+    if (!acc[r.fecha]) acc[r.fecha] = [];
+    acc[r.fecha].push(r);
+    return acc;
+  }, {});
+  const fechasHistorial = Object.keys(historialPorFecha).sort((a, b) => b.localeCompare(a));
+
+  const cambiarEstado = (id, estado) => {
+    setReservasMock((prev) => prev.map((r) => r.id === id ? { ...r, estado } : r));
+  };
+
+  const eliminarReserva = (id) => {
+    setReservasMock((prev) => prev.filter((r) => r.id !== id));
+  };
 
   const copiarWidget = () => {
     const json = exportarWidget();
@@ -48,12 +93,31 @@ export default function AdminPanel() {
     });
   };
 
+  if (!seccion) {
+    return (
+      <section className="admin-section">
+        <div className="admin-pin-form">
+          <h2 className="admin-title">¿A dónde quieres ir?</h2>
+          <button className="admin-seccion-btn" onClick={() => { setSeccion("reservas"); setTab("panel"); }}>
+            <span className="admin-seccion-icon">📋</span>
+            <span>Panel de reservas</span>
+          </button>
+          <button className="admin-seccion-btn" onClick={() => { setSeccion("config"); setTab("negocio"); }}>
+            <span className="admin-seccion-icon">⚙️</span>
+            <span>Configuración</span>
+          </button>
+        </div>
+      </section>
+    );
+  }
+
   if (!autenticado) {
     return (
       <section className="admin-section">
         <form className="admin-pin-form" onSubmit={verificarPin}>
-          <h2 className="admin-title">Panel de configuración</h2>
-          <p className="admin-subtitle">Ingresá el PIN para continuar</p>
+          <button type="button" className="admin-seccion-back" onClick={() => setSeccion(null)}>← Volver</button>
+          <h2 className="admin-title">{seccion === "reservas" ? "Panel de reservas" : "Configuración"}</h2>
+          <p className="admin-subtitle">Ingresa el PIN para continuar</p>
           <input
             className={`admin-input ${pinError ? "input-bad" : ""}`}
             type="password"
@@ -77,7 +141,8 @@ export default function AdminPanel() {
     <section className="admin-section">
       <form className="admin-form" onSubmit={guardar}>
         <div className="admin-header">
-          <h2 className="admin-title">Configuración</h2>
+          <h2 className="admin-title">{seccion === "reservas" ? "Panel de reservas" : "Configuración"}</h2>
+          {seccion === "reservas" && <p className="admin-fecha-hoy">{hoyFormateado}</p>}
         </div>
 
         {/* Pestañas */}
@@ -94,8 +159,206 @@ export default function AdminPanel() {
           ))}
         </div>
 
+        {/* PANEL DE RESERVAS */}
+        {tab === "panel" && (
+          <div className="panel-reservas">
+            {/* Stats */}
+            <div className="panel-stats">
+              <button type="button" className={`panel-stat panel-stat--pendientes ${filtroPanel === "pendientes" ? "panel-stat--active" : ""}`}
+                onClick={() => setFiltroPanel("pendientes")}>
+                <span className="panel-stat-num">{reservasMock.filter(r => r.fecha === hoyStr && r.estado === "pendiente").length}</span>
+                <span className="panel-stat-label">Pendientes</span>
+              </button>
+              <button type="button" className={`panel-stat panel-stat--confirmadas ${filtroPanel === "confirmadas" ? "panel-stat--active" : ""}`}
+                onClick={() => setFiltroPanel("confirmadas")}>
+                <span className="panel-stat-num">{reservasMock.filter(r => r.fecha === hoyStr && r.estado === "confirmada").length}</span>
+                <span className="panel-stat-label">Confirmadas</span>
+              </button>
+            </div>
+
+            <p className="panel-seccion-titulo">Confirmadas · {hoyFormateado}</p>
+            {reservasFiltradas.length === 0 ? (
+              <p className="admin-hint" style={{ textAlign: "center", padding: "2rem 0" }}>No hay reservas.</p>
+            ) : (
+              <div className="panel-lista">
+                {reservasFiltradas.map((r) => (
+                  <div key={r.id} className={`panel-card panel-card--${r.estado}`}>
+                    <div className="panel-card-info">
+                      <div className="panel-card-nombre-row">
+                        <span className="panel-card-nombre">{r.nombre}</span>
+                        <span className={`panel-badge panel-badge--${r.estado}`}>
+                          {r.estado.charAt(0).toUpperCase() + r.estado.slice(1)}
+                        </span>
+                      </div>
+                      <span className="panel-card-meta">
+                        {r.fecha.split("-").reverse().join("-")} · {r.hora} · {r.personas} {r.personas === 1 ? "persona" : "personas"}
+                        {r.servicio ? ` · ${r.servicio}` : ""}
+                      </span>
+                      <div className="panel-card-tel">
+                        <a href={`tel:${r.telefono}`}>{r.telefono}</a>
+                        <a href={`https://wa.me/${r.telefono.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer">
+                          <img src={iconWa} alt="WhatsApp" className="panel-wa-icon" />
+                        </a>
+                      </div>
+                      {r.mensaje && <span className="panel-card-mensaje">💬 {r.mensaje}</span>}
+                    </div>
+                    {r.estado === "pendiente" && (
+                      <div className="panel-card-actions">
+                        <button type="button" className="panel-btn-confirmar" onClick={() => cambiarEstado(r.id, "confirmada")}>Confirmar</button>
+                        <button type="button" className="panel-btn-cancelar" onClick={() => cambiarEstado(r.id, "cancelada")}>Cancelar</button>
+                      </div>
+                    )}
+                    {r.estado === "cancelada" && (
+                      <div className="panel-card-actions">
+                        <button type="button" className="panel-btn-eliminar" onClick={() => eliminarReserva(r.id)}>✕ Eliminar</button>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Canceladas hoy */}
+            {canceladasHoy.length > 0 && (<>
+              <p className="panel-seccion-titulo">Canceladas · {hoyFormateado}</p>
+              <div className="panel-lista">
+                {canceladasHoy.map((r) => (
+                  <div key={r.id} className="panel-card panel-card--cancelada">
+                    <div className="panel-card-info">
+                      <div className="panel-card-nombre-row">
+                        <span className="panel-card-nombre">{r.nombre}</span>
+                        <span className="panel-badge panel-badge--cancelada">Cancelada</span>
+                      </div>
+                      <span className="panel-card-meta">
+                        {r.hora} · {r.personas} {r.personas === 1 ? "persona" : "personas"}
+                        {r.servicio ? ` · ${r.servicio}` : ""}
+                      </span>
+                      <div className="panel-card-tel">
+                        <a href={`tel:${r.telefono}`}>{r.telefono}</a>
+                        <a href={`https://wa.me/${r.telefono.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer">
+                          <img src={iconWa} alt="WhatsApp" className="panel-wa-icon" />
+                        </a>
+                      </div>
+                    </div>
+                    <div className="panel-card-actions">
+                      <button type="button" className="panel-btn-eliminar" onClick={() => eliminarReserva(r.id)}>✕ Eliminar</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>)}
+          </div>
+        )}
+
+        {/* HISTORIAL */}
+        {tab === "historial" && (
+          <div className="panel-reservas">
+            {/* Hoy */}
+            <p className="panel-seccion-titulo">Hoy · {hoyFormateado}</p>
+            {reservasHoy.length === 0 ? (
+              <p className="admin-hint" style={{ textAlign: "center" }}>Sin reservas hoy.</p>
+            ) : (
+              <div className="panel-lista">
+                {reservasHoy.map((r) => (
+                  <div key={r.id} className={`panel-card panel-card--${r.estado}`}>
+                    <div className="panel-card-info">
+                      <div className="panel-card-nombre-row">
+                        <span className="panel-card-nombre">{r.nombre}</span>
+                        <span className={`panel-badge panel-badge--${r.estado}`}>
+                          {r.estado.charAt(0).toUpperCase() + r.estado.slice(1)}
+                        </span>
+                      </div>
+                      <span className="panel-card-meta">
+                        {r.hora} · {r.personas} {r.personas === 1 ? "persona" : "personas"}
+                        {r.servicio ? ` · ${r.servicio}` : ""}
+                      </span>
+                      <div className="panel-card-tel">
+                        <a href={`tel:${r.telefono}`}>{r.telefono}</a>
+                        <a href={`https://wa.me/${r.telefono.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer">
+                          <img src={iconWa} alt="WhatsApp" className="panel-wa-icon" />
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Días anteriores agrupados por fecha */}
+            {fechasHistorial.map((fecha) => (
+              <div key={fecha}>
+                <p className="panel-seccion-titulo">Historial · {fecha.split("-").reverse().join("-")}</p>
+                <div className="panel-lista">
+                  {historialPorFecha[fecha].map((r) => (
+                    <div key={r.id} className={`panel-card panel-card--${r.estado}`}>
+                      <div className="panel-card-info">
+                        <div className="panel-card-nombre-row">
+                          <span className="panel-card-nombre">{r.nombre}</span>
+                          <span className={`panel-badge panel-badge--${r.estado}`}>
+                            {r.estado.charAt(0).toUpperCase() + r.estado.slice(1)}
+                          </span>
+                        </div>
+                        <span className="panel-card-meta">
+                          {r.hora} · {r.personas} {r.personas === 1 ? "persona" : "personas"}
+                          {r.servicio ? ` · ${r.servicio}` : ""}
+                        </span>
+                        <div className="panel-card-tel">
+                          <a href={`tel:${r.telefono}`}>{r.telefono}</a>
+                          <a href={`https://wa.me/${r.telefono.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer">
+                            <img src={iconWa} alt="WhatsApp" className="panel-wa-icon" />
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+            {fechasHistorial.length === 0 && (
+              <p className="admin-hint" style={{ textAlign: "center" }}>Sin historial de días anteriores.</p>
+            )}
+          </div>
+        )}
+
         {/* NEGOCIO */}
-        {tab === "negocio" && (
+        {tab === "negocio" && (<>
+          <fieldset className="admin-fieldset">
+            <legend className="admin-legend">Perfil del formulario</legend>
+            <div className="admin-tema-selector">
+              {PERFILES.map((p) => (
+                <button key={p.id} type="button"
+                  className={`admin-tema-btn ${draft.perfil === p.id ? "admin-tema-btn--active" : ""}`}
+                  onClick={() => {
+                    setField("perfil", p.id);
+                    if (p.camposActivos) setField("camposActivos", p.camposActivos);
+                    if (p.mensajeTemplate) setField("mensajeTemplate", p.mensajeTemplate);
+                  }}>
+                  {p.label}
+                </button>
+              ))}
+            </div>
+
+            <p className="admin-hint" style={{ marginTop: "12px" }}>Ajusta los campos a tu gusto.</p>
+            {[
+              { key: "nombre",    label: "Nombre" },
+              { key: "telefono",  label: "Teléfono" },
+              { key: "email",     label: "Email" },
+              { key: "personas",  label: "Personas" },
+              { key: "fechaHora", label: "Fecha y hora" },
+              { key: "mensaje",   label: "Mensaje" },
+            ].map(({ key, label }) => (
+              <div key={key} className="admin-dia-header">
+                <span className="admin-dia-nombre">{label}</span>
+                <label className="admin-toggle">
+                  <input type="checkbox"
+                    checked={draft.camposActivos?.[key] ?? true}
+                    onChange={(e) => setField("camposActivos", { ...draft.camposActivos, [key]: e.target.checked })} />
+                  <span>{draft.camposActivos?.[key] ?? true ? "Activo" : "Inactivo"}</span>
+                </label>
+              </div>
+            ))}
+          </fieldset>
+
           <fieldset className="admin-fieldset">
             <legend className="admin-legend">Datos del negocio</legend>
 
@@ -136,6 +399,14 @@ export default function AdminPanel() {
                 value={draft.tituloFormulario}
                 onChange={(e) => setField("tituloFormulario", e.target.value)} />
               <span className="admin-counter">{draft.tituloFormulario.length} / 20</span>
+            </label>
+
+            <label className="admin-label">
+              <span>Texto del botón de envío</span>
+              <input className="admin-input" type="text" maxLength={20}
+                value={draft.textoBtnReservar}
+                onChange={(e) => setField("textoBtnReservar", e.target.value)} />
+              <span className="admin-counter">{draft.textoBtnReservar.length} / 20</span>
             </label>
 
             <label className="admin-label">
@@ -279,10 +550,7 @@ export default function AdminPanel() {
               </div>
             )}
           </fieldset>
-
-
-        )}
-
+        </>)}
 
         {/* HORARIOS */}
         {tab === "horarios" && (<>
@@ -360,7 +628,7 @@ export default function AdminPanel() {
         </>)}
 
         {/* RESERVAS */}
-        {tab === "reservas" && (
+        {tab === "reservas" && (<>
           <fieldset className="admin-fieldset">
             <legend className="admin-legend">Configuración de reservas</legend>
 
@@ -419,7 +687,8 @@ export default function AdminPanel() {
               <span className="admin-hint">0 = sin límite. Requiere panel de reservas para funcionar.</span>
             </label>
           </fieldset>
-        )}
+
+        </>)}
 
         {/* SERVICIOS */}
         {tab === "servicios" && (<>
@@ -599,13 +868,27 @@ export default function AdminPanel() {
           </div>
         )}
 
-        {tab !== "preview" && (<>
+        {tab !== "preview" && seccion !== "reservas" && (<>
           <button className="admin-btn-primary" type="submit">
             {guardado ? "✓ Guardado" : "Guardar cambios"}
           </button>
           {errorGuardado && <p className="admin-error">{errorGuardado}</p>}
         </>)}
       </form>
+
+      {modalMensaje && (
+        <div className="admin-modal-overlay" onClick={() => setModalMensaje(null)}>
+          <div className="admin-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="admin-modal-header">
+              <span className="admin-modal-title">Mensaje del cliente</span>
+              <button type="button" className="admin-modal-close" onClick={() => setModalMensaje(null)}>✕</button>
+            </div>
+            <div className="admin-modal-body">
+              <p style={{ fontSize: "14px", lineHeight: "1.6", color: "var(--text)" }}>💬 {modalMensaje}</p>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

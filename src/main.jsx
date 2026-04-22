@@ -5,10 +5,17 @@ import App from './App.jsx'
 // import { CONFIG_KEY, NEGOCIO_DEFAULT } from './config/negocio.js'
 
 import './styles/index.css'
+import './styles/Responsive.css'
+
+let touchStartY = 0;
+document.addEventListener("touchstart", (e) => {
+  touchStartY = e.touches[0].clientY;
+}, { passive: true });
 
 document.addEventListener("touchmove", (e) => {
   if (e.target.closest("input, textarea, select, .slots-grid, .admin-tabs, .admin-turnos")) return;
-  if (document.scrollingElement.scrollTop === 0) e.preventDefault();
+  const dy = e.touches[0].clientY - touchStartY;
+  if (document.scrollingElement.scrollTop === 0 && dy > 0) e.preventDefault();
 }, { passive: false });
 
 async function init() {

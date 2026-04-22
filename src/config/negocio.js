@@ -38,7 +38,20 @@ export const NEGOCIO_DEFAULT = {
   // Estructura: [{ id: "alergia", label: "¿Tienes alguna alergia?", tipo: "texto" | "seleccion", opciones: ["Op1","Op2"] }]
   preguntasExtra: [],
 
+  perfil: "reserva",
+
+  // Campos del formulario activos (el dueño puede desactivar los que no necesite)
+  camposActivos: {
+    nombre: true,
+    telefono: true,
+    email: true,
+    personas: true,
+    fechaHora: true,
+    mensaje: true,
+  },
+
   tituloFormulario: "Reservas", // título visible en el formulario del cliente
+  textoBtnReservar: "Reservar",  // texto del botón de envío
   tema: "claro",             // "claro" | "oscuro" | "personalizado"
   colorFondo: "#ffffff",     // solo para tema personalizado
   colorAcento: "#aa3bff",   // solo para tema personalizado

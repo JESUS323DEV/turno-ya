@@ -1,3 +1,258 @@
+/* Panel de reservas */
+.panel-reservas {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overscroll-behavior: none;
+}
+
+.panel-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  width: 90%;
+  margin: auto;
+}
+
+.panel-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 5px 4px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  background: var(--accent-bg);
+  gap: 2px;
+  cursor: pointer;
+  transition: opacity 0.15s, border-color 0.15s;
+}
+.panel-stat:hover { opacity: 0.85; }
+.panel-stat--active { border-color: var(--accent); }
+
+.panel-stat-num {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.panel-stat-label {
+  font-size: 11px;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+button.panel-stat {
+  font-family: inherit;
+  text-align: center;
+  width: 100%;
+}
+
+.panel-stat--pendientes {
+  background: rgba(239, 68, 68, 0.08);
+  border-color: rgba(239, 68, 68, 0.2);
+}
+.panel-stat--pendientes .panel-stat-num { color: #ef4444; }
+
+.panel-stat--confirmadas {
+  background: rgba(34, 197, 94, 0.08);
+  border-color: rgba(34, 197, 94, 0.2);
+}
+.panel-stat--confirmadas .panel-stat-num { color: #22c55e; }
+
+.panel-stat--canceladas {
+  background: rgba(107, 114, 128, 0.08);
+  border-color: rgba(107, 114, 128, 0.2);
+}
+.panel-stat--canceladas .panel-stat-num { color: #6b7280; }
+
+.panel-btn-eliminar {
+  flex: 1;
+  padding: 7px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1.5px solid #dc2626;
+  background: none;
+  color: #dc2626;
+}
+
+.panel-filtros {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.panel-filtro-btn {
+  padding: 6px 12px;
+  font-size: 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  background: none;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.panel-filtro-btn--active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--btn-text, #fff);
+  font-weight: 600;
+}
+
+.panel-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.panel-card {
+  border: 1.5px solid var(--border);
+  border-left: 3px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--bg);
+}
+
+.panel-card--pendiente { border-left-color: #f59e0b; }
+.panel-card--confirmada { border-left-color: #16a34a; }
+.panel-card--cancelada { border-left-color: #dc2626; opacity: 0.6; }
+
+.panel-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+
+  
+}
+
+.panel-card-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+
+.panel-card-nombre {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+.panel-card-meta {
+  font-size: 12px;
+  color: var(--text);
+
+}
+
+.panel-card-tel {
+  display: flex;
+  align-items: center;
+  width: auto;
+  margin: auto;
+  gap: 8px;
+  text-align: center;
+}
+ 
+
+
+.panel-card-tel a {
+  color: var(--accent);
+  text-decoration: none;
+
+}
+
+.panel-card-tel a:hover {
+  text-decoration: underline;
+}
+
+.panel-wa-icon {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  display: block;
+}
+
+.panel-card-mensaje {
+  font-size: 12px;
+  color: var(--text);
+  font-style: italic;
+  line-height: 1.4;
+}
+
+.panel-seccion-titulo {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text);
+  margin: 4px 0 0;
+}
+
+.panel-card-nombre-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.panel-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 20px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.panel-badge--pendiente  { background: #fef3c7; color: #92400e; }
+.panel-badge--confirmada { background: #dcfce7; color: #166534; }
+.panel-badge--cancelada  { background: #fee2e2; color: #991b1b; }
+
+.panel-card-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.panel-btn-confirmar {
+  flex: 1;
+  padding: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  background: #16a34a;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: filter 0.15s;
+}
+
+.panel-btn-confirmar:hover { filter: brightness(1.1); }
+
+.panel-btn-cancelar {
+  flex: 1;
+  padding: 7px;
+  font-size: 13px;
+  background: none;
+  color: #dc2626;
+  border: 1.5px solid #dc2626;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.panel-btn-cancelar:hover { background: #fee2e2; }
+
 /* Contador de caracteres */
 .admin-counter {
   font-size: 11px;
@@ -34,7 +289,51 @@
 
 .admin-title {
   margin: 0;
+  text-align: center;
+}
+
+.admin-fecha-hoy {
+  margin: 2px 0 0;
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-muted, #888);
+}
+
+.admin-seccion-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  background: var(--accent-bg);
+  color: var(--text-h);
+  font-size: 16px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
   text-align: left;
+  width: 100%;
+}
+
+.admin-seccion-btn:hover {
+  border-color: var(--accent);
+}
+
+.admin-seccion-icon {
+  font-size: 22px;
+}
+
+.admin-seccion-back {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+  font-family: inherit;
 }
 
 .admin-subtitle {
@@ -138,6 +437,21 @@
 .admin-dia:last-child {
   border-bottom: none;
   padding-bottom: 0;
+}
+
+.admin-acordeon-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  font-family: inherit;
 }
 
 .admin-dia-header {

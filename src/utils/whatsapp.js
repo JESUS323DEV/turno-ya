@@ -5,11 +5,12 @@ import { MENSAJE_TEMPLATE_DEFAULT } from "../config/negocio";
  * Placeholders: {negocio} {nombre} {telefono} {personas} {hora} {dia} {mensajeExtra}
  */
 export function generarMensaje(form, negocio) {
+  const campos = { nombre: true, telefono: true, personas: true, fechaHora: true, mensaje: true, ...negocio.camposActivos };
   const template = negocio.mensajeTemplate || MENSAJE_TEMPLATE_DEFAULT;
 
   const extraLines = [];
   if (form.servicio) extraLines.push(`🛎️ Servicio: ${form.servicio}`);
-  if (form.mensaje?.trim()) extraLines.push(`💬 Mensaje: ${form.mensaje.trim()}`);
+  if (campos.mensaje && form.mensaje?.trim()) extraLines.push(`💬 Mensaje: ${form.mensaje.trim()}`);
   if (negocio.preguntasExtra?.length && form.extras) {
     for (const p of negocio.preguntasExtra) {
       const val = form.extras?.[p.id];
@@ -20,12 +21,16 @@ export function generarMensaje(form, negocio) {
 
   return template
     .replace("{negocio}", negocio.nombre || "")
-    .replace("{nombre}", form.nombre || "-")
-    .replace("{telefono}", form.telefono || "-")
-    .replace("{personas}", form.personas || "-")
-    .replace("{hora}", form.hora || "-")
-    .replace("{dia}", form.dia || "-")
-    .replace("{mensajeExtra}", extra);
+    .replace("{nombre}", campos.nombre ? (form.nombre || "-") : "")
+    .replace("{telefono}", campos.telefono ? (form.telefono || "-") : "")
+    .replace("{email}", campos.email ? (form.email || "-") : "")
+    .replace("{personas}", campos.personas ? (form.personas || "-") : "")
+    .replace("{hora}", campos.fechaHora ? (form.hora || "-") : "")
+    .replace("{dia}", campos.fechaHora ? (form.dia || "-") : "")
+    .replace("{mensajeExtra}", extra)
+    .split("\n")
+    .filter(line => line.trim() !== "")
+    .join("\n");
 }
 
 /**

@@ -41,6 +41,7 @@ export function useAdminConfig() {
     colorAcento: config.colorAcento ?? "#aa3bff",
     colorBorde: config.colorBorde ?? "#e5e4e7",
     tituloFormulario: config.tituloFormulario ?? "Reservas",
+    textoBtnReservar: config.textoBtnReservar ?? "Reservar",
     temasGuardados: config.temasGuardados ?? [],
     descripcion: config.descripcion ?? "",
     logoUrl: config.logoUrl ?? "",
@@ -59,6 +60,9 @@ export function useAdminConfig() {
     pinAdmin: config.pinAdmin,
     horarios: horariosToForm(config.horarios),
     fechasBloqueadas: config.fechasBloqueadas ?? [],
+    perfil: config.perfil ?? "reserva",
+    camposActivos: config.camposActivos ?? { nombre: true, telefono: true, personas: true, fechaHora: true, mensaje: true },
+    mensajeTemplate: config.mensajeTemplate,
   });
 
   const [nuevaFecha, setNuevaFecha] = useState("");
