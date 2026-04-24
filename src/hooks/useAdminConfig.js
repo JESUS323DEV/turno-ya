@@ -42,8 +42,11 @@ export function useAdminConfig() {
     colorBorde: config.colorBorde ?? "#e5e4e7",
     tituloFormulario: config.tituloFormulario ?? "Reservas",
     textoBtnReservar: config.textoBtnReservar ?? "Reservar",
+    textoTelefono: config.textoTelefono ?? "También puedes reservar por teléfono",
+    mostrarTelefono: config.mostrarTelefono ?? true,
     temasGuardados: config.temasGuardados ?? [],
     descripcion: config.descripcion ?? "",
+    links: config.links ?? ["", ""],
     logoUrl: config.logoUrl ?? "",
     colorNegocio: config.colorNegocio ?? "#7c3aed",
     whatsapp: config.whatsapp,
@@ -61,6 +64,7 @@ export function useAdminConfig() {
     horarios: horariosToForm(config.horarios),
     fechasBloqueadas: config.fechasBloqueadas ?? [],
     perfil: config.perfil ?? "reserva",
+    encabezadoMensaje: config.encabezadoMensaje ?? "🍽️ *Nueva Reserva*",
     camposActivos: config.camposActivos ?? { nombre: true, telefono: true, personas: true, fechaHora: true, mensaje: true },
     mensajeTemplate: config.mensajeTemplate,
   });
@@ -164,7 +168,7 @@ export function useAdminConfig() {
   const addPregunta = () => {
     setDraft((prev) => ({
       ...prev,
-      preguntasExtra: [...prev.preguntasExtra, { id: `p${Date.now()}`, label: "", tipo: "texto", opciones: [], requerida: false, guardado: false }],
+      preguntasExtra: [...prev.preguntasExtra, { id: `p${Date.now()}`, label: "", tipo: "texto", campoTipo: "input", opciones: [], requerida: false, guardado: false }],
     }));
   };
 

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { getConfig, NEGOCIO_DEFAULT } from "../config/negocio";
+import { getConfig, NEGOCIO_DEFAULT, CONFIG_KEY } from "../config/negocio";
 import { generarMensaje, generarLink, generarLinkComprobante } from "../utils/whatsapp";
 import { generarSlots } from "../utils/slots";
 
@@ -46,7 +46,16 @@ function isDiaCerrado(dateStr, horarios, fechasBloqueadas) {
 }
 
 export function useReservaForm(configOverride = null) {
-  const negocio = configOverride ? { ...NEGOCIO_DEFAULT, ...configOverride } : getConfig();
+  const [negocio, setNegocio] = useState(() =>
+    configOverride ? { ...NEGOCIO_DEFAULT, ...configOverride } : getConfig()
+  );
+
+  useEffect(() => {
+    if (configOverride) return;
+    const handler = (e) => { if (e.key === CONFIG_KEY) setNegocio(getConfig()); };
+    window.addEventListener("storage", handler);
+    return () => window.removeEventListener("storage", handler);
+  }, [configOverride]);
 
   const [form, setForm] = useState(FORM_INICIAL);
   const [touched, setTouched] = useState(TOUCHED_INICIAL);

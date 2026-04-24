@@ -1,3 +1,4 @@
+// ─── Imports ────────────────────────────────────────────────────────────────
 import { useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import iconWa from "../assets/icon-whatsapp.png";
@@ -7,7 +8,10 @@ import { TEMAS } from "../config/temas";
 import { PERFILES } from "../config/perfiles";
 import "../styles/admin.css";
 
+// ─── Componente principal ────────────────────────────────────────────────────
 export default function AdminPanel() {
+
+  // ─── Hook de configuración ─────────────────────────────────────────────────
   const {
     pin, setPin,
     autenticado,
@@ -32,6 +36,7 @@ export default function AdminPanel() {
     getConfigFinal,
   } = useAdminConfig();
 
+  // ─── Estado local de UI ────────────────────────────────────────────────────
   const [copiado, setCopiado] = useState(false);
   const [seccion, setSeccion] = useState(null);
   const [tab, setTab] = useState("panel");
@@ -41,6 +46,8 @@ export default function AdminPanel() {
   const [confirmarEliminarPregunta, setConfirmarEliminarPregunta] = useState(null);
   const [filtroPanel, setFiltroPanel] = useState("todas");
   const [modalMensaje, setModalMensaje] = useState(null);
+
+  // ─── Datos mock (sustituir por Supabase cuando esté conectado) ─────────────
   const [reservasMock, setReservasMock] = useState([
     { id: 1, nombre: "María García",    telefono: "612345678", fecha: "2026-04-20", hora: "13:00", personas: 2, servicio: "Menú del día", estado: "pendiente", mensaje: "Hola, somos dos personas, una de ellas es celíaca y necesita menú sin gluten. También me gustaría una mesa cerca de la ventana si es posible. Muchas gracias!" },
     { id: 2, nombre: "Carlos López",    telefono: "698765432", fecha: "2026-04-20", hora: "14:30", personas: 4, servicio: "",             estado: "confirmada" },
@@ -52,12 +59,15 @@ export default function AdminPanel() {
     { id: 8, nombre: "Elena Castro",    telefono: "699445566", fecha: "2026-04-18", hora: "14:30", personas: 6, servicio: "",             estado: "cancelada" },
   ]);
 
+  // ─── Pestañas según sección activa ────────────────────────────────────────
   const TABS = seccion === "reservas"
     ? { panel: "Reservas", historial: "Historial" }
     : { negocio: "Negocio", horarios: "Horarios", reservas: "Config", servicios: "Servicios", ajustes: "Ajustes", preview: "Vista previa" };
 
+  // ─── Fechas y filtros ──────────────────────────────────────────────────────
   const hoyStr = new Date().toISOString().split("T")[0];
   const hoyFormateado = hoyStr.split("-").reverse().join("-");
+  const hoy = hoyStr;
 
   const reservasFiltradas = reservasMock.filter((r) => {
     if (r.fecha !== hoyStr) return false;
@@ -76,6 +86,7 @@ export default function AdminPanel() {
   }, {});
   const fechasHistorial = Object.keys(historialPorFecha).sort((a, b) => b.localeCompare(a));
 
+  // ─── Acciones sobre reservas ───────────────────────────────────────────────
   const cambiarEstado = (id, estado) => {
     setReservasMock((prev) => prev.map((r) => r.id === id ? { ...r, estado } : r));
   };
@@ -93,6 +104,7 @@ export default function AdminPanel() {
     });
   };
 
+  // ─── Pantalla de selección de sección ─────────────────────────────────────
   if (!seccion) {
     return (
       <section className="admin-section">
@@ -111,6 +123,7 @@ export default function AdminPanel() {
     );
   }
 
+  // ─── Pantalla de PIN ───────────────────────────────────────────────────────
   if (!autenticado) {
     return (
       <section className="admin-section">
@@ -135,17 +148,18 @@ export default function AdminPanel() {
     );
   }
 
-  const hoy = new Date().toISOString().split("T")[0];
-
+  // ─── Panel principal (autenticado) ─────────────────────────────────────────
   return (
     <section className="admin-section">
       <form className="admin-form" onSubmit={guardar}>
+
+        {/* Cabecera con título y fecha */}
         <div className="admin-header">
           <h2 className="admin-title">{seccion === "reservas" ? "Panel de reservas" : "Configuración"}</h2>
           {seccion === "reservas" && <p className="admin-fecha-hoy">{hoyFormateado}</p>}
         </div>
 
-        {/* Pestañas */}
+        {/* Pestañas de navegación */}
         <div className="admin-tabs">
           {Object.entries(TABS).map(([key, label]) => (
             <button
@@ -159,10 +173,11 @@ export default function AdminPanel() {
           ))}
         </div>
 
-        {/* PANEL DE RESERVAS */}
+        {/* ── TAB: PANEL DE RESERVAS ── */}
         {tab === "panel" && (
           <div className="panel-reservas">
-            {/* Stats */}
+
+            {/* Stats: pendientes y confirmadas de hoy */}
             <div className="panel-stats">
               <button type="button" className={`panel-stat panel-stat--pendientes ${filtroPanel === "pendientes" ? "panel-stat--active" : ""}`}
                 onClick={() => setFiltroPanel("pendientes")}>
@@ -176,6 +191,7 @@ export default function AdminPanel() {
               </button>
             </div>
 
+            {/* Lista de reservas activas (pendientes / confirmadas) */}
             <p className="panel-seccion-titulo">Confirmadas · {hoyFormateado}</p>
             {reservasFiltradas.length === 0 ? (
               <p className="admin-hint" style={{ textAlign: "center", padding: "2rem 0" }}>No hay reservas.</p>
@@ -218,7 +234,7 @@ export default function AdminPanel() {
               </div>
             )}
 
-            {/* Canceladas hoy */}
+            {/* Canceladas de hoy */}
             {canceladasHoy.length > 0 && (<>
               <p className="panel-seccion-titulo">Canceladas · {hoyFormateado}</p>
               <div className="panel-lista">
@@ -250,10 +266,11 @@ export default function AdminPanel() {
           </div>
         )}
 
-        {/* HISTORIAL */}
+        {/* ── TAB: HISTORIAL ── */}
         {tab === "historial" && (
           <div className="panel-reservas">
-            {/* Hoy */}
+
+            {/* Reservas de hoy (todas) */}
             <p className="panel-seccion-titulo">Hoy · {hoyFormateado}</p>
             {reservasHoy.length === 0 ? (
               <p className="admin-hint" style={{ textAlign: "center" }}>Sin reservas hoy.</p>
@@ -320,23 +337,33 @@ export default function AdminPanel() {
           </div>
         )}
 
-        {/* NEGOCIO */}
+        {/* ── TAB: NEGOCIO ── */}
         {tab === "negocio" && (<>
+
+          {/* Perfil del formulario y campos activos */}
           <fieldset className="admin-fieldset">
-            <legend className="admin-legend">Perfil del formulario</legend>
+            <legend className="admin-legend">Tipo de mensaje</legend>
+            <p className="admin-hint">Elige un encabezado rápido o escríbelo a tu gusto.</p>
             <div className="admin-tema-selector">
               {PERFILES.map((p) => (
                 <button key={p.id} type="button"
                   className={`admin-tema-btn ${draft.perfil === p.id ? "admin-tema-btn--active" : ""}`}
                   onClick={() => {
                     setField("perfil", p.id);
-                    if (p.camposActivos) setField("camposActivos", p.camposActivos);
-                    if (p.mensajeTemplate) setField("mensajeTemplate", p.mensajeTemplate);
+                    if (p.encabezado) setField("encabezadoMensaje", p.encabezado);
                   }}>
                   {p.label}
                 </button>
               ))}
             </div>
+
+            <label className="admin-label" style={{ marginTop: "12px" }}>
+              <span>Título del mensaje de WhatsApp</span>
+              <input className="admin-input" type="text" maxLength={60}
+                value={draft.encabezadoMensaje}
+                onChange={(e) => { setField("encabezadoMensaje", e.target.value); setField("perfil", "personalizado"); }} />
+              <span className="admin-counter">{draft.encabezadoMensaje.length} / 60</span>
+            </label>
 
             <p className="admin-hint" style={{ marginTop: "12px" }}>Ajusta los campos a tu gusto.</p>
             {[
@@ -359,6 +386,7 @@ export default function AdminPanel() {
             ))}
           </fieldset>
 
+          {/* Datos del negocio */}
           <fieldset className="admin-fieldset">
             <legend className="admin-legend">Datos del negocio</legend>
 
@@ -369,8 +397,6 @@ export default function AdminPanel() {
                 onChange={(e) => setField("nombre", e.target.value)} />
               <span className="admin-counter">{draft.nombre.length} / 40</span>
             </label>
-
-
 
             <label className="admin-label">
               <span>Color del nombre</span>
@@ -387,10 +413,24 @@ export default function AdminPanel() {
               <span>Descripción</span>
               <textarea className="admin-input admin-textarea"
                 placeholder="Restaurante peruano en el centro de Madrid"
-                maxLength={150} value={draft.descripcion}
+                maxLength={155} value={draft.descripcion}
                 rows={3}
                 onChange={(e) => setField("descripcion", e.target.value)} />
-              <span className="admin-counter">{draft.descripcion.length} / 150</span>
+              <span className="admin-counter">{draft.descripcion.length} / 155</span>
+            </label>
+
+            <label className="admin-label">
+              <span>Link 1 (web, Instagram, Facebook...)</span>
+              <input className="admin-input" type="url" placeholder="https://..."
+                value={draft.links?.[0] ?? ""}
+                onChange={(e) => setField("links", [e.target.value, draft.links?.[1] ?? ""])} />
+            </label>
+
+            <label className="admin-label">
+              <span>Link 2</span>
+              <input className="admin-input" type="url" placeholder="https://..."
+                value={draft.links?.[1] ?? ""}
+                onChange={(e) => setField("links", [draft.links?.[0] ?? "", e.target.value])} />
             </label>
 
             <label className="admin-label">
@@ -408,6 +448,26 @@ export default function AdminPanel() {
                 onChange={(e) => setField("textoBtnReservar", e.target.value)} />
               <span className="admin-counter">{draft.textoBtnReservar.length} / 20</span>
             </label>
+
+            {/* Enlace de teléfono */}
+            <div className="admin-dia-header">
+              <span className="admin-dia-nombre">Mostrar enlace de teléfono</span>
+              <label className="admin-toggle">
+                <input type="checkbox"
+                  checked={draft.mostrarTelefono ?? true}
+                  onChange={(e) => setField("mostrarTelefono", e.target.checked)} />
+                <span>{draft.mostrarTelefono ?? true ? "Activo" : "Inactivo"}</span>
+              </label>
+            </div>
+            {(draft.mostrarTelefono ?? true) && (
+              <label className="admin-label">
+                <span>Texto del enlace de teléfono</span>
+                <input className="admin-input" type="text" maxLength={50}
+                  value={draft.textoTelefono}
+                  onChange={(e) => setField("textoTelefono", e.target.value)} />
+                <span className="admin-counter">{draft.textoTelefono.length} / 50</span>
+              </label>
+            )}
 
             <label className="admin-label">
               <span>Logo (URL de imagen)</span>
@@ -434,6 +494,7 @@ export default function AdminPanel() {
               <span className="admin-counter">{draft.telefono.length} / 16</span>
             </label>
 
+            {/* Selector de tema visual */}
             <label className="admin-label">
               <span>Tema de la app</span>
               <div className="admin-tema-selector">
@@ -454,7 +515,7 @@ export default function AdminPanel() {
               </div>
             </label>
 
-            {/* Modal tema personalizado */}
+            {/* Modal de tema personalizado */}
             {modalCustom && (
               <div className="admin-modal-overlay" onClick={() => setModalCustom(false)}>
                 <div className="admin-modal" onClick={(e) => e.stopPropagation()}>
@@ -552,8 +613,10 @@ export default function AdminPanel() {
           </fieldset>
         </>)}
 
-        {/* HORARIOS */}
+        {/* ── TAB: HORARIOS ── */}
         {tab === "horarios" && (<>
+
+          {/* Horario semanal por día */}
           <fieldset className="admin-fieldset">
             <legend className="admin-legend">Horarios semanales</legend>
             {Object.entries(draft.horarios).map(([day, { abierto, turnos }]) => (
@@ -589,6 +652,7 @@ export default function AdminPanel() {
             ))}
           </fieldset>
 
+          {/* Fechas bloqueadas puntuales */}
           <fieldset className="admin-fieldset">
             <legend className="admin-legend">Fechas bloqueadas</legend>
             <p className="admin-hint">Vacaciones, festivos o días puntuales cerrados.</p>
@@ -611,6 +675,7 @@ export default function AdminPanel() {
             )}
           </fieldset>
 
+          {/* Cierre temporal de hoy */}
           <fieldset className="admin-fieldset">
             <legend className="admin-legend">Cierre temporal</legend>
             <p className="admin-hint">Cierra el negocio hoy sin modificar el horario semanal. Se reabre automáticamente mañana.</p>
@@ -627,7 +692,7 @@ export default function AdminPanel() {
           </fieldset>
         </>)}
 
-        {/* RESERVAS */}
+        {/* ── TAB: CONFIG DE RESERVAS ── */}
         {tab === "reservas" && (<>
           <fieldset className="admin-fieldset">
             <legend className="admin-legend">Configuración de reservas</legend>
@@ -687,11 +752,12 @@ export default function AdminPanel() {
               <span className="admin-hint">0 = sin límite. Requiere panel de reservas para funcionar.</span>
             </label>
           </fieldset>
-
         </>)}
 
-        {/* SERVICIOS */}
+        {/* ── TAB: SERVICIOS Y PREGUNTAS ── */}
         {tab === "servicios" && (<>
+
+          {/* Servicios con horario propio */}
           <fieldset className="admin-fieldset">
             <legend className="admin-legend">Servicios</legend>
             <p className="admin-hint">Si defines servicios, el cliente elige uno y los slots se muestran dentro de su horario.</p>
@@ -742,6 +808,7 @@ export default function AdminPanel() {
             <button type="button" className="admin-btn-add" onClick={addServicio}>+ Añadir servicio</button>
           </fieldset>
 
+          {/* Preguntas personalizadas */}
           <fieldset className="admin-fieldset">
             <legend className="admin-legend">Preguntas personalizadas</legend>
             <p className="admin-hint">Campos extra que verá el cliente al reservar.</p>
@@ -764,7 +831,10 @@ export default function AdminPanel() {
                         <button type="button" className="admin-btn-add-fecha" onClick={() => setConfirmarEliminarPregunta(null)}>No</button>
                       </>
                     ) : (
-                      <button type="button" className="admin-btn-secondary-sm" onClick={() => setConfirmarEliminarPregunta(i)}>Cancelar</button>
+                      <>
+                        <button type="button" className="admin-btn-secondary-sm" onClick={() => setPregunta(i, "guardado", false)}>Editar</button>
+                        <button type="button" className="admin-btn-remove" onClick={() => setConfirmarEliminarPregunta(i)}>✕</button>
+                      </>
                     )}
                   </div>
                 </div>
@@ -778,6 +848,13 @@ export default function AdminPanel() {
                       <option value="texto">Texto libre</option>
                       <option value="seleccion">Opciones</option>
                     </select>
+                    {p.tipo === "texto" && (
+                      <select className="admin-input admin-input-tipo" value={p.campoTipo ?? "input"}
+                        onChange={(e) => setPregunta(i, "campoTipo", e.target.value)}>
+                        <option value="input">Campo corto</option>
+                        <option value="textarea">Texto largo</option>
+                      </select>
+                    )}
                     <label className="admin-check-label">
                       <input type="checkbox" checked={!!p.requerida}
                         onChange={(e) => setPregunta(i, "requerida", e.target.checked)} />
@@ -808,8 +885,10 @@ export default function AdminPanel() {
           </fieldset>
         </>)}
 
-        {/* AJUSTES */}
+        {/* ── TAB: AJUSTES ── */}
         {tab === "ajustes" && (<>
+
+          {/* PIN de acceso */}
           <fieldset className="admin-fieldset">
             <legend className="admin-legend">Seguridad</legend>
             <label className="admin-label">
@@ -821,6 +900,7 @@ export default function AdminPanel() {
             </label>
           </fieldset>
 
+          {/* QR del formulario */}
           <fieldset className="admin-fieldset">
             <legend className="admin-legend">QR del formulario</legend>
             <p className="admin-hint">Imprímelo o compártelo para que tus clientes accedan directamente.</p>
@@ -841,6 +921,7 @@ export default function AdminPanel() {
             </button>
           </fieldset>
 
+          {/* Widget embebible */}
           <fieldset className="admin-fieldset">
             <legend className="admin-legend">Widget</legend>
             <button className="admin-btn-export" type="button" onClick={copiarWidget}>
@@ -848,6 +929,7 @@ export default function AdminPanel() {
             </button>
           </fieldset>
 
+          {/* Caché */}
           <fieldset className="admin-fieldset">
             <legend className="admin-legend">Caché</legend>
             <p className="admin-hint">Si la app no refleja los últimos cambios, límpia la caché.</p>
@@ -858,24 +940,27 @@ export default function AdminPanel() {
           </fieldset>
         </>)}
 
-        {/* VISTA PREVIA */}
+        {/* ── TAB: VISTA PREVIA ── */}
         {tab === "preview" && (
           <div className="admin-preview-wrapper">
-            <p className="admin-hint">Así ve el cliente el formulario en su móvil.</p>
+            <p className="admin-hint">Así ve el cliente el formulario.</p>
             <div className="admin-preview-phone">
               <ReservaWhatsApp configOverride={getConfigFinal()} />
             </div>
           </div>
         )}
 
+        {/* Botón guardar (oculto en vista previa y en panel de reservas) */}
         {tab !== "preview" && seccion !== "reservas" && (<>
           <button className="admin-btn-primary" type="submit">
             {guardado ? "✓ Guardado" : "Guardar cambios"}
           </button>
           {errorGuardado && <p className="admin-error">{errorGuardado}</p>}
         </>)}
+
       </form>
 
+      {/* Modal de mensaje del cliente */}
       {modalMensaje && (
         <div className="admin-modal-overlay" onClick={() => setModalMensaje(null)}>
           <div className="admin-modal" onClick={(e) => e.stopPropagation()}>

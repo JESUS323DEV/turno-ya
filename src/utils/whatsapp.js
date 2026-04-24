@@ -5,7 +5,7 @@ import { MENSAJE_TEMPLATE_DEFAULT } from "../config/negocio";
  * Placeholders: {negocio} {nombre} {telefono} {personas} {hora} {dia} {mensajeExtra}
  */
 export function generarMensaje(form, negocio) {
-  const campos = { nombre: true, telefono: true, personas: true, fechaHora: true, mensaje: true, ...negocio.camposActivos };
+  const campos = { nombre: true, telefono: true, email: true, personas: true, fechaHora: true, mensaje: true, ...negocio.camposActivos };
   const template = negocio.mensajeTemplate || MENSAJE_TEMPLATE_DEFAULT;
 
   const extraLines = [];
@@ -19,17 +19,33 @@ export function generarMensaje(form, negocio) {
   }
   const extra = extraLines.join("\n");
 
+  // Tabla de campos: placeholder → { activo, valor }
+  const sustituciones = [
+    { ph: "{encabezado}", activo: true,              valor: negocio.encabezadoMensaje || "📋 *Nueva Solicitud*" },
+    { ph: "{negocio}",  activo: true,                valor: negocio.nombre || "" },
+    { ph: "{nombre}",   activo: campos.nombre,       valor: form.nombre || "-" },
+    { ph: "{telefono}", activo: campos.telefono,     valor: form.telefono || "-" },
+    { ph: "{email}",    activo: campos.email,        valor: form.email || "-" },
+    { ph: "{personas}", activo: campos.personas,     valor: String(form.personas || "-") },
+    { ph: "{hora}",     activo: campos.fechaHora,    valor: form.hora || "-" },
+    { ph: "{dia}",      activo: campos.fechaHora,    valor: form.dia ? form.dia.split("-").reverse().join("-") : "-" },
+    { ph: "{mensajeExtra}", activo: true,            valor: extra },
+  ];
+
+  // Procesa línea a línea: si la línea contiene un placeholder inactivo, la elimina
   return template
-    .replace("{negocio}", negocio.nombre || "")
-    .replace("{nombre}", campos.nombre ? (form.nombre || "-") : "")
-    .replace("{telefono}", campos.telefono ? (form.telefono || "-") : "")
-    .replace("{email}", campos.email ? (form.email || "-") : "")
-    .replace("{personas}", campos.personas ? (form.personas || "-") : "")
-    .replace("{hora}", campos.fechaHora ? (form.hora || "-") : "")
-    .replace("{dia}", campos.fechaHora ? (form.dia || "-") : "")
-    .replace("{mensajeExtra}", extra)
     .split("\n")
-    .filter(line => line.trim() !== "")
+    .map(line => {
+      let l = line;
+      for (const { ph, activo, valor } of sustituciones) {
+        if (l.includes(ph)) {
+          if (!activo) return null; // elimina la línea completa
+          l = l.replace(ph, valor);
+        }
+      }
+      return l;
+    })
+    .filter(line => line !== null && line.trim() !== "")
     .join("\n");
 }
 

@@ -4,7 +4,7 @@
  * En producción, el negocio la sobreescribe desde el panel /admin.
  */
 
-export const MENSAJE_TEMPLATE_DEFAULT = `🍽️ *Nueva Reserva*
+export const MENSAJE_TEMPLATE_DEFAULT = `{encabezado}
 
 👤 Nombre: {nombre}
 📞 Teléfono: {telefono}
@@ -17,6 +17,7 @@ export const MENSAJE_TEMPLATE_DEFAULT = `🍽️ *Nueva Reserva*
 export const NEGOCIO_DEFAULT = {
   nombre: "Olla Perú",
   descripcion: "",           // texto corto debajo del nombre (ej: "Restaurante peruano en el centro")
+  links: ["", ""],          // hasta 2 URLs externas (web, instagram, etc.)
   logoUrl: "",               // URL de la imagen del logo del negocio
   whatsapp: "34695078648",   // sin espacios ni +
   telefono: "+34695078648",  // con prefijo para el enlace tel:
@@ -52,6 +53,8 @@ export const NEGOCIO_DEFAULT = {
 
   tituloFormulario: "Reservas", // título visible en el formulario del cliente
   textoBtnReservar: "Reservar",  // texto del botón de envío
+  textoTelefono: "También puedes reservar por teléfono",
+  mostrarTelefono: true,
   tema: "claro",             // "claro" | "oscuro" | "personalizado"
   colorFondo: "#ffffff",     // solo para tema personalizado
   colorAcento: "#aa3bff",   // solo para tema personalizado
@@ -59,6 +62,7 @@ export const NEGOCIO_DEFAULT = {
   temasGuardados: [],       // [{ id, nombre, colorFondo, colorAcento, colorBorde }]
   colorNegocio: "#7c3aed",   // color del nombre del negocio en el formulario
 
+  encabezadoMensaje: "🍽️ *Nueva Reserva*",
   mensajeTemplate: MENSAJE_TEMPLATE_DEFAULT,
 
   // Fechas bloqueadas puntualmente (formato YYYY-MM-DD)

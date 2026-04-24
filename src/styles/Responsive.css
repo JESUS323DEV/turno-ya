@@ -15,7 +15,11 @@
         color: rgb(0, 0, 0);
         padding: 5px;
         z-index: 9999;
+    }
 
+    .reserva-tittle-negocio h1 {
+        font-size: 1.4rem;
+        letter-spacing: 0;
     }
 }
 
@@ -32,7 +36,11 @@
         color: rgb(0, 0, 0);
         padding: 5px;
         z-index: 9999;
+    }
 
+    .reserva-tittle-negocio h1 {
+        font-size: 1.8rem;
+        letter-spacing: 0.5px;
     }
 }
 
@@ -127,5 +135,62 @@
 
     .panel-stats {
         grid-template-columns: repeat(5, 1fr);
+    }
+
+    .admin-preview-phone {
+        width: 100%;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    /* Formulario en XXL */
+    .reserva-logo {
+        max-width: 210px;
+        max-height: 210px;
+    }
+
+    .reserva-negocio {
+        font-size: 15px;
+    }
+
+    .reserva-descripcion {
+        font-size: 16px;
+    }
+
+    .reserva-links {
+        flex-direction: row;
+        justify-content: center;
+        gap: 24px;
+    }
+
+    .reserva-link-item {
+        font-size: 14px;
+    }
+
+    .reserva-title {
+        font-size: 2rem;
+    }
+
+    /* Calendario en XXL: evitar que el overflow:hidden recorte la primera fila */
+    .reserva-form {
+        max-width: 480px;
+    }
+
+    .reserva-calendar-wrap {
+        overflow: visible;
+        display: flex;
+        justify-content: center;
+   
+    }
+
+    .reserva-calendar-wrap .rdp {
+        max-width: 440px;
+        margin: 0 auto;
+    }
+
+    .cabecera {
+
+        gap: 0.7rem;
     }
 }
