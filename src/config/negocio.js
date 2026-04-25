@@ -47,7 +47,8 @@ export const NEGOCIO_DEFAULT = {
     telefono: true,
     email: true,
     personas: true,
-    fechaHora: true,
+    fecha: true,
+    hora: true,
     mensaje: true,
   },
 
@@ -63,6 +64,7 @@ export const NEGOCIO_DEFAULT = {
   colorNegocio: "#7c3aed",   // color del nombre del negocio en el formulario
 
   encabezadoMensaje: "🍽️ *Nueva Reserva*",
+  googleCalendarLink: false,
   mensajeTemplate: MENSAJE_TEMPLATE_DEFAULT,
 
   // Fechas bloqueadas puntualmente (formato YYYY-MM-DD)

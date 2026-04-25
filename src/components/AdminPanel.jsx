@@ -371,7 +371,8 @@ export default function AdminPanel() {
               { key: "telefono",  label: "Teléfono" },
               { key: "email",     label: "Email" },
               { key: "personas",  label: "Personas" },
-              { key: "fechaHora", label: "Fecha y hora" },
+              { key: "fecha",     label: "Fecha" },
+              { key: "hora",      label: "Hora" },
               { key: "mensaje",   label: "Mensaje" },
             ].map(({ key, label }) => (
               <div key={key} className="admin-dia-header">
@@ -751,6 +752,17 @@ export default function AdminPanel() {
                 onChange={(e) => setField("aforoPorSlot", Number(e.target.value))} />
               <span className="admin-hint">0 = sin límite. Requiere panel de reservas para funcionar.</span>
             </label>
+
+            <div className="admin-dia-header">
+              <span className="admin-dia-nombre">Link de Google Calendar en el mensaje</span>
+              <label className="admin-toggle">
+                <input type="checkbox"
+                  checked={draft.googleCalendarLink ?? false}
+                  onChange={(e) => setField("googleCalendarLink", e.target.checked)} />
+                <span>{draft.googleCalendarLink ? "Activo" : "Inactivo"}</span>
+              </label>
+            </div>
+            <span className="admin-hint">Al activarlo, el mensaje de WhatsApp incluye un link para añadir la cita a Google Calendar.</span>
           </fieldset>
         </>)}
 

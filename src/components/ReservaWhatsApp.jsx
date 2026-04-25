@@ -80,14 +80,14 @@ export default function ReservaWhatsApp({ configOverride = null } = {}) {
             Tu solicitud en <strong>{negocio.nombre}</strong> ha sido enviada.
             En breve recibirás confirmación.
           </p>
-          {(campos.fechaHora || campos.personas) && (
+          {(campos.fecha || campos.hora || campos.personas) && (
             <div className="confirmacion-resumen">
-              {campos.fechaHora && form.dia && <span>📅 {form.dia.split("-").reverse().join("-")}</span>}
-              {campos.fechaHora && form.hora && <span>🕐 {form.hora}</span>}
+              {campos.fecha && form.dia && <span>📅 {form.dia.split("-").reverse().join("-")}</span>}
+              {campos.hora && form.hora && <span>🕐 {form.hora}</span>}
               {campos.personas && <span>👥 {form.personas} {form.personas === 1 ? "persona" : "personas"}</span>}
             </div>
           )}
-          {campos.fechaHora && (
+          {(campos.fecha || campos.hora) && (
             <button className="confirmacion-btn-ics" type="button" onClick={() => descargarIcs(form, negocio)}>
               📅 Añadir al calendario
             </button>
@@ -241,7 +241,7 @@ export default function ReservaWhatsApp({ configOverride = null } = {}) {
         )}
 
         {/* Calendario y slots de hora */}
-        {campos.fechaHora && (<>
+        {campos.fecha && (
           <div className="reserva-label">
             <span className="reserva-label-row">Día* {fieldIcon("dia", diaOk)}</span>
             <div className="reserva-datepicker-wrap">
@@ -279,7 +279,9 @@ export default function ReservaWhatsApp({ configOverride = null } = {}) {
               </>)}
             </div>
           </div>
+        )}
 
+        {campos.hora && (
           <div className="reserva-label">
             Hora*
             {!form.dia || !diaOk ? (
@@ -304,7 +306,7 @@ export default function ReservaWhatsApp({ configOverride = null } = {}) {
               </div>
             )}
           </div>
-        </>)}
+        )}
 
         {/* Preguntas extra definidas por el admin */}
         {negocio.preguntasExtra?.filter((p) => p.guardado && p.label.trim()).map((p) => (

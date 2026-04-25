@@ -5,7 +5,12 @@ import { MENSAJE_TEMPLATE_DEFAULT } from "../config/negocio";
  * Placeholders: {negocio} {nombre} {telefono} {personas} {hora} {dia} {mensajeExtra}
  */
 export function generarMensaje(form, negocio) {
-  const campos = { nombre: true, telefono: true, email: true, personas: true, fechaHora: true, mensaje: true, ...negocio.camposActivos };
+  const camposRaw = { nombre: true, telefono: true, email: true, personas: true, fecha: true, hora: true, mensaje: true, ...negocio.camposActivos };
+  const campos = {
+    ...camposRaw,
+    fecha: camposRaw.fecha ?? camposRaw.fechaHora ?? true,
+    hora:  camposRaw.hora  ?? camposRaw.fechaHora ?? true,
+  };
   const template = negocio.mensajeTemplate || MENSAJE_TEMPLATE_DEFAULT;
 
   const extraLines = [];
@@ -27,19 +32,19 @@ export function generarMensaje(form, negocio) {
     { ph: "{telefono}", activo: campos.telefono,     valor: form.telefono || "-" },
     { ph: "{email}",    activo: campos.email,        valor: form.email || "-" },
     { ph: "{personas}", activo: campos.personas,     valor: String(form.personas || "-") },
-    { ph: "{hora}",     activo: campos.fechaHora,    valor: form.hora || "-" },
-    { ph: "{dia}",      activo: campos.fechaHora,    valor: form.dia ? form.dia.split("-").reverse().join("-") : "-" },
+    { ph: "{hora}",     activo: campos.hora,         valor: form.hora || "-" },
+    { ph: "{dia}",      activo: campos.fecha,        valor: form.dia ? form.dia.split("-").reverse().join("-") : "-" },
     { ph: "{mensajeExtra}", activo: true,            valor: extra },
   ];
 
   // Procesa línea a línea: si la línea contiene un placeholder inactivo, la elimina
-  return template
+  const mensaje = template
     .split("\n")
     .map(line => {
       let l = line;
       for (const { ph, activo, valor } of sustituciones) {
         if (l.includes(ph)) {
-          if (!activo) return null; // elimina la línea completa
+          if (!activo) return null;
           l = l.replace(ph, valor);
         }
       }
@@ -47,6 +52,45 @@ export function generarMensaje(form, negocio) {
     })
     .filter(line => line !== null && line.trim() !== "")
     .join("\n");
+
+  // Añade link de Google Calendar si está activado y hay fecha y hora
+  if (negocio.googleCalendarLink && campos.fecha && campos.hora && form.dia && form.hora) {
+    const calLink = generarLinkGoogleCalendar(form, negocio);
+    return mensaje + `\n\n${calLink}`;
+  }
+  return mensaje;
+}
+
+/**
+ * Genera el link de Google Calendar con los datos de la reserva.
+ */
+export function generarLinkGoogleCalendar(form, negocio) {
+  const [y, m, d] = form.dia.split("-");
+  const [h, min] = form.hora.split(":").map(Number);
+  const fechaBase = `${y}${m}${d}`;
+  const startStr = `${fechaBase}T${String(h).padStart(2, "0")}${String(min).padStart(2, "0")}00`;
+
+  const duracion = negocio.slotInterval ?? 30;
+  const totalMin = h * 60 + min + duracion;
+  const endH = Math.floor(totalMin / 60) % 24;
+  const endMin = totalMin % 60;
+  const endStr = `${fechaBase}T${String(endH).padStart(2, "0")}${String(endMin).padStart(2, "0")}00`;
+
+  const title = `${negocio.encabezadoMensaje?.replace(/\*/g, "") || "Reserva"} - ${form.nombre || "Cliente"}`;
+  const details = [
+    form.telefono && `Tel: ${form.telefono}`,
+    form.personas && `Personas: ${form.personas}`,
+    form.servicio && `Servicio: ${form.servicio}`,
+  ].filter(Boolean).join(" | ");
+
+  const params = new URLSearchParams({
+    action: "TEMPLATE",
+    text: title,
+    dates: `${startStr}/${endStr}`,
+    details,
+  });
+
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
 }
 
 /**

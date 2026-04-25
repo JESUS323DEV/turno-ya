@@ -64,8 +64,9 @@ export function useAdminConfig() {
     horarios: horariosToForm(config.horarios),
     fechasBloqueadas: config.fechasBloqueadas ?? [],
     perfil: config.perfil ?? "reserva",
+    googleCalendarLink: config.googleCalendarLink ?? false,
     encabezadoMensaje: config.encabezadoMensaje ?? "🍽️ *Nueva Reserva*",
-    camposActivos: config.camposActivos ?? { nombre: true, telefono: true, personas: true, fechaHora: true, mensaje: true },
+    camposActivos: config.camposActivos ?? { nombre: true, telefono: true, personas: true, fecha: true, hora: true, mensaje: true },
     mensajeTemplate: config.mensajeTemplate,
   });
 

@@ -1,12 +1,12 @@
 import { createClient } from "@supabase/supabase-js";
 
-export const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
+const url = import.meta.env.VITE_SUPABASE_URL;
+const key = import.meta.env.VITE_SUPABASE_ANON_KEY;
+export const supabase = (url && key) ? createClient(url, key) : null;
 
 /** Lee la config del negocio desde Supabase. */
 export async function fetchConfig() {
+  if (!supabase) return null;
   const { data, error } = await supabase
     .from("config")
     .select("datos")
@@ -17,15 +17,17 @@ export async function fetchConfig() {
   return data.datos;
 }
 
-/** Guarda la config via Edge Function (verifica el PIN en el servidor). */
+/** Guarda la config via Edge Function (verifica el PIN en el servidor).
+ *  Sin Supabase, no hace nada — localStorage lo gestiona useAdminConfig. */
 export async function saveConfig(datos, pin) {
+  if (!supabase) return;
   const res = await fetch(
-    `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/guardar-config`,
+    `${url}/functions/v1/guardar-config`,
     {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "apikey": import.meta.env.VITE_SUPABASE_ANON_KEY,
+        "apikey": key,
       },
       body: JSON.stringify({ config: datos, pin }),
     }

@@ -72,31 +72,19 @@ export function useReservaForm(configOverride = null) {
 
   const maxDate = useMemo(() => getMaxDate(negocio.antelacionMaxDias), [negocio.antelacionMaxDias]);
 
-  // Reloj que se actualiza cada minuto para filtrar servicios en tiempo real
-  const [ahora, setAhora] = useState(() => new Date());
-  useEffect(() => {
-    const intervalo = setInterval(() => setAhora(new Date()), 60000);
-    return () => clearInterval(intervalo);
-  }, []);
-
-  // Servicios cuyo horario no ha terminado aún hoy
+  // Servicios guardados y con nombre
   const serviciosDisponibles = useMemo(() => {
     if (!negocio.servicios?.length) return [];
-    const currentMin = ahora.getHours() * 60 + ahora.getMinutes();
-    return negocio.servicios.filter((s) => {
-      if (!s.guardado || !s.nombre.trim()) return false;
-      if (!s.horaFin) return true;
-      const [h, m] = s.horaFin.split(":").map(Number);
-      return currentMin < h * 60 + m;
-    });
-  }, [negocio.servicios, ahora]);
+    return negocio.servicios.filter((s) => s.guardado && s.nombre.trim());
+  }, [negocio.servicios]);
 
   // Si el servicio tiene rango propio (horaInicio/horaFin), restringe los horarios a ese rango
   const horariosEfectivos = useMemo(() => {
     if (negocio.servicios?.length > 0 && form.servicio) {
       const s = negocio.servicios.find((s) => s.nombre === form.servicio);
-      if (s?.horaInicio && s?.horaFin) {
-        const range = [{ start: s.horaInicio, end: s.horaFin }];
+      if (s?.horaInicio) {
+        // Slot único: solo la hora de inicio del servicio
+        const range = [{ start: s.horaInicio, end: s.horaInicio }];
         return Object.fromEntries(
           Object.entries(negocio.horarios).map(([day, turnos]) => [day, turnos.length > 0 ? range : []])
         );
@@ -111,7 +99,13 @@ export function useReservaForm(configOverride = null) {
     [form.dia, horariosEfectivos, negocio.slotInterval, negocio.antelacionMinHoras, negocio.cierreTemporalFecha]
   );
 
-  const campos = { nombre: true, telefono: true, email: true, personas: true, fechaHora: true, ...negocio.camposActivos };
+  const camposRaw = { nombre: true, telefono: true, email: true, personas: true, fecha: true, hora: true, ...negocio.camposActivos };
+  // backward compat: old configs with fechaHora
+  const campos = {
+    ...camposRaw,
+    fecha: camposRaw.fecha ?? camposRaw.fechaHora ?? true,
+    hora:  camposRaw.hora  ?? camposRaw.fechaHora ?? true,
+  };
 
   // Validaciones
   const nombreOk = form.nombre.trim().length >= 2;
@@ -130,7 +124,8 @@ export function useReservaForm(configOverride = null) {
     (!campos.telefono  || telefonoOk) &&
     (!campos.email     || emailOk) &&
     (!campos.personas  || personasOk) &&
-    (!campos.fechaHora || (diaOk && horaOk)) &&
+    (!campos.fecha || diaOk) &&
+    (!campos.hora  || horaOk) &&
     extrasOk;
 
   const whatsappText = useMemo(() => generarMensaje(form, negocio), [form, negocio]);
@@ -161,8 +156,8 @@ export function useReservaForm(configOverride = null) {
           ? negocio.servicios?.find((s) => s.nombre === value)
           : negocio.servicios?.find((s) => s.nombre === next.servicio);
         let horariosEfectivosLocal = negocio.horarios;
-        if (servicioSeleccionado?.horaInicio && servicioSeleccionado?.horaFin) {
-          const range = [{ start: servicioSeleccionado.horaInicio, end: servicioSeleccionado.horaFin }];
+        if (servicioSeleccionado?.horaInicio) {
+          const range = [{ start: servicioSeleccionado.horaInicio, end: servicioSeleccionado.horaInicio }];
           horariosEfectivosLocal = Object.fromEntries(
             Object.entries(negocio.horarios).map(([day, turnos]) => [day, turnos.length > 0 ? range : []])
           );
