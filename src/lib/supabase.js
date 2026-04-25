@@ -4,13 +4,15 @@ const url = import.meta.env.VITE_SUPABASE_URL;
 const key = import.meta.env.VITE_SUPABASE_ANON_KEY;
 export const supabase = (url && key) ? createClient(url, key) : null;
 
+export const SLUG = import.meta.env.VITE_NEGOCIO_SLUG || "negocio";
+
 /** Lee la config del negocio desde Supabase. */
 export async function fetchConfig() {
   if (!supabase) return null;
   const { data, error } = await supabase
     .from("config")
     .select("datos")
-    .eq("id", "negocio")
+    .eq("id", SLUG)
     .single();
 
   if (error || !data) return null;
@@ -29,7 +31,7 @@ export async function saveConfig(datos, pin) {
         "Content-Type": "application/json",
         "apikey": key,
       },
-      body: JSON.stringify({ config: datos, pin }),
+      body: JSON.stringify({ config: datos, pin, slug: SLUG }),
     }
   );
 
