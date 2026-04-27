@@ -30,7 +30,6 @@ export default function AdminPanel() {
     guardado,
     errorGuardado,
     exportarWidget,
-    addServicio, removeServicio, setServicio,
     addPregunta, removePregunta, setPregunta,
     addTemaGuardado, removeTemaGuardado,
     getConfigFinal,
@@ -42,7 +41,6 @@ export default function AdminPanel() {
   const [tab, setTab] = useState("panel");
   const [modalCustom, setModalCustom] = useState(false);
   const [nombreTema, setNombreTema] = useState("");
-  const [confirmarEliminar, setConfirmarEliminar] = useState(null);
   const [confirmarEliminarPregunta, setConfirmarEliminarPregunta] = useState(null);
   const [filtroPanel, setFiltroPanel] = useState("todas");
   const [modalMensaje, setModalMensaje] = useState(null);
@@ -62,7 +60,7 @@ export default function AdminPanel() {
   // ─── Pestañas según sección activa ────────────────────────────────────────
   const TABS = seccion === "reservas"
     ? { panel: "Reservas", historial: "Historial" }
-    : { negocio: "Negocio", horarios: "Horarios", reservas: "Config", ajustes: "Ajustes", preview: "Vista previa" };
+    : { negocio: "Negocio", horarios: "Horarios", reservas: "Config", servicios: "Preguntas", ajustes: "Ajustes", preview: "Vista previa" };
 
   // ─── Fechas y filtros ──────────────────────────────────────────────────────
   const hoyStr = new Date().toISOString().split("T")[0];
@@ -795,62 +793,8 @@ export default function AdminPanel() {
           </fieldset>
         </>)}
 
-        {/* ── TAB: SERVICIOS Y PREGUNTAS ── */}
+        {/* ── TAB: PREGUNTAS ── */}
         {tab === "servicios" && (<>
-
-          {/* Servicios con horario propio */}
-          <fieldset className="admin-fieldset">
-            <legend className="admin-legend">Servicios</legend>
-            <p className="admin-hint">Si defines servicios, el cliente elige uno y los slots se muestran dentro de su horario.</p>
-            {draft.servicios.map((srv, i) => (
-              srv.guardado ? (
-                <div key={i} className="admin-servicio-card">
-                  <div className="admin-servicio-info">
-                    <span className="admin-servicio-nombre">{srv.nombre}</span>
-                    <span className="admin-servicio-horario">{srv.horaInicio} — {srv.horaFin}</span>
-                  </div>
-                  <div className="admin-servicio-card-actions">
-                    <span className="admin-servicio-activo" title="Activo">●</span>
-                    {confirmarEliminar === i ? (
-                      <>
-                        <span className="admin-servicio-confirmar">¿Eliminar?</span>
-                        <button type="button" className="admin-btn-remove" onClick={() => { removeServicio(i); setConfirmarEliminar(null); }}>Sí</button>
-                        <button type="button" className="admin-btn-add-fecha" onClick={() => setConfirmarEliminar(null)}>No</button>
-                      </>
-                    ) : (
-                      <>
-                        <button type="button" className="admin-btn-secondary-sm" onClick={() => setServicio(i, "guardado", false)}>Editar</button>
-                        <button type="button" className="admin-btn-remove" onClick={() => setConfirmarEliminar(i)}>✕</button>
-                      </>
-                    )}
-                  </div>
-                </div>
-              ) : (
-                <div key={i} className="admin-servicio">
-                  <input className="admin-input" type="text" placeholder="Nombre del servicio"
-                    value={srv.nombre} onChange={(e) => setServicio(i, "nombre", e.target.value)} />
-                  <div className="admin-servicio-rango">
-                    <input className="admin-input admin-input-time" type="time"
-                      value={srv.horaInicio ?? "09:00"}
-                      onChange={(e) => setServicio(i, "horaInicio", e.target.value)} />
-                    <span className="admin-turno-sep">—</span>
-                    <input className="admin-input admin-input-time" type="time"
-                      value={srv.horaFin ?? "17:00"}
-                      onChange={(e) => setServicio(i, "horaFin", e.target.value)} />
-                  </div>
-                  <div className="admin-servicio-rango">
-                    <button type="button" className="admin-btn-add-fecha"
-                      disabled={!srv.nombre.trim()}
-                      onClick={() => setServicio(i, "guardado", true)}>
-                      Guardar servicio
-                    </button>
-                    <button type="button" className="admin-btn-remove" onClick={() => removeServicio(i)}>✕</button>
-                  </div>
-                </div>
-              )
-            ))}
-            <button type="button" className="admin-btn-add" onClick={addServicio}>+ Añadir servicio</button>
-          </fieldset>
 
           {/* Preguntas personalizadas */}
           <fieldset className="admin-fieldset">
