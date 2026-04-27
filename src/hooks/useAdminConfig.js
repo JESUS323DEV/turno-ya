@@ -224,6 +224,7 @@ export function useAdminConfig() {
       localStorage.setItem(CONFIG_KEY, JSON.stringify(configFinal));
       window.dispatchEvent(new StorageEvent("storage", { key: CONFIG_KEY }));
       window.dispatchEvent(new CustomEvent("turno-ya:tema", { detail: configFinal }));
+      setPin(configFinal.pinAdmin);
       setErrorGuardado("");
       setGuardado(true);
       setTimeout(() => setGuardado(false), 2500);
