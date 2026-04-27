@@ -108,6 +108,13 @@
   color: #fff;
 }
 
+.reserva-error {
+  color: #ef4444;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
 .reserva-cerrado {
   background: rgba(239, 68, 68, 0.1);
   border: 1.5px solid #ef4444;

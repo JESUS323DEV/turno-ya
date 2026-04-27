@@ -44,3 +44,23 @@ export async function saveConfig(datos, pin) {
   if (!res.ok) throw new Error(json.error || "Error al guardar");
   return json;
 }
+
+/** Envía la reserva por email via Edge Function. */
+export async function enviarReserva(form, slug) {
+  if (!url || !key) throw new Error("Supabase no configurado");
+  const res = await fetch(
+    `${url}/functions/v1/enviar-reserva`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": key,
+        "Authorization": `Bearer ${key}`,
+      },
+      body: JSON.stringify({ form, slug }),
+    }
+  );
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.error || "Error al enviar");
+  return json;
+}

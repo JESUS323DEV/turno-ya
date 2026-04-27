@@ -65,6 +65,8 @@ export function useAdminConfig() {
     fechasBloqueadas: config.fechasBloqueadas ?? [],
     perfil: config.perfil ?? "reserva",
     googleCalendarLink: config.googleCalendarLink ?? false,
+    modoEnvio: config.modoEnvio ?? "whatsapp",
+    emailNegocio: config.emailNegocio ?? "",
     encabezadoMensaje: config.encabezadoMensaje ?? "🍽️ *Nueva Reserva*",
     camposActivos: config.camposActivos ?? { nombre: true, telefono: true, personas: true, fecha: true, hora: true, mensaje: true },
     mensajeTemplate: config.mensajeTemplate,

@@ -437,18 +437,18 @@ export default function AdminPanel() {
 
             <label className="admin-label">
               <span>Título del formulario</span>
-              <input className="admin-input" type="text" maxLength={20}
+              <input className="admin-input" type="text" maxLength={21}
                 value={draft.tituloFormulario}
                 onChange={(e) => setField("tituloFormulario", e.target.value)} />
-              <span className="admin-counter">{draft.tituloFormulario.length} / 20</span>
+              <span className="admin-counter">{draft.tituloFormulario.length} / 21</span>
             </label>
 
             <label className="admin-label">
               <span>Texto del botón de envío</span>
-              <input className="admin-input" type="text" maxLength={20}
+              <input className="admin-input" type="text" maxLength={15}
                 value={draft.textoBtnReservar}
                 onChange={(e) => setField("textoBtnReservar", e.target.value)} />
-              <span className="admin-counter">{draft.textoBtnReservar.length} / 20</span>
+              <span className="admin-counter">{draft.textoBtnReservar.length} / 15</span>
             </label>
 
             {/* Enlace de teléfono */}
@@ -464,10 +464,10 @@ export default function AdminPanel() {
             {(draft.mostrarTelefono ?? true) && (
               <label className="admin-label">
                 <span>Texto del enlace de teléfono</span>
-                <input className="admin-input" type="text" maxLength={50}
+                <input className="admin-input" type="text" maxLength={36}
                   value={draft.textoTelefono}
                   onChange={(e) => setField("textoTelefono", e.target.value)} />
-                <span className="admin-counter">{draft.textoTelefono.length} / 50</span>
+                <span className="admin-counter">{draft.textoTelefono.length} / 36</span>
               </label>
             )}
 
@@ -481,12 +481,40 @@ export default function AdminPanel() {
             </label>
 
             <label className="admin-label">
-              <span>WhatsApp (sin + ni espacios)</span>
-              <input className="admin-input" type="tel" placeholder="34600000000"
-                maxLength={15} value={draft.whatsapp}
-                onChange={(e) => setField("whatsapp", e.target.value.replace(/[^\d]/g, ""))} />
-              <span className="admin-counter">{draft.whatsapp.length} / 15</span>
+              <span>Modo de envío de reservas</span>
+              <div className="admin-tema-selector">
+                <button type="button"
+                  className={`admin-tema-btn ${draft.modoEnvio !== "email" ? "admin-tema-btn--active" : ""}`}
+                  onClick={() => setField("modoEnvio", "whatsapp")}>
+                  WhatsApp
+                </button>
+                <button type="button"
+                  className={`admin-tema-btn ${draft.modoEnvio === "email" ? "admin-tema-btn--active" : ""}`}
+                  onClick={() => {
+                    setField("modoEnvio", "email");
+                    setField("camposActivos", { ...draft.camposActivos, email: true });
+                  }}>
+                  Email
+                </button>
+              </div>
             </label>
+
+            {draft.modoEnvio === "email" ? (
+              <label className="admin-label">
+                <span>Email del negocio (recibirás las reservas aquí)</span>
+                <input className="admin-input" type="email" placeholder="tu@email.com"
+                  value={draft.emailNegocio ?? ""}
+                  onChange={(e) => setField("emailNegocio", e.target.value)} />
+              </label>
+            ) : (
+              <label className="admin-label">
+                <span>WhatsApp (sin + ni espacios)</span>
+                <input className="admin-input" type="tel" placeholder="34600000000"
+                  maxLength={15} value={draft.whatsapp}
+                  onChange={(e) => setField("whatsapp", e.target.value.replace(/[^\d]/g, ""))} />
+                <span className="admin-counter">{draft.whatsapp.length} / 15</span>
+              </label>
+            )}
 
             <label className="admin-label">
               <span>Teléfono de contacto</span>

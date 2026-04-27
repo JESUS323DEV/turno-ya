@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { getConfig, NEGOCIO_DEFAULT, CONFIG_KEY } from "../config/negocio";
 import { generarMensaje, generarLink, generarLinkComprobante } from "../utils/whatsapp";
 import { generarSlots } from "../utils/slots";
+import { enviarReserva, SLUG } from "../lib/supabase";
 
 const FORM_INICIAL = {
   nombre: "",
@@ -57,6 +58,9 @@ export function useReservaForm(configOverride = null) {
     window.addEventListener("storage", handler);
     return () => window.removeEventListener("storage", handler);
   }, [configOverride]);
+
+  const [enviando, setEnviando] = useState(false);
+  const [errorEnvio, setErrorEnvio] = useState("");
 
   const [form, setForm] = useState(() => {
     const servicios = negocio.servicios?.filter((s) => s.guardado && s.nombre.trim()) ?? [];
@@ -123,10 +127,12 @@ export function useReservaForm(configOverride = null) {
     .filter((p) => p.requerida)
     .every((p) => !!form.extras?.[p.id]?.trim?.() || !!form.extras?.[p.id]);
 
+  const emailRequired = campos.email || negocio.modoEnvio === "email";
+
   const canSend =
     (!campos.nombre    || nombreOk) &&
     (!campos.telefono  || telefonoOk) &&
-    (!campos.email     || emailOk) &&
+    (!emailRequired    || emailOk) &&
     (!campos.personas  || personasOk) &&
     (!campos.fecha || diaOk) &&
     (!campos.hora  || horaOk) &&
@@ -187,18 +193,28 @@ export function useReservaForm(configOverride = null) {
     }
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    setTouched({ nombre: true, telefono: true, hora: true, dia: true, personas: true });
+    setTouched({ nombre: true, telefono: true, email: true, hora: true, dia: true, personas: true });
     if (!canSend) return;
 
-    try {
-      localStorage.setItem(negocio.storageKey, JSON.stringify(form));
-    } catch {
-      // ignorar
+    if (negocio.modoEnvio === "email") {
+      setEnviando(true);
+      setErrorEnvio("");
+      try {
+        await enviarReserva(form, SLUG);
+        try { localStorage.setItem(negocio.storageKey, JSON.stringify(form)); } catch { }
+        setEnviado(true);
+      } catch {
+        setErrorEnvio("Error al enviar. Inténtalo de nuevo.");
+      } finally {
+        setEnviando(false);
+      }
+    } else {
+      try { localStorage.setItem(negocio.storageKey, JSON.stringify(form)); } catch { }
+      window.open(whatsappLink, "_blank", "noopener,noreferrer");
+      setEnviado(true);
     }
-    window.open(whatsappLink, "_blank", "noopener,noreferrer");
-    setEnviado(true);
   };
 
   const resetEnviado = () => {
@@ -216,6 +232,9 @@ export function useReservaForm(configOverride = null) {
     touched,
     today,
     canSend,
+    enviando,
+    errorEnvio,
+    emailRequired,
     diaOk,
     nombreOk,
     telefonoOk,

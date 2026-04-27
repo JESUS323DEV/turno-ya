@@ -66,6 +66,8 @@ export const NEGOCIO_DEFAULT = {
 
   encabezadoMensaje: "🍽️ *Nueva Reserva*",
   googleCalendarLink: false,
+  modoEnvio: "whatsapp",   // "whatsapp" | "email"
+  emailNegocio: "",         // email del dueño para recibir reservas en modo email
   mensajeTemplate: MENSAJE_TEMPLATE_DEFAULT,
 
   // Fechas bloqueadas puntualmente (formato YYYY-MM-DD)

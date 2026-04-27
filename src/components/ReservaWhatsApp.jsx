@@ -57,6 +57,9 @@ export default function ReservaWhatsApp({ configOverride = null } = {}) {
     handleExtra,
     serviciosDisponibles,
     campos,
+    enviando,
+    errorEnvio,
+    emailRequired,
   } = useReservaForm(configOverride);
 
   const [calOpen, setCalOpen] = useState(false);
@@ -188,7 +191,7 @@ export default function ReservaWhatsApp({ configOverride = null } = {}) {
           </label>
         )}
 
-        {campos.email && (
+        {emailRequired && (
           <label className="reserva-label">
             <span className="reserva-label-row">Email* {fieldIcon("email", emailOk)}</span>
             <input
@@ -371,9 +374,10 @@ export default function ReservaWhatsApp({ configOverride = null } = {}) {
 
         {/* Acciones: enviar, limpiar, teléfono */}
         <div className="reserva-actions">
-          <button className="reserva-btn" type="submit" disabled={!canSend}>
-            {negocio.textoBtnReservar || "Reservar"}
-            <img src={icon1} alt="WhatsApp" />
+          {errorEnvio && <p className="reserva-error">{errorEnvio}</p>}
+          <button className="reserva-btn" type="submit" disabled={!canSend || enviando}>
+            {enviando ? "Enviando..." : (negocio.textoBtnReservar || "Reservar")}
+            {!enviando && negocio.modoEnvio !== "email" && <img src={icon1} alt="WhatsApp" />}
           </button>
 
           <button className="reserva-btn-secondary" type="button" onClick={limpiar}>
