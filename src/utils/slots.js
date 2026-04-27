@@ -44,8 +44,9 @@ export function generarSlots(dateStr, horarios, slotInterval = 30, antelacionMin
   for (const { start, end } of ranges) {
     let current = timeToMinutes(start);
     const endMin = timeToMinutes(end);
+    const isSingleSlot = start === end;
 
-    while (current <= endMin) {
+    while (current <= endMin && (isSingleSlot || current + slotInterval <= endMin)) {
       if (current >= minMinutos) {
         slots.push(minutesToTime(current));
       }
