@@ -18,7 +18,7 @@
     }
 
     .reserva-tittle-negocio h1 {
-        font-size: 1.4rem;
+        font-size: clamp(1.4rem, 6.5vw, 1.8rem);
         letter-spacing: 0;
     }
 }
@@ -170,6 +170,10 @@
 
     .reserva-title {
         font-size: 2rem;
+    }
+
+    .reserva-tittle-negocio h1 {
+        font-size: 2.2rem;
     }
 
     /* Calendario en XXL: evitar que el overflow:hidden recorte la primera fila */

@@ -393,9 +393,9 @@ export default function AdminPanel() {
             <label className="admin-label">
               <span>Nombre del negocio</span>
               <input className="admin-input" type="text" value={draft.nombre}
-                maxLength={40}
+                maxLength={20}
                 onChange={(e) => setField("nombre", e.target.value)} />
-              <span className="admin-counter">{draft.nombre.length} / 40</span>
+              <span className="admin-counter">{draft.nombre.length} / 20</span>
             </label>
 
             <label className="admin-label">
