@@ -165,10 +165,25 @@ export default function ReservaWhatsApp({ configOverride = null } = {}) {
               type="text"
               name="nombre"
               value={form.nombre}
-              placeholder="Nombre Completo"
-              autoComplete="name"
+              placeholder="Nombre"
+              autoComplete="given-name"
               onChange={(e) => handleChange("nombre", e.target.value)}
               onBlur={() => touch("nombre")}
+            />
+          </label>
+        )}
+
+        {campos.apellidos && (
+          <label className="reserva-label">
+            <span className="reserva-label-row">Apellidos*</span>
+            <input
+              className="reserva-input"
+              type="text"
+              name="apellidos"
+              value={form.apellidos}
+              placeholder="Apellidos"
+              autoComplete="family-name"
+              onChange={(e) => handleChange("apellidos", e.target.value)}
             />
           </label>
         )}

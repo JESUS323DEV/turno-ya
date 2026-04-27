@@ -44,6 +44,7 @@ export const NEGOCIO_DEFAULT = {
   // Campos del formulario activos (el dueño puede desactivar los que no necesite)
   camposActivos: {
     nombre: true,
+    apellidos: false,
     telefono: true,
     email: true,
     personas: true,

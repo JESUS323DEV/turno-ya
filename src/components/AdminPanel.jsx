@@ -368,6 +368,7 @@ export default function AdminPanel() {
             <p className="admin-hint" style={{ marginTop: "12px" }}>Ajusta los campos a tu gusto.</p>
             {[
               { key: "nombre",    label: "Nombre" },
+              { key: "apellidos", label: "Apellidos" },
               { key: "telefono",  label: "Teléfono" },
               { key: "email",     label: "Email" },
               { key: "personas",  label: "Personas" },

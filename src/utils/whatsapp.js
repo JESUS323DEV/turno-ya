@@ -5,7 +5,7 @@ import { MENSAJE_TEMPLATE_DEFAULT } from "../config/negocio";
  * Placeholders: {negocio} {nombre} {telefono} {personas} {hora} {dia} {mensajeExtra}
  */
 export function generarMensaje(form, negocio) {
-  const camposRaw = { nombre: true, telefono: true, email: true, personas: true, fecha: true, hora: true, mensaje: true, ...negocio.camposActivos };
+  const camposRaw = { nombre: true, apellidos: false, telefono: true, email: true, personas: true, fecha: true, hora: true, mensaje: true, ...negocio.camposActivos };
   const campos = {
     ...camposRaw,
     fecha: camposRaw.fecha ?? camposRaw.fechaHora ?? true,
@@ -28,7 +28,7 @@ export function generarMensaje(form, negocio) {
   const sustituciones = [
     { ph: "{encabezado}", activo: true,              valor: negocio.encabezadoMensaje || "📋 *Nueva Solicitud*" },
     { ph: "{negocio}",  activo: true,                valor: negocio.nombre || "" },
-    { ph: "{nombre}",   activo: campos.nombre,       valor: form.nombre || "-" },
+    { ph: "{nombre}",   activo: campos.nombre,       valor: [form.nombre, campos.apellidos && form.apellidos].filter(Boolean).join(" ") || "-" },
     { ph: "{telefono}", activo: campos.telefono,     valor: form.telefono || "-" },
     { ph: "{email}",    activo: campos.email,        valor: form.email || "-" },
     { ph: "{personas}", activo: campos.personas,     valor: String(form.personas || "-") },

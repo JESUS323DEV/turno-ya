@@ -5,6 +5,7 @@ import { generarSlots } from "../utils/slots";
 
 const FORM_INICIAL = {
   nombre: "",
+  apellidos: "",
   telefono: "",
   email: "",
   hora: "",
@@ -99,7 +100,7 @@ export function useReservaForm(configOverride = null) {
     [form.dia, horariosEfectivos, negocio.slotInterval, negocio.antelacionMinHoras, negocio.cierreTemporalFecha]
   );
 
-  const camposRaw = { nombre: true, telefono: true, email: true, personas: true, fecha: true, hora: true, ...negocio.camposActivos };
+  const camposRaw = { nombre: true, apellidos: false, telefono: true, email: true, personas: true, fecha: true, hora: true, ...negocio.camposActivos };
   // backward compat: old configs with fechaHora
   const campos = {
     ...camposRaw,
@@ -141,7 +142,7 @@ export function useReservaForm(configOverride = null) {
   const handleChange = (field, rawValue) => {
     let value = rawValue;
 
-    if (field === "nombre") {
+    if (field === "nombre" || field === "apellidos") {
       value = rawValue.replace(/[^A-Za-záéíóúüñÁÉÍÓÚÜÑ\s]/g, "").replace(/\s{2,}/g, " ");
     } else if (field === "telefono") {
       value = rawValue.replace(/[^\d]/g, "");
