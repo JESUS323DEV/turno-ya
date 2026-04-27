@@ -1,8 +1,9 @@
 // ─── Imports ────────────────────────────────────────────────────────────────
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import iconWa from "../assets/icon-whatsapp.png";
 import { useAdminConfig, DIAS } from "../hooks/useAdminConfig";
+import { fetchReservas, accionReserva, SLUG } from "../lib/supabase";
 import ReservaWhatsApp from "./ReservaWhatsApp";
 import { TEMAS } from "../config/temas";
 import { PERFILES } from "../config/perfiles";
@@ -45,17 +46,15 @@ export default function AdminPanel() {
   const [filtroPanel, setFiltroPanel] = useState("todas");
   const [modalMensaje, setModalMensaje] = useState(null);
 
-  // ─── Datos mock (sustituir por Supabase cuando esté conectado) ─────────────
-  const [reservasMock, setReservasMock] = useState([
-    { id: 1, nombre: "María García",    telefono: "612345678", fecha: "2026-04-20", hora: "13:00", personas: 2, servicio: "Menú del día", estado: "pendiente", mensaje: "Hola, somos dos personas, una de ellas es celíaca y necesita menú sin gluten. También me gustaría una mesa cerca de la ventana si es posible. Muchas gracias!" },
-    { id: 2, nombre: "Carlos López",    telefono: "698765432", fecha: "2026-04-20", hora: "14:30", personas: 4, servicio: "",             estado: "confirmada" },
-    { id: 3, nombre: "Ana Martínez",    telefono: "677123456", fecha: "2026-04-21", hora: "20:00", personas: 3, servicio: "",             estado: "pendiente" },
-    { id: 4, nombre: "Pedro Sánchez",   telefono: "655987654", fecha: "2026-04-19", hora: "13:30", personas: 2, servicio: "Menú del día", estado: "cancelada" },
-    { id: 5, nombre: "Laura Fernández", telefono: "644321987", fecha: "2026-04-22", hora: "21:00", personas: 5, servicio: "",             estado: "pendiente" },
-    { id: 6, nombre: "Sofía Ruiz",      telefono: "633112233", fecha: "2026-04-19", hora: "14:00", personas: 3, servicio: "",             estado: "confirmada" },
-    { id: 7, nombre: "Javier Moreno",   telefono: "611998877", fecha: "2026-04-18", hora: "13:00", personas: 2, servicio: "Menú del día", estado: "confirmada" },
-    { id: 8, nombre: "Elena Castro",    telefono: "699445566", fecha: "2026-04-18", hora: "14:30", personas: 6, servicio: "",             estado: "cancelada" },
-  ]);
+  // ─── Reservas desde Supabase ───────────────────────────────────────────────
+  const [reservasMock, setReservasMock] = useState([]);
+
+  useEffect(() => {
+    if (!autenticado || seccion !== "reservas") return;
+    fetchReservas(SLUG).then((data) => {
+      setReservasMock(data.map((r) => ({ ...r, fecha: r.dia })));
+    });
+  }, [autenticado, seccion]);
 
   // ─── Pestañas según sección activa ────────────────────────────────────────
   const TABS = seccion === "reservas"
@@ -85,12 +84,22 @@ export default function AdminPanel() {
   const fechasHistorial = Object.keys(historialPorFecha).sort((a, b) => b.localeCompare(a));
 
   // ─── Acciones sobre reservas ───────────────────────────────────────────────
-  const cambiarEstado = (id, estado) => {
+  const cambiarEstado = async (id, estado) => {
     setReservasMock((prev) => prev.map((r) => r.id === id ? { ...r, estado } : r));
+    try {
+      await accionReserva(id, estado === "confirmada" ? "confirmar" : "cancelar", pin, SLUG);
+    } catch {
+      fetchReservas(SLUG).then((data) => setReservasMock(data.map((r) => ({ ...r, fecha: r.dia }))));
+    }
   };
 
-  const eliminarReserva = (id) => {
+  const eliminarReserva = async (id) => {
     setReservasMock((prev) => prev.filter((r) => r.id !== id));
+    try {
+      await accionReserva(id, "eliminar", pin, SLUG);
+    } catch {
+      fetchReservas(SLUG).then((data) => setReservasMock(data.map((r) => ({ ...r, fecha: r.dia }))));
+    }
   };
 
   const copiarWidget = () => {

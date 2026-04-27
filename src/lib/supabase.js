@@ -45,6 +45,31 @@ export async function saveConfig(datos, pin) {
   return json;
 }
 
+/** Lee las reservas del negocio desde Supabase. */
+export async function fetchReservas(slug) {
+  if (!supabase) return [];
+  const { data, error } = await supabase
+    .from("reservas")
+    .select("*")
+    .eq("slug", slug)
+    .order("created_at", { ascending: false });
+  if (error) return [];
+  return data ?? [];
+}
+
+/** Confirma, cancela o elimina una reserva via Edge Function (verifica PIN). */
+export async function accionReserva(id, accion, pin, slug) {
+  if (!url || !key) throw new Error("Supabase no configurado");
+  const res = await fetch(`${url}/functions/v1/confirmar-reserva`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "apikey": key, "Authorization": `Bearer ${key}` },
+    body: JSON.stringify({ id, accion, pin, slug }),
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.error || "Error");
+  return json;
+}
+
 /** Envía la reserva por email via Edge Function. */
 export async function enviarReserva(form, slug) {
   if (!url || !key) throw new Error("Supabase no configurado");

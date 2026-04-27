@@ -78,10 +78,14 @@ export default function ReservaWhatsApp({ configOverride = null } = {}) {
       <section className="reserva-section">
         <div className="confirmacion">
           <div className="confirmacion-icono">✅</div>
-          <h2 className="confirmacion-titulo">¡Solicitud enviada!</h2>
+          <h2 className="confirmacion-titulo">
+            {negocio.modoEnvio === "email" ? "¡Solicitud recibida!" : "¡Solicitud enviada!"}
+          </h2>
           <p className="confirmacion-texto">
-            Tu solicitud en <strong>{negocio.nombre}</strong> ha sido enviada.
-            En breve recibirás confirmación.
+            {negocio.modoEnvio === "email"
+              ? <>Hemos recibido tu solicitud en <strong>{negocio.nombre}</strong>. Te confirmaremos en breve por email.</>
+              : <>Tu solicitud en <strong>{negocio.nombre}</strong> ha sido enviada. En breve recibirás confirmación.</>
+            }
           </p>
           {(campos.fecha || campos.hora || campos.personas) && (
             <div className="confirmacion-resumen">
