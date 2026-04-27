@@ -22,8 +22,7 @@ async function init() {
   try {
     const remota = await fetchConfig();
     if (remota) {
-      const { pinAdmin: _, ...sinPin } = remota;
-      localStorage.setItem(CONFIG_KEY, JSON.stringify({ ...NEGOCIO_DEFAULT, ...sinPin }));
+      localStorage.setItem(CONFIG_KEY, JSON.stringify({ ...NEGOCIO_DEFAULT, ...remota }));
     } else {
       localStorage.removeItem(CONFIG_KEY);
     }
