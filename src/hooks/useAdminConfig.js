@@ -94,7 +94,7 @@ export function useAdminConfig() {
 
   const verificarPin = (e) => {
     e.preventDefault();
-    if (pin === config.pinAdmin) {
+    if (pin === getConfig().pinAdmin) {
       setAutenticado(true);
       setPinError("");
     } else {
