@@ -34,6 +34,7 @@ export async function saveConfig(datos, pin) {
       headers: {
         "Content-Type": "application/json",
         "apikey": key,
+        "Authorization": `Bearer ${key}`,
       },
       body: JSON.stringify({ config: datos, pin, slug: SLUG }),
     }
