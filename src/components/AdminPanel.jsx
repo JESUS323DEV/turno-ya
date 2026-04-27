@@ -50,10 +50,8 @@ export default function AdminPanel() {
   const [reservasMock, setReservasMock] = useState([]);
 
   useEffect(() => {
-    console.log("[panel] autenticado:", autenticado, "seccion:", seccion, "SLUG:", SLUG);
     if (!autenticado || seccion !== "reservas") return;
     fetchReservas(SLUG).then((data) => {
-      console.log("[panel] reservas:", data);
       setReservasMock(data.map((r) => ({ ...r, fecha: r.dia })));
     });
   }, [autenticado, seccion]);
@@ -69,14 +67,14 @@ export default function AdminPanel() {
   const hoy = hoyStr;
 
   const reservasFiltradas = reservasMock.filter((r) => {
-    if (r.fecha !== hoyStr) return false;
+    if (r.fecha < hoyStr) return false;
     if (filtroPanel === "pendientes") return r.estado === "pendiente";
     if (filtroPanel === "confirmadas") return r.estado === "confirmada";
     return r.estado !== "cancelada";
   });
 
-  const canceladasHoy = reservasMock.filter(r => r.fecha === hoyStr && r.estado === "cancelada");
-  const reservasHoy = reservasMock.filter(r => r.fecha === hoyStr);
+  const canceladasHoy = reservasMock.filter(r => r.fecha >= hoyStr && r.estado === "cancelada");
+  const reservasHoy = reservasMock.filter(r => r.fecha >= hoyStr);
   const reservasHistorial = reservasMock.filter(r => r.fecha < hoyStr && (r.estado === "confirmada" || r.estado === "cancelada"));
   const historialPorFecha = reservasHistorial.reduce((acc, r) => {
     if (!acc[r.fecha]) acc[r.fecha] = [];
@@ -201,7 +199,7 @@ export default function AdminPanel() {
             </div>
 
             {/* Lista de reservas activas (pendientes / confirmadas) */}
-            <p className="panel-seccion-titulo">Confirmadas · {hoyFormateado}</p>
+            <p className="panel-seccion-titulo">Hoy y próximas</p>
             {reservasFiltradas.length === 0 ? (
               <p className="admin-hint" style={{ textAlign: "center", padding: "2rem 0" }}>No hay reservas.</p>
             ) : (
