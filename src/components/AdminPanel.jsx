@@ -50,8 +50,10 @@ export default function AdminPanel() {
   const [reservasMock, setReservasMock] = useState([]);
 
   useEffect(() => {
+    console.log("[panel] autenticado:", autenticado, "seccion:", seccion, "SLUG:", SLUG);
     if (!autenticado || seccion !== "reservas") return;
     fetchReservas(SLUG).then((data) => {
+      console.log("[panel] reservas:", data);
       setReservasMock(data.map((r) => ({ ...r, fecha: r.dia })));
     });
   }, [autenticado, seccion]);
