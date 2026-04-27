@@ -238,7 +238,7 @@ export default function ReservaWhatsApp({ configOverride = null } = {}) {
         )}
 
         {/* Selector de servicio (solo si el negocio tiene servicios configurados) */}
-        {serviciosDisponibles.length > 0 && (
+        {serviciosDisponibles.length > 1 && (
           <label className="reserva-label">
             <span className="reserva-label-row">Servicio* {fieldIcon("servicio", !!form.servicio)}</span>
             <select

@@ -58,7 +58,10 @@ export function useReservaForm(configOverride = null) {
     return () => window.removeEventListener("storage", handler);
   }, [configOverride]);
 
-  const [form, setForm] = useState(FORM_INICIAL);
+  const [form, setForm] = useState(() => {
+    const servicios = negocio.servicios?.filter((s) => s.guardado && s.nombre.trim()) ?? [];
+    return { ...FORM_INICIAL, servicio: servicios.length === 1 ? servicios[0].nombre : "" };
+  });
   const [touched, setTouched] = useState(TOUCHED_INICIAL);
   const [enviado, setEnviado] = useState(false);
 
@@ -174,7 +177,8 @@ export function useReservaForm(configOverride = null) {
   };
 
   const limpiar = () => {
-    setForm(FORM_INICIAL);
+    const servicioInicial = serviciosDisponibles.length === 1 ? serviciosDisponibles[0].nombre : "";
+    setForm({ ...FORM_INICIAL, servicio: servicioInicial });
     setTouched(TOUCHED_INICIAL);
     try {
       localStorage.removeItem(negocio.storageKey);
