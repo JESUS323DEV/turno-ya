@@ -54,7 +54,13 @@ export function useReservaForm(configOverride = null) {
 
   useEffect(() => {
     if (configOverride) return;
-    const handler = (e) => { if (e.key === CONFIG_KEY) setNegocio(getConfig()); };
+    const handler = (e) => {
+      if (e.key === CONFIG_KEY) {
+        const newConfig = getConfig();
+        setNegocio(newConfig);
+        window.dispatchEvent(new CustomEvent("turno-ya:tema", { detail: newConfig }));
+      }
+    };
     window.addEventListener("storage", handler);
     return () => window.removeEventListener("storage", handler);
   }, [configOverride]);
