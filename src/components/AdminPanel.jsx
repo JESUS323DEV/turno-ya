@@ -363,6 +363,14 @@ export default function AdminPanel() {
               <span className="admin-counter">{draft.encabezadoMensaje.length} / 60</span>
             </label>
 
+            <label className="admin-label">
+              <span>Texto de cierre del mensaje</span>
+              <input className="admin-input" type="text" maxLength={60}
+                value={draft.textoPie ?? ""}
+                onChange={(e) => setField("textoPie", e.target.value)} />
+              <span className="admin-counter">{(draft.textoPie ?? "").length} / 60</span>
+            </label>
+
             <p className="admin-hint" style={{ marginTop: "12px" }}>Ajusta los campos a tu gusto.</p>
             {[
               { key: "nombre",    label: "Nombre" },

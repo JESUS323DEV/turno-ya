@@ -12,7 +12,7 @@ export const MENSAJE_TEMPLATE_DEFAULT = `{encabezado}
 🕐 Hora: {hora}
 📅 Día: {dia}
 {mensajeExtra}
-✅ ¡Gracias! Reserva hecha.`;
+{pie}`;
 
 export const NEGOCIO_DEFAULT = {
   nombre: "Olla Perú",
@@ -65,6 +65,7 @@ export const NEGOCIO_DEFAULT = {
   colorNegocio: "#7c3aed",   // color del nombre del negocio en el formulario
 
   encabezadoMensaje: "🍽️ *Nueva Reserva*",
+  textoPie: "✅ ¡Gracias! Reserva hecha.",
   googleCalendarLink: false,
   modoEnvio: "whatsapp",   // "whatsapp" | "email"
   emailNegocio: "",         // email del dueño para recibir reservas en modo email

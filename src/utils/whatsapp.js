@@ -35,6 +35,7 @@ export function generarMensaje(form, negocio) {
     { ph: "{hora}",     activo: campos.hora,         valor: form.hora || "-" },
     { ph: "{dia}",      activo: campos.fecha,        valor: form.dia ? form.dia.split("-").reverse().join("-") : "-" },
     { ph: "{mensajeExtra}", activo: true,            valor: extra },
+    { ph: "{pie}",         activo: true,            valor: negocio.textoPie ?? "✅ ¡Gracias! Reserva hecha." },
   ];
 
   // Procesa línea a línea: si la línea contiene un placeholder inactivo, la elimina

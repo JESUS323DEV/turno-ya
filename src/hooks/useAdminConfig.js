@@ -68,6 +68,7 @@ export function useAdminConfig() {
     modoEnvio: config.modoEnvio ?? "whatsapp",
     emailNegocio: config.emailNegocio ?? "",
     encabezadoMensaje: config.encabezadoMensaje ?? "🍽️ *Nueva Reserva*",
+    textoPie: config.textoPie ?? "✅ ¡Gracias! Reserva hecha.",
     camposActivos: config.camposActivos ?? { nombre: true, telefono: true, personas: true, fecha: true, hora: true, mensaje: true },
     mensajeTemplate: config.mensajeTemplate,
   });
