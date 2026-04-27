@@ -38,8 +38,13 @@ export function generarMensaje(form, negocio) {
     { ph: "{pie}",         activo: true,            valor: negocio.textoPie ?? "✅ ¡Gracias! Reserva hecha." },
   ];
 
+  // Migración: configs viejos tienen el texto hardcodeado, reemplazarlo por {pie}
+  const templateNormalizado = template.includes("{pie}")
+    ? template
+    : template.replace("✅ ¡Gracias! Reserva hecha.", "{pie}");
+
   // Procesa línea a línea: si la línea contiene un placeholder inactivo, la elimina
-  const mensaje = template
+  const mensaje = templateNormalizado
     .split("\n")
     .map(line => {
       let l = line;
