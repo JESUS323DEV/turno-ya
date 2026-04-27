@@ -62,7 +62,7 @@ export default function AdminPanel() {
   // ─── Pestañas según sección activa ────────────────────────────────────────
   const TABS = seccion === "reservas"
     ? { panel: "Reservas", historial: "Historial" }
-    : { negocio: "Negocio", horarios: "Horarios", reservas: "Config", servicios: "Servicios", ajustes: "Ajustes", preview: "Vista previa" };
+    : { negocio: "Negocio", horarios: "Horarios", reservas: "Config", ajustes: "Ajustes", preview: "Vista previa" };
 
   // ─── Fechas y filtros ──────────────────────────────────────────────────────
   const hoyStr = new Date().toISOString().split("T")[0];
