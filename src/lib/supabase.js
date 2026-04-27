@@ -5,7 +5,7 @@ const key = import.meta.env.VITE_SUPABASE_ANON_KEY;
 export const supabase = (url && key) ? createClient(url, key) : null;
 
 function getSlug() {
-  const path = window.location.pathname.replace(/^\//, "").replace(/\/$/, "");
+  const path = window.location.pathname.replace(/^\//, "").replace(/\/$/, "").toLowerCase();
   return path || import.meta.env.VITE_NEGOCIO_SLUG || "negocio";
 }
 export const SLUG = getSlug();
