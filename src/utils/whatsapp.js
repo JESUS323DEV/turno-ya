@@ -77,11 +77,15 @@ export function generarLinkGoogleCalendar(form, negocio) {
   const endStr = `${fechaBase}T${String(endH).padStart(2, "0")}${String(endMin).padStart(2, "0")}00`;
 
   const title = `${negocio.encabezadoMensaje?.replace(/\*/g, "") || "Reserva"} - ${form.nombre || "Cliente"}`;
+  const extrasLines = (negocio.preguntasExtra ?? [])
+    .filter((p) => p.guardado && form.extras?.[p.id])
+    .map((p) => `${p.label}: ${form.extras[p.id]}`);
   const details = [
     form.telefono && `Tel: ${form.telefono}`,
     form.personas && `Personas: ${form.personas}`,
     form.servicio && `Servicio: ${form.servicio}`,
-  ].filter(Boolean).join(" | ");
+    ...extrasLines,
+  ].filter(Boolean).join("\n");
 
   const params = new URLSearchParams({
     action: "TEMPLATE",
