@@ -790,7 +790,10 @@ export default function AdminPanel() {
                         <button type="button" className="admin-btn-add-fecha" onClick={() => setConfirmarEliminar(null)}>No</button>
                       </>
                     ) : (
-                      <button type="button" className="admin-btn-secondary-sm" onClick={() => setConfirmarEliminar(i)}>Cancelar</button>
+                      <>
+                        <button type="button" className="admin-btn-secondary-sm" onClick={() => setServicio(i, "guardado", false)}>Editar</button>
+                        <button type="button" className="admin-btn-remove" onClick={() => setConfirmarEliminar(i)}>✕</button>
+                      </>
                     )}
                   </div>
                 </div>
