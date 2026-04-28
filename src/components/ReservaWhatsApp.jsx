@@ -201,7 +201,7 @@ export default function ReservaWhatsApp({ configOverride = null } = {}) {
         {/* Barra de progreso */}
         <div className="form-progress-wrap">
           <div className="form-progress-info">
-            <span>{step === 1 ? "Completa tus datos para continuar" : "Selecciona fecha y hora"}</span>
+            <span>{step === 1 ? "Rellena los datos de tu reserva" : "Revisa y confirma"}</span>
             <span className="form-progress-step">Paso {step} de 2</span>
           </div>
           <div className="form-progress-track">
@@ -209,7 +209,7 @@ export default function ReservaWhatsApp({ configOverride = null } = {}) {
           </div>
         </div>
 
-        {/* ── Paso 1: datos personales ── */}
+        {/* ── Paso 1: formulario completo ── */}
         {step === 1 && (
           <>
             <p className="form-section-title">Tus datos</p>
@@ -306,32 +306,7 @@ export default function ReservaWhatsApp({ configOverride = null } = {}) {
                 </label>
               )}
             </div>
-            <button
-              type="button"
-              className="reserva-btn"
-              disabled={
-                (campos.nombre && !nombreOk) ||
-                (emailRequired && !emailOk) ||
-                (campos.telefono && !telefonoOk) ||
-                (campos.personas && !personasOk) ||
-                (serviciosDisponibles.length > 1 && !form.servicio)
-              }
-              onClick={() => {
-                touch("nombre"); touch("email"); touch("telefono"); touch("personas");
-                const ok = (!campos.nombre || nombreOk) && (!emailRequired || emailOk) &&
-                  (!campos.telefono || telefonoOk) && (!campos.personas || personasOk) &&
-                  (serviciosDisponibles.length <= 1 || !!form.servicio);
-                if (ok) setStep(2);
-              }}
-            >
-              Continuar →
-            </button>
-          </>
-        )}
 
-        {/* ── Paso 2: fecha, hora y envío ── */}
-        {step === 2 && (
-          <>
             <p className="form-section-title">Cuándo deseas venir</p>
             {campos.fecha && (
               <div className="reserva-label">
@@ -440,23 +415,62 @@ export default function ReservaWhatsApp({ configOverride = null } = {}) {
                 />
               </label>
             )}
+
             <div className="reserva-actions">
-              {errorEnvio && <p className="reserva-error">{errorEnvio}</p>}
-              <button className="reserva-btn" type="submit" disabled={!canSend || enviando}>
-                {enviando ? "Enviando..." : (negocio.textoBtnReservar || "Reservar")}
-                {!enviando && negocio.modoEnvio !== "email" && <img src={icon1} alt="WhatsApp" />}
+              <button
+                type="button"
+                className="reserva-btn"
+                onClick={() => {
+                  ["nombre", "email", "telefono", "personas", "servicio", "dia", "hora"].forEach(f => touch(f));
+                  if (canSend) setStep(2);
+                }}
+              >
+                Continuar →
               </button>
-              <button className="reserva-btn-secondary" type="button" onClick={() => { limpiar(); setStep(1); }}>
-                Limpiar formulario
+              <button className="reserva-btn-secondary" type="button" onClick={limpiar}>
+                Limpiar
               </button>
               {(negocio.mostrarTelefono ?? true) && (
                 <div className="reserva-tel">
                   <p>{negocio.textoTelefono || "También puedes reservar por teléfono"}</p>
-                  <a href={`tel:${negocio.telefono}`}>
-                    <PhoneCall className="icon-tel" />
-                  </a>
+                  <a href={`tel:${negocio.telefono}`}><PhoneCall className="icon-tel" /></a>
                 </div>
               )}
+            </div>
+          </>
+        )}
+
+        {/* ── Paso 2: resumen y confirmación ── */}
+        {step === 2 && (
+          <>
+            <p className="form-section-title">Revisa tu reserva</p>
+            <div className="reserva-resumen">
+              {[
+                campos.nombre && form.nombre && { icon: "👤", valor: [form.nombre, form.apellidos].filter(Boolean).join(" ") },
+                campos.telefono && form.telefono && { icon: "📞", valor: form.telefono },
+                emailRequired && form.email && { icon: "📧", valor: form.email },
+                campos.personas && { icon: "👥", valor: `${form.personas} ${Number(form.personas) === 1 ? "persona" : "personas"}` },
+                form.servicio && { icon: "🛎️", valor: form.servicio },
+                campos.fecha && form.dia && { icon: "📅", valor: form.dia.split("-").reverse().join("/") },
+                campos.hora && form.hora && { icon: "🕐", valor: form.hora },
+                ...(negocio.preguntasExtra?.filter(p => p.guardado && form.extras?.[p.id]).map(p => ({ icon: "📝", valor: `${p.label}: ${form.extras[p.id]}` })) ?? []),
+                form.mensaje && { icon: "💬", valor: form.mensaje },
+              ].filter(Boolean).map(({ icon, valor }, i) => (
+                <div key={i} className="reserva-resumen-row">
+                  <span className="reserva-resumen-icon">{icon}</span>
+                  <span className="reserva-resumen-valor">{valor}</span>
+                </div>
+              ))}
+            </div>
+            <div className="reserva-actions">
+              {errorEnvio && <p className="reserva-error">{errorEnvio}</p>}
+              <button className="reserva-btn" type="submit" disabled={enviando}>
+                {enviando ? "Enviando..." : (negocio.textoBtnReservar || "Confirmar reserva")}
+                {!enviando && negocio.modoEnvio !== "email" && <img src={icon1} alt="WhatsApp" />}
+              </button>
+              <button className="reserva-btn-secondary" type="button" onClick={() => setStep(1)}>
+                ← Volver y editar
+              </button>
             </div>
           </>
         )}

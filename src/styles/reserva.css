@@ -614,6 +614,39 @@
   grid-column: 1 / -1;
 }
 
+/* ── Resumen de reserva (paso 2) ─────────────────────────────────────────── */
+.reserva-resumen {
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.reserva-resumen-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+
+.reserva-resumen-row:last-child {
+  border-bottom: none;
+}
+
+.reserva-resumen-icon {
+  flex-shrink: 0;
+  font-size: 16px;
+  line-height: 1.3;
+}
+
+.reserva-resumen-valor {
+  color: var(--text-h);
+  line-height: 1.4;
+  word-break: break-word;
+}
+
 /* ── Footer de seguridad ─────────────────────────────────────────────────── */
 .form-footer {
   text-align: center;
