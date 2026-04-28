@@ -43,8 +43,11 @@ export function generarSlots(dateStr, horarios, slotInterval = 30, antelacionMin
 
   for (const { start, end } of ranges) {
     let current = timeToMinutes(start);
-    const endMin = timeToMinutes(end);
+    let endMin = timeToMinutes(end);
     const isSingleSlot = start === end;
+
+    // Midnight-crossing range (e.g. 20:00–00:00): treat 00:00 as 24*60
+    if (endMin <= current && !isSingleSlot) endMin += 24 * 60;
 
     while (current <= endMin && (isSingleSlot || current + slotInterval <= endMin)) {
       if (current >= minMinutos) {
