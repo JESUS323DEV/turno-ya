@@ -99,6 +99,7 @@ export default function ReservaWhatsApp({ configOverride = null } = {}) {
 
   const [calOpen, setCalOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
+  const [step, setStep] = useState(1);
 
   // ─── Helper: icono de validación por campo ─────────────────────────────────
   const fieldIcon = (field, isOk) => {
@@ -135,7 +136,7 @@ export default function ReservaWhatsApp({ configOverride = null } = {}) {
               📅 Añadir al calendario
             </button>
           )}
-          <button className="confirmacion-btn-nueva" onClick={resetEnviado}>
+          <button className="confirmacion-btn-nueva" onClick={() => { resetEnviado(); setStep(1); }}>
             Nueva solicitud
           </button>
         </div>
@@ -188,12 +189,7 @@ export default function ReservaWhatsApp({ configOverride = null } = {}) {
           )}
         </div>
 
-        <div>
-          {/* Cabecera: título */}
-          <h2 className="reserva-title">{negocio.tituloFormulario || "Reservas"}</h2>
-        </div>
-
-
+        <h2 className="reserva-title">{negocio.tituloFormulario || "Reservas"}</h2>
 
         {/* Aviso cierre temporal */}
         {cerradoHoy && (
@@ -202,240 +198,270 @@ export default function ReservaWhatsApp({ configOverride = null } = {}) {
           </div>
         )}
 
-        {/* Campos de datos personales */}
-        {campos.nombre && (
-          <label className="reserva-label">
-            <span className="reserva-label-row">Nombre* {fieldIcon("nombre", nombreOk)}</span>
-            <input
-              className="reserva-input"
-              type="text"
-              name="nombre"
-              value={form.nombre}
-              placeholder="Nombre"
-              autoComplete="given-name"
-              onChange={(e) => handleChange("nombre", e.target.value)}
-              onBlur={() => touch("nombre")}
-            />
-          </label>
-        )}
-
-        {campos.apellidos && (
-          <label className="reserva-label">
-            <span className="reserva-label-row">Apellidos*</span>
-            <input
-              className="reserva-input"
-              type="text"
-              name="apellidos"
-              value={form.apellidos}
-              placeholder="Apellidos"
-              autoComplete="family-name"
-              onChange={(e) => handleChange("apellidos", e.target.value)}
-            />
-          </label>
-        )}
-
-        {emailRequired && (
-          <label className="reserva-label">
-            <span className="reserva-label-row">Email* {fieldIcon("email", emailOk)}</span>
-            <input
-              className="reserva-input"
-              type="email"
-              name="email"
-              value={form.email}
-              placeholder="correo@ejemplo.com"
-              autoComplete="email"
-              onChange={(e) => handleChange("email", e.target.value)}
-              onBlur={() => touch("email")}
-            />
-          </label>
-        )}
-
-        {campos.telefono && (
-          <label className="reserva-label">
-            <span className="reserva-label-row">Teléfono* {fieldIcon("telefono", telefonoOk)}</span>
-            <input
-              className="reserva-input"
-              type="tel"
-              name="telefono"
-              value={form.telefono}
-              placeholder="688888888"
-              maxLength={15}
-              autoComplete="tel"
-              onChange={(e) => handleChange("telefono", e.target.value)}
-              onBlur={() => touch("telefono")}
-            />
-          </label>
-        )}
-
-        {campos.personas && (
-          <label className="reserva-label">
-            <span className="reserva-label-row">Personas* {fieldIcon("personas", personasOk)}</span>
-            <input
-              className="reserva-input"
-              type="number"
-              name="personas"
-              min="1"
-              max={negocio.maxPersonas}
-              value={form.personas}
-              onChange={(e) => handleChange("personas", e.target.value)}
-              onBlur={() => touch("personas")}
-            />
-          </label>
-        )}
-
-        {/* Selector de servicio (solo si el negocio tiene servicios configurados) */}
-        {serviciosDisponibles.length > 1 && (
-          <label className="reserva-label">
-            <span className="reserva-label-row">Servicio* {fieldIcon("servicio", !!form.servicio)}</span>
-            <select
-              className="reserva-input"
-              value={form.servicio}
-              onChange={(e) => handleChange("servicio", e.target.value)}
-              onBlur={() => touch("servicio")}
-            >
-              <option value="">Selecciona un servicio</option>
-              {serviciosDisponibles.map((s) => (
-                <option key={s.nombre} value={s.nombre}>{s.nombre}</option>
-              ))}
-            </select>
-          </label>
-        )}
-
-        {/* Calendario y slots de hora */}
-        {campos.fecha && (
-          <div className="reserva-label">
-            <span className="reserva-label-row">Día* {fieldIcon("dia", diaOk)}</span>
-            <div className="reserva-datepicker-wrap">
-              <button
-                type="button"
-                className="reserva-date-trigger"
-                onClick={() => setCalOpen(o => !o)}
-              >
-                <Calendar size={16} />
-                <span>{form.dia ? form.dia.split("-").reverse().join("/") : "dd/mm/aaaa"}</span>
-              </button>
-              {calOpen && (<>
-                <div className="reserva-cal-overlay" onClick={() => { setCalOpen(false); touch("dia"); }} />
-                <div className="reserva-cal-popup">
-                  <DayPicker
-                    mode="single"
-                    locale={es}
-                    selected={form.dia ? strToDate(form.dia) : undefined}
-                    onSelect={(date) => {
-                      if (!date) return;
-                      handleChange("dia", dateToStr(date));
-                      touch("dia");
-                      setCalOpen(false);
-                    }}
-                    disabled={[
-                      { before: strToDate(today) },
-                      { after: strToDate(maxDate) },
-                      { dayOfWeek: Object.entries(negocio.horarios).filter(([, t]) => t.length === 0).map(([d]) => Number(d)) },
-                      ...(negocio.fechasBloqueadas ?? []).map(strToDate),
-                    ]}
-                    startMonth={strToDate(today)}
-                    endMonth={strToDate(maxDate)}
-                  />
-                </div>
-              </>)}
-            </div>
+        {/* Barra de progreso */}
+        <div className="form-progress-wrap">
+          <div className="form-progress-info">
+            <span>{step === 1 ? "Completa tus datos para continuar" : "Selecciona fecha y hora"}</span>
+            <span className="form-progress-step">Paso {step} de 2</span>
           </div>
+          <div className="form-progress-track">
+            <div className="form-progress-fill" style={{ width: step === 1 ? "50%" : "100%" }} />
+          </div>
+        </div>
+
+        {/* ── Paso 1: datos personales ── */}
+        {step === 1 && (
+          <>
+            <p className="form-section-title">Tus datos</p>
+            <div className="form-fields-grid">
+              {campos.nombre && (
+                <label className="reserva-label">
+                  <span className="reserva-label-row">Nombre* {fieldIcon("nombre", nombreOk)}</span>
+                  <input
+                    className="reserva-input"
+                    type="text"
+                    name="nombre"
+                    value={form.nombre}
+                    placeholder="Tu nombre"
+                    autoComplete="given-name"
+                    onChange={(e) => handleChange("nombre", e.target.value)}
+                    onBlur={() => touch("nombre")}
+                  />
+                </label>
+              )}
+              {emailRequired && (
+                <label className="reserva-label">
+                  <span className="reserva-label-row">Email* {fieldIcon("email", emailOk)}</span>
+                  <input
+                    className="reserva-input"
+                    type="email"
+                    name="email"
+                    value={form.email}
+                    placeholder="correo@ejemplo.com"
+                    autoComplete="email"
+                    onChange={(e) => handleChange("email", e.target.value)}
+                    onBlur={() => touch("email")}
+                  />
+                </label>
+              )}
+              {campos.apellidos && (
+                <label className="reserva-label col-span-2">
+                  <span className="reserva-label-row">Apellidos*</span>
+                  <input
+                    className="reserva-input"
+                    type="text"
+                    name="apellidos"
+                    value={form.apellidos}
+                    placeholder="Apellidos"
+                    autoComplete="family-name"
+                    onChange={(e) => handleChange("apellidos", e.target.value)}
+                  />
+                </label>
+              )}
+              {campos.telefono && (
+                <label className="reserva-label">
+                  <span className="reserva-label-row">Teléfono* {fieldIcon("telefono", telefonoOk)}</span>
+                  <input
+                    className="reserva-input"
+                    type="tel"
+                    name="telefono"
+                    value={form.telefono}
+                    placeholder="688888888"
+                    maxLength={15}
+                    autoComplete="tel"
+                    onChange={(e) => handleChange("telefono", e.target.value)}
+                    onBlur={() => touch("telefono")}
+                  />
+                </label>
+              )}
+              {campos.personas && (
+                <label className="reserva-label">
+                  <span className="reserva-label-row">Personas* {fieldIcon("personas", personasOk)}</span>
+                  <select
+                    className="reserva-input"
+                    value={form.personas}
+                    onChange={(e) => handleChange("personas", Number(e.target.value))}
+                    onBlur={() => touch("personas")}
+                  >
+                    {Array.from({ length: (negocio.maxPersonas ?? 20) - (negocio.minPersonas ?? 1) + 1 }, (_, i) => i + (negocio.minPersonas ?? 1)).map((n) => (
+                      <option key={n} value={n}>{n} {n === 1 ? "persona" : "personas"}</option>
+                    ))}
+                  </select>
+                </label>
+              )}
+              {serviciosDisponibles.length > 1 && (
+                <label className="reserva-label col-span-2">
+                  <span className="reserva-label-row">Servicio* {fieldIcon("servicio", !!form.servicio)}</span>
+                  <select
+                    className="reserva-input"
+                    value={form.servicio}
+                    onChange={(e) => handleChange("servicio", e.target.value)}
+                    onBlur={() => touch("servicio")}
+                  >
+                    <option value="">Selecciona un servicio</option>
+                    {serviciosDisponibles.map((s) => (
+                      <option key={s.nombre} value={s.nombre}>{s.nombre}</option>
+                    ))}
+                  </select>
+                </label>
+              )}
+            </div>
+            <button
+              type="button"
+              className="reserva-btn"
+              disabled={
+                (campos.nombre && !nombreOk) ||
+                (emailRequired && !emailOk) ||
+                (campos.telefono && !telefonoOk) ||
+                (campos.personas && !personasOk) ||
+                (serviciosDisponibles.length > 1 && !form.servicio)
+              }
+              onClick={() => {
+                touch("nombre"); touch("email"); touch("telefono"); touch("personas");
+                const ok = (!campos.nombre || nombreOk) && (!emailRequired || emailOk) &&
+                  (!campos.telefono || telefonoOk) && (!campos.personas || personasOk) &&
+                  (serviciosDisponibles.length <= 1 || !!form.servicio);
+                if (ok) setStep(2);
+              }}
+            >
+              Continuar →
+            </button>
+          </>
         )}
 
-        {campos.hora && (
-          <div className="reserva-label">
-            Hora*
-            {!form.dia || !diaOk ? (
-              <p className="slots-placeholder">Selecciona un día primero</p>
-            ) : slots.length === 0 ? (
-              <p className="slots-placeholder">No hay horario disponible para este día</p>
-            ) : (
-              <div
-                className={`slots-grid ${touched.hora && !horaOk ? "slots-bad" : touched.hora && horaOk ? "slots-ok" : ""}`}
-                onBlur={() => touch("hora")}
-              >
-                {slots.map((slot) => (
+        {/* ── Paso 2: fecha, hora y envío ── */}
+        {step === 2 && (
+          <>
+            <p className="form-section-title">Cuándo deseas venir</p>
+            {campos.fecha && (
+              <div className="reserva-label">
+                <span className="reserva-label-row">Día* {fieldIcon("dia", diaOk)}</span>
+                <div className="reserva-datepicker-wrap">
                   <button
-                    key={slot}
                     type="button"
-                    className={`slot-btn ${form.hora === slot ? "slot-btn--selected" : ""}`}
-                    onClick={() => { handleChange("hora", slot); touch("hora"); }}
+                    className="reserva-date-trigger"
+                    onClick={() => setCalOpen(o => !o)}
                   >
-                    {slot}
+                    <Calendar size={16} />
+                    <span>{form.dia ? form.dia.split("-").reverse().join("/") : "dd/mm/aaaa"}</span>
                   </button>
-                ))}
+                  {calOpen && (<>
+                    <div className="reserva-cal-overlay" onClick={() => { setCalOpen(false); touch("dia"); }} />
+                    <div className="reserva-cal-popup">
+                      <DayPicker
+                        mode="single"
+                        locale={es}
+                        selected={form.dia ? strToDate(form.dia) : undefined}
+                        onSelect={(date) => {
+                          if (!date) return;
+                          handleChange("dia", dateToStr(date));
+                          touch("dia");
+                          setCalOpen(false);
+                        }}
+                        disabled={[
+                          { before: strToDate(today) },
+                          { after: strToDate(maxDate) },
+                          { dayOfWeek: Object.entries(negocio.horarios).filter(([, t]) => t.length === 0).map(([d]) => Number(d)) },
+                          ...(negocio.fechasBloqueadas ?? []).map(strToDate),
+                        ]}
+                        startMonth={strToDate(today)}
+                        endMonth={strToDate(maxDate)}
+                      />
+                    </div>
+                  </>)}
+                </div>
               </div>
             )}
-          </div>
-        )}
-
-        {/* Preguntas extra definidas por el admin */}
-        {negocio.preguntasExtra?.filter((p) => p.guardado && p.label.trim()).map((p) => (
-          <label key={p.id} className="reserva-label">
-            {p.label}{!p.requerida && " (opcional)"}
-            {p.tipo === "seleccion" ? (
-              <select
-                className="reserva-input"
-                value={form.extras?.[p.id] ?? ""}
-                onChange={(e) => handleExtra(p.id, e.target.value)}
-              >
-                <option value="">Selecciona una opción</option>
-                {p.opciones?.map((o) => <option key={o} value={o}>{o}</option>)}
-              </select>
-            ) : p.campoTipo === "textarea" ? (
-              <textarea
-                className="reserva-textarea"
-                rows={3}
-                value={form.extras?.[p.id] ?? ""}
-                onChange={(e) => handleExtra(p.id, e.target.value)}
-              />
-            ) : (
-              <input
-                className="reserva-input"
-                type="text"
-                value={form.extras?.[p.id] ?? ""}
-                onChange={(e) => handleExtra(p.id, e.target.value)}
-              />
+            {campos.hora && (
+              <div className="reserva-label">
+                Hora*
+                {!form.dia || !diaOk ? (
+                  <p className="slots-placeholder">Selecciona un día primero</p>
+                ) : slots.length === 0 ? (
+                  <p className="slots-placeholder">No hay horario disponible para este día</p>
+                ) : (
+                  <div
+                    className={`slots-grid ${touched.hora && !horaOk ? "slots-bad" : touched.hora && horaOk ? "slots-ok" : ""}`}
+                    onBlur={() => touch("hora")}
+                  >
+                    {slots.map((slot) => (
+                      <button
+                        key={slot}
+                        type="button"
+                        className={`slot-btn ${form.hora === slot ? "slot-btn--selected" : ""}`}
+                        onClick={() => { handleChange("hora", slot); touch("hora"); }}
+                      >
+                        {slot}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             )}
-          </label>
-        ))}
-
-        {/* Mensaje libre (opcional) */}
-        {campos.mensaje && (
-          <label className="reserva-label">
-            Mensaje (opcional)
-            <textarea
-              className="reserva-textarea"
-              name="mensaje"
-              value={form.mensaje}
-              placeholder="Cualquier detalle adicional..."
-              rows={4}
-              onChange={(e) => handleChange("mensaje", e.target.value)}
-            />
-          </label>
+            {negocio.preguntasExtra?.filter((p) => p.guardado && p.label.trim()).map((p) => (
+              <label key={p.id} className="reserva-label">
+                {p.label}{!p.requerida && " (opcional)"}
+                {p.tipo === "seleccion" ? (
+                  <select
+                    className="reserva-input"
+                    value={form.extras?.[p.id] ?? ""}
+                    onChange={(e) => handleExtra(p.id, e.target.value)}
+                  >
+                    <option value="">Selecciona una opción</option>
+                    {p.opciones?.map((o) => <option key={o} value={o}>{o}</option>)}
+                  </select>
+                ) : p.campoTipo === "textarea" ? (
+                  <textarea
+                    className="reserva-textarea"
+                    rows={3}
+                    value={form.extras?.[p.id] ?? ""}
+                    onChange={(e) => handleExtra(p.id, e.target.value)}
+                  />
+                ) : (
+                  <input
+                    className="reserva-input"
+                    type="text"
+                    value={form.extras?.[p.id] ?? ""}
+                    onChange={(e) => handleExtra(p.id, e.target.value)}
+                  />
+                )}
+              </label>
+            ))}
+            {campos.mensaje && (
+              <label className="reserva-label">
+                Mensaje (opcional)
+                <textarea
+                  className="reserva-textarea"
+                  name="mensaje"
+                  value={form.mensaje}
+                  placeholder="Cuéntanos algo más (alergias, ocasiones especiales, etc.)"
+                  rows={4}
+                  onChange={(e) => handleChange("mensaje", e.target.value)}
+                />
+              </label>
+            )}
+            <div className="reserva-actions">
+              {errorEnvio && <p className="reserva-error">{errorEnvio}</p>}
+              <button className="reserva-btn" type="submit" disabled={!canSend || enviando}>
+                {enviando ? "Enviando..." : (negocio.textoBtnReservar || "Reservar")}
+                {!enviando && negocio.modoEnvio !== "email" && <img src={icon1} alt="WhatsApp" />}
+              </button>
+              <button className="reserva-btn-secondary" type="button" onClick={() => { limpiar(); setStep(1); }}>
+                Limpiar formulario
+              </button>
+              {(negocio.mostrarTelefono ?? true) && (
+                <div className="reserva-tel">
+                  <p>{negocio.textoTelefono || "También puedes reservar por teléfono"}</p>
+                  <a href={`tel:${negocio.telefono}`}>
+                    <PhoneCall className="icon-tel" />
+                  </a>
+                </div>
+              )}
+            </div>
+          </>
         )}
 
-        {/* Acciones: enviar, limpiar, teléfono */}
-        <div className="reserva-actions">
-          {errorEnvio && <p className="reserva-error">{errorEnvio}</p>}
-          <button className="reserva-btn" type="submit" disabled={!canSend || enviando}>
-            {enviando ? "Enviando..." : (negocio.textoBtnReservar || "Reservar")}
-            {!enviando && negocio.modoEnvio !== "email" && <img src={icon1} alt="WhatsApp" />}
-          </button>
-
-          <button className="reserva-btn-secondary" type="button" onClick={limpiar}>
-            Limpiar
-          </button>
-
-          {(negocio.mostrarTelefono ?? true) && (
-            <div className="reserva-tel">
-              <p>{negocio.textoTelefono || "También puedes reservar por teléfono"}</p>
-              <a href={`tel:${negocio.telefono}`}>
-                <PhoneCall className="icon-tel" />
-              </a>
-            </div>
-          )}
-        </div>
+        <p className="form-footer">🔒 Tu información está segura y no será compartida.</p>
 
       </form>
 
