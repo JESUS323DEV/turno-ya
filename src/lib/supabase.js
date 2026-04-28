@@ -57,6 +57,19 @@ export async function fetchReservas(slug) {
   return data ?? [];
 }
 
+/** Devuelve las horas de reservas confirmadas para una fecha concreta. */
+export async function fetchReservasByFecha(slug, fecha) {
+  if (!supabase) return [];
+  const { data, error } = await supabase
+    .from("reservas")
+    .select("hora")
+    .eq("slug", slug)
+    .eq("dia", fecha)
+    .eq("estado", "confirmada");
+  if (error) return [];
+  return data ?? [];
+}
+
 /** Confirma, cancela o elimina una reserva via Edge Function (verifica PIN). */
 export async function accionReserva(id, accion, pin, slug) {
   if (!url || !key) throw new Error("Supabase no configurado");

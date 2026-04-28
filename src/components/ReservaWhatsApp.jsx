@@ -95,6 +95,7 @@ export default function ReservaWhatsApp({ configOverride = null } = {}) {
     enviando,
     errorEnvio,
     emailRequired,
+    horasOcupadas,
   } = useReservaForm(configOverride);
 
   const [calOpen, setCalOpen] = useState(false);
@@ -368,16 +369,20 @@ export default function ReservaWhatsApp({ configOverride = null } = {}) {
                           className={`slots-grid ${touched.hora && !horaOk ? "slots-bad" : touched.hora && horaOk ? "slots-ok" : ""}`}
                           onBlur={() => touch("hora")}
                         >
-                          {slots.map((slot) => (
-                            <button
-                              key={slot}
-                              type="button"
-                              className={`slot-btn ${form.hora === slot ? "slot-btn--selected" : ""}`}
-                              onClick={() => { handleChange("hora", slot); touch("hora"); }}
-                            >
-                              {slot}
-                            </button>
-                          ))}
+                          {slots.map((slot) => {
+                            const ocupado = horasOcupadas.has(slot);
+                            return (
+                              <button
+                                key={slot}
+                                type="button"
+                                disabled={ocupado}
+                                className={`slot-btn ${form.hora === slot ? "slot-btn--selected" : ""} ${ocupado ? "slot-btn--ocupado" : ""}`}
+                                onClick={() => { if (!ocupado) { handleChange("hora", slot); touch("hora"); } }}
+                              >
+                                {slot}
+                              </button>
+                            );
+                          })}
                         </div>
                       )}
                     </div>

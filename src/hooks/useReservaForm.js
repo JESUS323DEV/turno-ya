@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { getConfig, NEGOCIO_DEFAULT, CONFIG_KEY } from "../config/negocio";
 import { generarMensaje, generarLink, generarLinkComprobante } from "../utils/whatsapp";
 import { generarSlots } from "../utils/slots";
-import { enviarReserva, SLUG } from "../lib/supabase";
+import { enviarReserva, fetchReservasByFecha, SLUG } from "../lib/supabase";
 
 const FORM_INICIAL = {
   nombre: "",
@@ -67,6 +67,7 @@ export function useReservaForm(configOverride = null) {
 
   const [enviando, setEnviando] = useState(false);
   const [errorEnvio, setErrorEnvio] = useState("");
+  const [horasOcupadas, setHorasOcupadas] = useState(new Set());
 
   const [form, setForm] = useState(() => {
     const servicios = negocio.servicios?.filter((s) => s.guardado && s.nombre.trim()) ?? [];
@@ -107,6 +108,22 @@ export function useReservaForm(configOverride = null) {
     return negocio.horarios;
   }, [negocio.servicios, negocio.horarios, form.servicio]);
 
+  // Slots bloqueados por aforo: consultar Supabase al cambiar el día
+  useEffect(() => {
+    const aforo = negocio.aforoPorSlot;
+    if (!form.dia || !(aforo > 0)) {
+      setHorasOcupadas(new Set());
+      return;
+    }
+    fetchReservasByFecha(SLUG, form.dia).then((reservas) => {
+      const conteo = {};
+      reservas.forEach(r => { conteo[r.hora] = (conteo[r.hora] || 0) + 1; });
+      setHorasOcupadas(new Set(
+        Object.entries(conteo).filter(([, n]) => n >= aforo).map(([h]) => h)
+      ));
+    });
+  }, [form.dia, negocio.aforoPorSlot]);
+
   // Slots disponibles para el día seleccionado
   const slots = useMemo(
     () => generarSlots(form.dia, horariosEfectivos, negocio.slotInterval, negocio.antelacionMinHoras, negocio.cierreTemporalFecha),
@@ -126,7 +143,7 @@ export function useReservaForm(configOverride = null) {
   const telefonoOk = /^\d{9,15}$/.test(form.telefono);
   const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email);
   const diaOk = form.dia !== "" && !isDiaCerrado(form.dia, negocio.horarios, negocio.fechasBloqueadas ?? []);
-  const horaOk = slots.includes(form.hora);
+  const horaOk = slots.includes(form.hora) && !horasOcupadas.has(form.hora);
   const personasOk = Number(form.personas) >= (negocio.minPersonas ?? 1) && Number(form.personas) <= negocio.maxPersonas;
 
   const extrasOk = (negocio.preguntasExtra ?? [])
@@ -209,7 +226,7 @@ export function useReservaForm(configOverride = null) {
       setErrorEnvio("");
       try {
         await enviarReserva(form, SLUG);
-        try { localStorage.setItem(negocio.storageKey, JSON.stringify(form)); } catch { }
+        try { localStorage.setItem(negocio.storageKey, JSON.stringify(form)); } catch { /* ignorar */ }
         setEnviado(true);
       } catch {
         setErrorEnvio("Error al enviar. Inténtalo de nuevo.");
@@ -217,7 +234,7 @@ export function useReservaForm(configOverride = null) {
         setEnviando(false);
       }
     } else {
-      try { localStorage.setItem(negocio.storageKey, JSON.stringify(form)); } catch { }
+      try { localStorage.setItem(negocio.storageKey, JSON.stringify(form)); } catch { /* ignorar */ }
       window.open(whatsappLink, "_blank", "noopener,noreferrer");
       setEnviado(true);
     }
@@ -261,5 +278,6 @@ export function useReservaForm(configOverride = null) {
     handleExtra,
     serviciosDisponibles,
     campos,
+    horasOcupadas,
   };
 }

@@ -406,6 +406,16 @@
   color: #fff;
 }
 
+.slot-btn--ocupado,
+.slot-btn--ocupado:hover {
+  background: var(--border);
+  border-color: var(--border);
+  color: var(--text-muted, #9ca3af);
+  cursor: not-allowed;
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
 /* Confirmación */
 .confirmacion {
   width: 100%;
