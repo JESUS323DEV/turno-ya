@@ -1,6 +1,6 @@
 // ─── Imports ────────────────────────────────────────────────────────────────
 import { useState } from "react";
-import { PhoneCall, Globe, Calendar } from "lucide-react";
+import { PhoneCall, Globe, Calendar, Clock, X } from "lucide-react";
 import { DayPicker } from "react-day-picker";
 import { es } from "date-fns/locale/es";
 import "react-day-picker/style.css";
@@ -17,6 +17,41 @@ function InstagramIcon({ size = 22 }) {
       <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
       <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
     </svg>
+  );
+}
+
+// ─── Panel de ayuda (confirmación, cargos, WhatsApp) ────────────────────────
+function HelpCards({ negocio }) {
+  const waLink = negocio.whatsapp ? `https://wa.me/${negocio.whatsapp}` : null;
+  return (
+    <>
+      <div className="help-card">
+        <Clock size={22} className="help-card-icon" />
+        <div>
+          <p className="help-card-title">Confirmación rápida</p>
+          <p className="help-card-text">Te confirmaremos tu reserva por email o WhatsApp a la brevedad posible.</p>
+        </div>
+      </div>
+      <div className="help-card">
+        <Calendar size={22} className="help-card-icon" />
+        <div>
+          <p className="help-card-title">Sin cargos</p>
+          <p className="help-card-text">Reservar es gratuito y sin compromiso.</p>
+        </div>
+      </div>
+      {waLink && (
+        <div className="help-card">
+          <PhoneCall size={22} className="help-card-icon" />
+          <div>
+            <p className="help-card-title">¿Necesitas ayuda?</p>
+            <p className="help-card-text">Escríbenos por WhatsApp si tienes alguna consulta.</p>
+            <a href={waLink} target="_blank" rel="noopener noreferrer" className="help-card-btn">
+              Abrir WhatsApp
+            </a>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 
@@ -63,6 +98,7 @@ export default function ReservaWhatsApp({ configOverride = null } = {}) {
   } = useReservaForm(configOverride);
 
   const [calOpen, setCalOpen] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
 
   // ─── Helper: icono de validación por campo ─────────────────────────────────
   const fieldIcon = (field, isOk) => {
@@ -112,6 +148,7 @@ export default function ReservaWhatsApp({ configOverride = null } = {}) {
   // ─── Formulario principal ──────────────────────────────────────────────────
   return (
     <section className="reserva-section">
+      <div className="reserva-layout">
       <form className="reserva-form" onSubmit={onSubmit}>
 
         <div className="reserva-cabecera">
@@ -401,6 +438,27 @@ export default function ReservaWhatsApp({ configOverride = null } = {}) {
         </div>
 
       </form>
+
+      <aside className="reserva-help-panel">
+        <HelpCards negocio={negocio} />
+      </aside>
+      </div>
+
+      <button className="reserva-help-fab" type="button" onClick={() => setHelpOpen(true)}>
+        ¿Ayuda?
+      </button>
+
+      {helpOpen && (
+        <>
+          <div className="reserva-help-overlay" onClick={() => setHelpOpen(false)} />
+          <div className="reserva-help-modal">
+            <button className="reserva-help-modal-close" type="button" onClick={() => setHelpOpen(false)}>
+              <X size={20} />
+            </button>
+            <HelpCards negocio={negocio} />
+          </div>
+        </>
+      )}
     </section>
   );
 }
