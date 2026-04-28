@@ -150,340 +150,359 @@ export default function ReservaWhatsApp({ configOverride = null } = {}) {
   return (
     <section className="reserva-section">
       <div className="reserva-layout">
-      <form className="reserva-form" onSubmit={onSubmit}>
+        <form className="reserva-form" onSubmit={onSubmit}>
 
-        <div className="reserva-cabecera">
+          <div className="reserva-cabecera">
 
-          {/* Cabecera: logo, nombre, descripción*/}
-          <div className="cabecera">
-            {negocio.logoUrl && (
-              <img src={negocio.logoUrl} alt={negocio.nombre} className="reserva-logo" />
-            )}
+            {/* Cabecera: logo, nombre, descripción*/}
+            <div className="cabecera">
+              {negocio.logoUrl && (
+                <img src={negocio.logoUrl} alt={negocio.nombre} className="reserva-logo" />
+              )}
 
-            {(negocio.mostrarNombre ?? true) && (
-              <div className="reserva-tittle-negocio">
-                <h1 style={{ color: negocio.colorNegocio }}>{negocio.nombre}</h1>
+              {(negocio.mostrarNombre ?? true) && (
+                <div className="reserva-tittle-negocio">
+                  <h1 style={{ color: negocio.colorNegocio }}>{negocio.nombre}</h1>
+                </div>
+              )}
+
+
+              {negocio.descripcion && (
+                <p className="reserva-descripcion">{negocio.descripcion}</p>
+              )}
+
+            </div>
+            {/* Cabecera: links*/}
+            {negocio.links?.some(l => l) && (
+              <div className="reserva-links">
+                {negocio.links.filter(l => l).map((url, i) => {
+                  const Icon = url.includes("instagram") ? InstagramIcon : Globe;
+                  const label = url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");
+                  return (
+                    <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="reserva-link-item">
+                      <Icon size={15} />
+                      <span>{label}</span>
+                    </a>
+                  );
+                })}
               </div>
             )}
-
-
-            {negocio.descripcion && (
-              <p className="reserva-descripcion">{negocio.descripcion}</p>
-            )}
-
           </div>
-          {/* Cabecera: links*/}
-          {negocio.links?.some(l => l) && (
-            <div className="reserva-links">
-              {negocio.links.filter(l => l).map((url, i) => {
-                const Icon = url.includes("instagram") ? InstagramIcon : Globe;
-                const label = url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");
-                return (
-                  <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="reserva-link-item">
-                    <Icon size={15} />
-                    <span>{label}</span>
-                  </a>
-                );
-              })}
+
+          <h2 className="reserva-title">{negocio.tituloFormulario || "Reservas"}</h2>
+
+          {/* Aviso cierre temporal */}
+          {cerradoHoy && (
+            <div className="reserva-cerrado">
+              🔴 Hoy no aceptamos reservas. Vuelve mañana o llámanos.
             </div>
           )}
-        </div>
 
-        <h2 className="reserva-title">{negocio.tituloFormulario || "Reservas"}</h2>
-
-        {/* Aviso cierre temporal */}
-        {cerradoHoy && (
-          <div className="reserva-cerrado">
-            🔴 Hoy no aceptamos reservas. Vuelve mañana o llámanos.
-          </div>
-        )}
-
-        {/* Barra de progreso */}
-        <div className="form-progress-wrap">
-          <div className="form-progress-info">
-            <span>{step === 1 ? "Rellena los datos de tu reserva" : "Revisa y confirma"}</span>
-            <span className="form-progress-step">Paso {step} de 2</span>
-          </div>
-          <div className="form-progress-track">
-            <div className="form-progress-fill" style={{ width: step === 1 ? "50%" : "100%" }} />
-          </div>
-        </div>
-
-        {/* ── Paso 1: formulario completo ── */}
-        {step === 1 && (
-          <>
-            <p className="form-section-title">Tus datos</p>
-            <div className="form-fields-grid">
-              {campos.nombre && (
-                <label className="reserva-label">
-                  <span className="reserva-label-row">Nombre* {fieldIcon("nombre", nombreOk)}</span>
-                  <input
-                    className="reserva-input"
-                    type="text"
-                    name="nombre"
-                    value={form.nombre}
-                    placeholder="Tu nombre"
-                    autoComplete="given-name"
-                    onChange={(e) => handleChange("nombre", e.target.value)}
-                    onBlur={() => touch("nombre")}
-                  />
-                </label>
-              )}
-              {emailRequired && (
-                <label className="reserva-label">
-                  <span className="reserva-label-row">Email* {fieldIcon("email", emailOk)}</span>
-                  <input
-                    className="reserva-input"
-                    type="email"
-                    name="email"
-                    value={form.email}
-                    placeholder="correo@ejemplo.com"
-                    autoComplete="email"
-                    onChange={(e) => handleChange("email", e.target.value)}
-                    onBlur={() => touch("email")}
-                  />
-                </label>
-              )}
-              {campos.apellidos && (
-                <label className="reserva-label col-span-2">
-                  <span className="reserva-label-row">Apellidos*</span>
-                  <input
-                    className="reserva-input"
-                    type="text"
-                    name="apellidos"
-                    value={form.apellidos}
-                    placeholder="Apellidos"
-                    autoComplete="family-name"
-                    onChange={(e) => handleChange("apellidos", e.target.value)}
-                  />
-                </label>
-              )}
-              {campos.telefono && (
-                <label className="reserva-label">
-                  <span className="reserva-label-row">Teléfono* {fieldIcon("telefono", telefonoOk)}</span>
-                  <input
-                    className="reserva-input"
-                    type="tel"
-                    name="telefono"
-                    value={form.telefono}
-                    placeholder="688888888"
-                    maxLength={15}
-                    autoComplete="tel"
-                    onChange={(e) => handleChange("telefono", e.target.value)}
-                    onBlur={() => touch("telefono")}
-                  />
-                </label>
-              )}
-              {campos.personas && (
-                <label className="reserva-label">
-                  <span className="reserva-label-row">Personas* {fieldIcon("personas", personasOk)}</span>
-                  <select
-                    className="reserva-input"
-                    value={form.personas}
-                    onChange={(e) => handleChange("personas", Number(e.target.value))}
-                    onBlur={() => touch("personas")}
-                  >
-                    {Array.from({ length: (negocio.maxPersonas ?? 20) - (negocio.minPersonas ?? 1) + 1 }, (_, i) => i + (negocio.minPersonas ?? 1)).map((n) => (
-                      <option key={n} value={n}>{n} {n === 1 ? "persona" : "personas"}</option>
-                    ))}
-                  </select>
-                </label>
-              )}
-              {serviciosDisponibles.length > 1 && (
-                <label className="reserva-label col-span-2">
-                  <span className="reserva-label-row">Servicio* {fieldIcon("servicio", !!form.servicio)}</span>
-                  <select
-                    className="reserva-input"
-                    value={form.servicio}
-                    onChange={(e) => handleChange("servicio", e.target.value)}
-                    onBlur={() => touch("servicio")}
-                  >
-                    <option value="">Selecciona un servicio</option>
-                    {serviciosDisponibles.map((s) => (
-                      <option key={s.nombre} value={s.nombre}>{s.nombre}</option>
-                    ))}
-                  </select>
-                </label>
-              )}
+          {/* Barra de progreso 
+          <div className="form-progress-wrap">
+            <div className="form-progress-info">
+              <span>{step === 1 ? "Rellena los datos de tu reserva" : "Revisa y confirma"}</span>
+              <span className="form-progress-step">Paso {step} de 2</span>
             </div>
+            <div className="form-progress-track">
+              <div className="form-progress-fill" style={{ width: step === 1 ? "50%" : "100%" }} />
+            </div>
+          </div>*/}
 
-            <p className="form-section-title">Cuándo deseas venir</p>
-            {campos.fecha && (
-              <div className="reserva-label">
-                <span className="reserva-label-row">Día* {fieldIcon("dia", diaOk)}</span>
-                <div className="reserva-datepicker-wrap">
-                  <button
-                    type="button"
-                    className="reserva-date-trigger"
-                    onClick={() => setCalOpen(o => !o)}
-                  >
-                    <Calendar size={16} />
-                    <span>{form.dia ? form.dia.split("-").reverse().join("/") : "dd/mm/aaaa"}</span>
-                  </button>
-                  {calOpen && (<>
-                    <div className="reserva-cal-overlay" onClick={() => { setCalOpen(false); touch("dia"); }} />
-                    <div className="reserva-cal-popup">
-                      <DayPicker
-                        mode="single"
-                        locale={es}
-                        selected={form.dia ? strToDate(form.dia) : undefined}
-                        onSelect={(date) => {
-                          if (!date) return;
-                          handleChange("dia", dateToStr(date));
-                          touch("dia");
-                          setCalOpen(false);
-                        }}
-                        disabled={[
-                          { before: strToDate(today) },
-                          { after: strToDate(maxDate) },
-                          { dayOfWeek: Object.entries(negocio.horarios).filter(([, t]) => t.length === 0).map(([d]) => Number(d)) },
-                          ...(negocio.fechasBloqueadas ?? []).map(strToDate),
-                        ]}
-                        startMonth={strToDate(today)}
-                        endMonth={strToDate(maxDate)}
+          {/* ── Paso 1: formulario completo ── */}
+          {step === 1 && (
+            <>
+              <div className="cont-form-fields">
+
+                <div className="form-fields-grid">
+                  <h4 className="form-section-title col-span-2">Tus datos:</h4>
+                  {campos.nombre && (
+                    <label className="reserva-label">
+                      <span className="reserva-label-row">Nombre* {fieldIcon("nombre", nombreOk)}</span>
+                      <input
+                        className="reserva-input"
+                        type="text"
+                        name="nombre"
+                        value={form.nombre}
+                        placeholder="Tu nombre"
+                        autoComplete="given-name"
+                        onChange={(e) => handleChange("nombre", e.target.value)}
+                        onBlur={() => touch("nombre")}
                       />
+                    </label>
+                  )}
+
+                  {campos.apellidos && (
+                    <label className="reserva-label ">
+                      <span className="reserva-label-row">Apellidos*</span>
+                      <input
+                        className="reserva-input"
+                        type="text"
+                        name="apellidos"
+                        value={form.apellidos}
+                        placeholder="Apellidos"
+                        autoComplete="family-name"
+                        onChange={(e) => handleChange("apellidos", e.target.value)}
+                      />
+                    </label>
+                  )}
+                  {emailRequired && (
+                    <label className="reserva-label col-span-2">
+                      <span className="reserva-label-row">Email* {fieldIcon("email", emailOk)}</span>
+                      <input
+                        className="reserva-input"
+                        type="email"
+                        name="email"
+                        value={form.email}
+                        placeholder="correo@ejemplo.com"
+                        autoComplete="email"
+                        onChange={(e) => handleChange("email", e.target.value)}
+                        onBlur={() => touch("email")}
+                      />
+                    </label>
+                  )}
+
+                  {campos.telefono && (
+                    <label className="reserva-label">
+                      <span className="reserva-label-row">Teléfono* {fieldIcon("telefono", telefonoOk)}</span>
+                      <input
+                        className="reserva-input"
+                        type="tel"
+                        name="telefono"
+                        value={form.telefono}
+                        placeholder="688888888"
+                        maxLength={15}
+                        autoComplete="tel"
+                        onChange={(e) => handleChange("telefono", e.target.value)}
+                        onBlur={() => touch("telefono")}
+                      />
+                    </label>
+                  )}
+                  {campos.personas && (
+                    <label className="reserva-label">
+                      <span className="reserva-label-row">Personas* {fieldIcon("personas", personasOk)}</span>
+                      <select
+                        className="reserva-input"
+                        value={form.personas}
+                        onChange={(e) => handleChange("personas", Number(e.target.value))}
+                        onBlur={() => touch("personas")}
+                      >
+                        {Array.from({ length: (negocio.maxPersonas ?? 20) - (negocio.minPersonas ?? 1) + 1 }, (_, i) => i + (negocio.minPersonas ?? 1)).map((n) => (
+                          <option key={n} value={n}>{n} {n === 1 ? "persona" : "personas"}</option>
+                        ))}
+                      </select>
+                    </label>
+                  )}
+                  {serviciosDisponibles.length > 1 && (
+                    <label className="reserva-label col-span-2">
+                      <span className="reserva-label-row">Servicio* {fieldIcon("servicio", !!form.servicio)}</span>
+                      <select
+                        className="reserva-input"
+                        value={form.servicio}
+                        onChange={(e) => handleChange("servicio", e.target.value)}
+                        onBlur={() => touch("servicio")}
+                      >
+                        <option value="">Selecciona un servicio</option>
+                        {serviciosDisponibles.map((s) => (
+                          <option key={s.nombre} value={s.nombre}>{s.nombre}</option>
+                        ))}
+                      </select>
+                    </label>
+                  )}
+                </div>
+
+                <div className="form-fields-grid2">
+                  <h4 className="form-section-title col-span-2">Cuándo deseas venir:</h4>
+                  {campos.fecha && (
+                    <div className="reserva-label">
+                      <span className="reserva-label-row">Día* {fieldIcon("dia", diaOk)}</span>
+                      <div className="reserva-datepicker-wrap">
+                        <button
+                          type="button"
+                          className="reserva-date-trigger"
+                          onClick={() => setCalOpen(o => !o)}
+                        >
+                          <Calendar size={16} />
+                          <span>{form.dia ? form.dia.split("-").reverse().join("/") : "dd/mm/aaaa"}</span>
+                        </button>
+                        {calOpen && (<>
+                          <div className="reserva-cal-overlay" onClick={() => { setCalOpen(false); touch("dia"); }} />
+                          <div className="reserva-cal-popup">
+                            <DayPicker
+                              mode="single"
+                              locale={es}
+                              selected={form.dia ? strToDate(form.dia) : undefined}
+                              onSelect={(date) => {
+                                if (!date) return;
+                                handleChange("dia", dateToStr(date));
+                                touch("dia");
+                                setCalOpen(false);
+                              }}
+                              disabled={[
+                                { before: strToDate(today) },
+                                { after: strToDate(maxDate) },
+                                { dayOfWeek: Object.entries(negocio.horarios).filter(([, t]) => t.length === 0).map(([d]) => Number(d)) },
+                                ...(negocio.fechasBloqueadas ?? []).map(strToDate),
+                              ]}
+                              startMonth={strToDate(today)}
+                              endMonth={strToDate(maxDate)}
+                            />
+                          </div>
+                        </>)}
+                      </div>
                     </div>
-                  </>)}
+                  )}
+
+                  {campos.hora && (
+                    <div className="reserva-label">
+                      <span className="reserva-label2">
+                        Hora*
+                      </span>
+
+                      {!form.dia || !diaOk ? (
+                        <p className="slots-placeholder">Selecciona un día primero</p>
+                      ) : slots.length === 0 ? (
+                        <p className="slots-placeholder">No hay horario disponible para este día</p>
+                      ) : (
+                        <div
+                          className={`slots-grid ${touched.hora && !horaOk ? "slots-bad" : touched.hora && horaOk ? "slots-ok" : ""}`}
+                          onBlur={() => touch("hora")}
+                        >
+                          {slots.map((slot) => (
+                            <button
+                              key={slot}
+                              type="button"
+                              className={`slot-btn ${form.hora === slot ? "slot-btn--selected" : ""}`}
+                              onClick={() => { handleChange("hora", slot); touch("hora"); }}
+                            >
+                              {slot}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
-            )}
-            {campos.hora && (
+
               <div className="reserva-label">
-                Hora*
-                {!form.dia || !diaOk ? (
-                  <p className="slots-placeholder">Selecciona un día primero</p>
-                ) : slots.length === 0 ? (
-                  <p className="slots-placeholder">No hay horario disponible para este día</p>
-                ) : (
-                  <div
-                    className={`slots-grid ${touched.hora && !horaOk ? "slots-bad" : touched.hora && horaOk ? "slots-ok" : ""}`}
-                    onBlur={() => touch("hora")}
-                  >
-                    {slots.map((slot) => (
-                      <button
-                        key={slot}
-                        type="button"
-                        className={`slot-btn ${form.hora === slot ? "slot-btn--selected" : ""}`}
-                        onClick={() => { handleChange("hora", slot); touch("hora"); }}
+                {negocio.preguntasExtra?.filter((p) => p.guardado && p.label.trim()).map((p) => (
+                  <label key={p.id} className="reserva-label-extra">
+                    <span className="reserva-label2">
+                      {p.label}
+                      {!p.requerida && " (opcional)"}
+                    </span>
+
+
+                    {p.tipo === "seleccion" ? (
+                      <select
+                        className="reserva-input "
+                        value={form.extras?.[p.id] ?? ""}
+                        onChange={(e) => handleExtra(p.id, e.target.value)}
                       >
-                        {slot}
-                      </button>
-                    ))}
+                        <option value="">Selecciona una opción</option>
+                        {p.opciones?.map((o) => <option key={o} value={o}>{o}</option>)}
+                      </select>
+                    ) : p.campoTipo === "textarea" ? (
+                      <textarea
+                        className="reserva-textarea"
+                        rows={3}
+                        value={form.extras?.[p.id] ?? ""}
+                        onChange={(e) => handleExtra(p.id, e.target.value)}
+                      />
+                    ) : (
+                      <input
+                        className="reserva-input"
+                        type="text"
+                        value={form.extras?.[p.id] ?? ""}
+                        onChange={(e) => handleExtra(p.id, e.target.value)}
+                      />
+                    )}
+                  </label>
+                ))}
+              </div>
+
+              {campos.mensaje && (
+                <label className="reserva-label">
+                  <span className="reserva-label2">
+
+                    Mensaje (opcional)
+                  </span>
+                  <textarea
+                    className="reserva-textarea"
+                    name="mensaje"
+                    value={form.mensaje}
+                    placeholder="Cuéntanos algo más (alergias, ocasiones especiales, etc.)"
+                    rows={4}
+                    onChange={(e) => handleChange("mensaje", e.target.value)}
+                  />
+                </label>
+              )}
+
+              <div className="reserva-actions">
+                <button
+                  type="button"
+                  className="reserva-btn"
+                  onClick={() => {
+                    ["nombre", "email", "telefono", "personas", "servicio", "dia", "hora"].forEach(f => touch(f));
+                    if (canSend) setStep(2);
+                  }}
+                >
+                  Continuar →
+                </button>
+                <button className="reserva-btn-secondary" type="button" onClick={limpiar}>
+                  Limpiar
+                </button>
+                {(negocio.mostrarTelefono ?? true) && (
+                  <div className="reserva-tel">
+                    <p>{negocio.textoTelefono || "También puedes reservar por teléfono"}</p>
+                    <a href={`tel:${negocio.telefono}`}><PhoneCall className="icon-tel" /></a>
                   </div>
                 )}
               </div>
-            )}
-            {negocio.preguntasExtra?.filter((p) => p.guardado && p.label.trim()).map((p) => (
-              <label key={p.id} className="reserva-label">
-                {p.label}{!p.requerida && " (opcional)"}
-                {p.tipo === "seleccion" ? (
-                  <select
-                    className="reserva-input"
-                    value={form.extras?.[p.id] ?? ""}
-                    onChange={(e) => handleExtra(p.id, e.target.value)}
-                  >
-                    <option value="">Selecciona una opción</option>
-                    {p.opciones?.map((o) => <option key={o} value={o}>{o}</option>)}
-                  </select>
-                ) : p.campoTipo === "textarea" ? (
-                  <textarea
-                    className="reserva-textarea"
-                    rows={3}
-                    value={form.extras?.[p.id] ?? ""}
-                    onChange={(e) => handleExtra(p.id, e.target.value)}
-                  />
-                ) : (
-                  <input
-                    className="reserva-input"
-                    type="text"
-                    value={form.extras?.[p.id] ?? ""}
-                    onChange={(e) => handleExtra(p.id, e.target.value)}
-                  />
-                )}
-              </label>
-            ))}
-            {campos.mensaje && (
-              <label className="reserva-label">
-                Mensaje (opcional)
-                <textarea
-                  className="reserva-textarea"
-                  name="mensaje"
-                  value={form.mensaje}
-                  placeholder="Cuéntanos algo más (alergias, ocasiones especiales, etc.)"
-                  rows={4}
-                  onChange={(e) => handleChange("mensaje", e.target.value)}
-                />
-              </label>
-            )}
+            </>
+          )}
 
-            <div className="reserva-actions">
-              <button
-                type="button"
-                className="reserva-btn"
-                onClick={() => {
-                  ["nombre", "email", "telefono", "personas", "servicio", "dia", "hora"].forEach(f => touch(f));
-                  if (canSend) setStep(2);
-                }}
-              >
-                Continuar →
-              </button>
-              <button className="reserva-btn-secondary" type="button" onClick={limpiar}>
-                Limpiar
-              </button>
-              {(negocio.mostrarTelefono ?? true) && (
-                <div className="reserva-tel">
-                  <p>{negocio.textoTelefono || "También puedes reservar por teléfono"}</p>
-                  <a href={`tel:${negocio.telefono}`}><PhoneCall className="icon-tel" /></a>
-                </div>
-              )}
-            </div>
-          </>
-        )}
+          {/* ── Paso 2: resumen y confirmación ── */}
+          {step === 2 && (
+            <>
+              <p className="form-section-title">Revisa tu reserva</p>
+              <div className="reserva-resumen">
+                {[
+                  campos.nombre && form.nombre && { icon: "👤", valor: [form.nombre, form.apellidos].filter(Boolean).join(" ") },
+                  campos.telefono && form.telefono && { icon: "📞", valor: form.telefono },
+                  emailRequired && form.email && { icon: "📧", valor: form.email },
+                  campos.personas && { icon: "👥", valor: `${form.personas} ${Number(form.personas) === 1 ? "persona" : "personas"}` },
+                  form.servicio && { icon: "🛎️", valor: form.servicio },
+                  campos.fecha && form.dia && { icon: "📅", valor: form.dia.split("-").reverse().join("/") },
+                  campos.hora && form.hora && { icon: "🕐", valor: form.hora },
+                  ...(negocio.preguntasExtra?.filter(p => p.guardado && form.extras?.[p.id]).map(p => ({ icon: "📝", valor: `${p.label}: ${form.extras[p.id]}` })) ?? []),
+                  form.mensaje && { icon: "💬", valor: form.mensaje },
+                ].filter(Boolean).map(({ icon, valor }, i) => (
+                  <div key={i} className="reserva-resumen-row">
+                    <span className="reserva-resumen-icon">{icon}</span>
+                    <span className="reserva-resumen-valor">{valor}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="reserva-actions">
+                {errorEnvio && <p className="reserva-error">{errorEnvio}</p>}
+                <button className="reserva-btn" type="submit" disabled={enviando}>
+                  {enviando ? "Enviando..." : (negocio.textoBtnReservar || "Confirmar reserva")}
+                  {!enviando && negocio.modoEnvio !== "email" && <img src={icon1} alt="WhatsApp" />}
+                </button>
+                <button className="reserva-btn-secondary" type="button" onClick={() => setStep(1)}>
+                  ← Volver y editar
+                </button>
+              </div>
+            </>
+          )}
 
-        {/* ── Paso 2: resumen y confirmación ── */}
-        {step === 2 && (
-          <>
-            <p className="form-section-title">Revisa tu reserva</p>
-            <div className="reserva-resumen">
-              {[
-                campos.nombre && form.nombre && { icon: "👤", valor: [form.nombre, form.apellidos].filter(Boolean).join(" ") },
-                campos.telefono && form.telefono && { icon: "📞", valor: form.telefono },
-                emailRequired && form.email && { icon: "📧", valor: form.email },
-                campos.personas && { icon: "👥", valor: `${form.personas} ${Number(form.personas) === 1 ? "persona" : "personas"}` },
-                form.servicio && { icon: "🛎️", valor: form.servicio },
-                campos.fecha && form.dia && { icon: "📅", valor: form.dia.split("-").reverse().join("/") },
-                campos.hora && form.hora && { icon: "🕐", valor: form.hora },
-                ...(negocio.preguntasExtra?.filter(p => p.guardado && form.extras?.[p.id]).map(p => ({ icon: "📝", valor: `${p.label}: ${form.extras[p.id]}` })) ?? []),
-                form.mensaje && { icon: "💬", valor: form.mensaje },
-              ].filter(Boolean).map(({ icon, valor }, i) => (
-                <div key={i} className="reserva-resumen-row">
-                  <span className="reserva-resumen-icon">{icon}</span>
-                  <span className="reserva-resumen-valor">{valor}</span>
-                </div>
-              ))}
-            </div>
-            <div className="reserva-actions">
-              {errorEnvio && <p className="reserva-error">{errorEnvio}</p>}
-              <button className="reserva-btn" type="submit" disabled={enviando}>
-                {enviando ? "Enviando..." : (negocio.textoBtnReservar || "Confirmar reserva")}
-                {!enviando && negocio.modoEnvio !== "email" && <img src={icon1} alt="WhatsApp" />}
-              </button>
-              <button className="reserva-btn-secondary" type="button" onClick={() => setStep(1)}>
-                ← Volver y editar
-              </button>
-            </div>
-          </>
-        )}
+          <p className="form-footer">🔒 Tu información está segura y no será compartida.</p>
 
-        <p className="form-footer">🔒 Tu información está segura y no será compartida.</p>
+        </form>
 
-      </form>
 
-      {(negocio.mostrarPanelAyuda ?? true) && (
-        <aside className="reserva-help-panel">
-          <HelpCards negocio={negocio} />
-        </aside>
-      )}
       </div>
 
       {(negocio.mostrarPanelAyuda ?? true) && (

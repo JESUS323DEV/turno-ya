@@ -146,8 +146,8 @@
 
     /* Formulario en XXL */
     .reserva-logo {
-        max-width: 210px;
-        max-height: 210px;
+        max-width: 190px;
+        max-height: 190px;
     }
 
     .reserva-negocio {
@@ -166,7 +166,7 @@
 
         width: 100%;
 
-        
+
     }
 
     .reserva-link-item {
@@ -183,14 +183,15 @@
 
     /* Calendario en XXL: evitar que el overflow:hidden recorte la primera fila */
     .reserva-form {
-        max-width: 480px;
+        max-width: 580px;
+        padding: 2rem 3rem;
     }
 
     .reserva-calendar-wrap {
         overflow: visible;
         display: flex;
         justify-content: center;
-   
+
     }
 
     .reserva-calendar-wrap .rdp {
@@ -202,4 +203,10 @@
 
         gap: 0.7rem;
     }
+
+
+
+   
+
+
 }
