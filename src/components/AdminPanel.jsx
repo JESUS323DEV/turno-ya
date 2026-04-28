@@ -1,5 +1,6 @@
 // ─── Imports ────────────────────────────────────────────────────────────────
 import { useState, useEffect } from "react";
+import { Search, Users } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import iconWa from "../assets/icon-whatsapp.png";
 import { useAdminConfig, DIAS } from "../hooks/useAdminConfig";
@@ -45,15 +46,26 @@ export default function AdminPanel() {
   const [confirmarEliminarPregunta, setConfirmarEliminarPregunta] = useState(null);
   const [filtroPanel, setFiltroPanel] = useState("todas");
   const [modalMensaje, setModalMensaje] = useState(null);
+  const [busqueda, setBusqueda] = useState("");
+  const [filtroServicio, setFiltroServicio] = useState("todos");
+  const [filtroPersonas, setFiltroPersonas] = useState("todos");
+  const [modalDetalle, setModalDetalle] = useState(null);
+  const [ultimaActualizacion, setUltimaActualizacion] = useState(null);
 
   // ─── Reservas desde Supabase ───────────────────────────────────────────────
   const [reservasMock, setReservasMock] = useState([]);
 
   useEffect(() => {
     if (!autenticado || seccion !== "reservas") return;
-    fetchReservas(SLUG).then((data) => {
-      setReservasMock(data.map((r) => ({ ...r, fecha: r.dia })));
-    });
+    const cargar = () => {
+      fetchReservas(SLUG).then((data) => {
+        setReservasMock(data.map((r) => ({ ...r, fecha: r.dia })));
+        setUltimaActualizacion(new Date());
+      });
+    };
+    cargar();
+    const id = setInterval(cargar, 30000);
+    return () => clearInterval(id);
   }, [autenticado, seccion]);
 
   // ─── Pestañas según sección activa ────────────────────────────────────────
@@ -66,14 +78,6 @@ export default function AdminPanel() {
   const hoyFormateado = hoyStr.split("-").reverse().join("-");
   const hoy = hoyStr;
 
-  const reservasFiltradas = reservasMock.filter((r) => {
-    if (r.fecha < hoyStr) return false;
-    if (filtroPanel === "pendientes") return r.estado === "pendiente";
-    if (filtroPanel === "confirmadas") return r.estado === "confirmada";
-    return r.estado !== "cancelada";
-  });
-
-  const canceladasHoy = reservasMock.filter(r => r.fecha >= hoyStr && r.estado === "cancelada");
   const reservasHoy = reservasMock.filter(r => r.fecha >= hoyStr);
   const reservasHistorial = reservasMock.filter(r => r.fecha < hoyStr && (r.estado === "confirmada" || r.estado === "cancelada"));
   const historialPorFecha = reservasHistorial.reduce((acc, r) => {
@@ -82,6 +86,42 @@ export default function AdminPanel() {
     return acc;
   }, {});
   const fechasHistorial = Object.keys(historialPorFecha).sort((a, b) => b.localeCompare(a));
+
+  // ─── Panel v2: computed ────────────────────────────────────────────────────
+  const mananaStr = (() => { const d = new Date(); d.setDate(d.getDate() + 1); return d.toISOString().split("T")[0]; })();
+
+  const statsPendientes = reservasMock.filter(r => r.fecha >= hoyStr && r.estado === "pendiente").length;
+  const statsConfirmadas = reservasMock.filter(r => r.fecha >= hoyStr && r.estado === "confirmada").length;
+  const statsCanceladas = reservasMock.filter(r => r.fecha >= hoyStr && r.estado === "cancelada").length;
+
+  const serviciosEnReservas = [...new Set(reservasMock.map(r => r.servicio).filter(Boolean))];
+
+  const hayFiltros = busqueda !== "" || filtroPanel !== "todas" || filtroServicio !== "todos" || filtroPersonas !== "todos";
+  const limpiarFiltros = () => { setBusqueda(""); setFiltroPanel("todas"); setFiltroServicio("todos"); setFiltroPersonas("todos"); };
+
+  const reservasPanelV2 = reservasMock.filter(r => {
+    if (r.fecha < hoyStr) return false;
+    if (filtroPanel !== "todas" && r.estado !== filtroPanel) return false;
+    if (busqueda) {
+      const q = busqueda.toLowerCase();
+      if (!r.nombre?.toLowerCase().includes(q) && !r.telefono?.includes(busqueda)) return false;
+    }
+    if (filtroServicio !== "todos" && r.servicio !== filtroServicio) return false;
+    if (filtroPersonas !== "todos") {
+      const p = Number(r.personas) || 0;
+      if (filtroPersonas === "1-2" && !(p >= 1 && p <= 2)) return false;
+      if (filtroPersonas === "3-5" && !(p >= 3 && p <= 5)) return false;
+      if (filtroPersonas === "6+" && p < 6) return false;
+    }
+    return true;
+  });
+
+  const gruposPanel = {};
+  reservasPanelV2.forEach(r => {
+    if (!gruposPanel[r.fecha]) gruposPanel[r.fecha] = [];
+    gruposPanel[r.fecha].push(r);
+  });
+  const gruposOrdenados = Object.entries(gruposPanel).sort(([a], [b]) => a.localeCompare(b));
 
   // ─── Acciones sobre reservas ───────────────────────────────────────────────
   const cambiarEstado = async (id, estado) => {
@@ -180,96 +220,132 @@ export default function AdminPanel() {
           ))}
         </div>
 
-        {/* ── TAB: PANEL DE RESERVAS ── */}
+        {/* ── TAB: PANEL DE RESERVAS v2 ── */}
         {tab === "panel" && (
-          <div className="panel-reservas">
+          <div className="panel-v2">
 
-            {/* Stats: pendientes y confirmadas de hoy */}
-            <div className="panel-stats">
-              <button type="button" className={`panel-stat panel-stat--pendientes ${filtroPanel === "pendientes" ? "panel-stat--active" : ""}`}
-                onClick={() => setFiltroPanel("pendientes")}>
-                <span className="panel-stat-num">{reservasMock.filter(r => r.fecha === hoyStr && r.estado === "pendiente").length}</span>
-                <span className="panel-stat-label">Pendientes</span>
-              </button>
-              <button type="button" className={`panel-stat panel-stat--confirmadas ${filtroPanel === "confirmadas" ? "panel-stat--active" : ""}`}
-                onClick={() => setFiltroPanel("confirmadas")}>
-                <span className="panel-stat-num">{reservasMock.filter(r => r.fecha === hoyStr && r.estado === "confirmada").length}</span>
-                <span className="panel-stat-label">Confirmadas</span>
-              </button>
+            {/* Indicador "En vivo" */}
+            <div className="panel-v2-header">
+              <div className="panel-v2-live">
+                <span className="panel-v2-live-dot" />
+                <span>En vivo</span>
+                {ultimaActualizacion && (
+                  <span className="panel-v2-update">
+                    · {ultimaActualizacion.toLocaleTimeString("es", { hour: "2-digit", minute: "2-digit" })}
+                  </span>
+                )}
+              </div>
+              <span className="panel-v2-fecha-header">{hoyFormateado}</span>
             </div>
 
-            {/* Lista de reservas activas (pendientes / confirmadas) */}
-            <p className="panel-seccion-titulo">Hoy y próximas</p>
-            {reservasFiltradas.length === 0 ? (
-              <p className="admin-hint" style={{ textAlign: "center", padding: "2rem 0" }}>No hay reservas.</p>
+            {/* Stats: pendientes / confirmadas / canceladas (desde hoy) */}
+            <div className="panel-v2-stats">
+              <div className="panel-v2-stat panel-v2-stat--pendiente">
+                <span className="panel-v2-stat-num">{statsPendientes}</span>
+                <span className="panel-v2-stat-lbl">Pendientes</span>
+              </div>
+              <div className="panel-v2-stat panel-v2-stat--confirmada">
+                <span className="panel-v2-stat-num">{statsConfirmadas}</span>
+                <span className="panel-v2-stat-lbl">Confirmadas</span>
+              </div>
+              <div className="panel-v2-stat panel-v2-stat--cancelada">
+                <span className="panel-v2-stat-num">{statsCanceladas}</span>
+                <span className="panel-v2-stat-lbl">Canceladas</span>
+              </div>
+            </div>
+
+            {/* Buscador */}
+            <div className="panel-v2-toolbar">
+              <div className="panel-v2-search-wrap">
+                <Search size={14} className="panel-v2-search-icon" />
+                <input
+                  type="text"
+                  className="panel-v2-search"
+                  placeholder="Buscar por nombre o teléfono..."
+                  value={busqueda}
+                  onChange={(e) => setBusqueda(e.target.value)}
+                />
+              </div>
+              <div className="panel-v2-selects">
+                <select className="panel-v2-select" value={filtroPanel} onChange={(e) => setFiltroPanel(e.target.value)}>
+                  <option value="todas">Estado</option>
+                  <option value="pendiente">Pendiente</option>
+                  <option value="confirmada">Confirmada</option>
+                  <option value="cancelada">Cancelada</option>
+                </select>
+                {serviciosEnReservas.length > 0 && (
+                  <select className="panel-v2-select" value={filtroServicio} onChange={(e) => setFiltroServicio(e.target.value)}>
+                    <option value="todos">Servicio</option>
+                    {serviciosEnReservas.map(s => <option key={s} value={s}>{s}</option>)}
+                  </select>
+                )}
+                <select className="panel-v2-select" value={filtroPersonas} onChange={(e) => setFiltroPersonas(e.target.value)}>
+                  <option value="todos">Personas</option>
+                  <option value="1-2">1 – 2</option>
+                  <option value="3-5">3 – 5</option>
+                  <option value="6+">6 +</option>
+                </select>
+              </div>
+              {hayFiltros && (
+                <button type="button" className="panel-v2-clear" onClick={limpiarFiltros}>
+                  Limpiar filtros
+                </button>
+              )}
+            </div>
+
+            {/* Lista agrupada por fecha */}
+            {reservasPanelV2.length === 0 ? (
+              <p className="admin-hint" style={{ textAlign: "center", padding: "2rem 0" }}>
+                {hayFiltros ? "No hay reservas con esos filtros." : "No hay reservas próximas."}
+              </p>
             ) : (
-              <div className="panel-lista">
-                {reservasFiltradas.map((r) => (
-                  <div key={r.id} className={`panel-card panel-card--${r.estado}`}>
-                    <div className="panel-card-info">
-                      <div className="panel-card-nombre-row">
-                        <span className="panel-card-nombre">{r.nombre}</span>
-                        <span className={`panel-badge panel-badge--${r.estado}`}>
-                          {r.estado.charAt(0).toUpperCase() + r.estado.slice(1)}
-                        </span>
+              <div className="panel-v2-grupos">
+                {gruposOrdenados.map(([fecha, reservas]) => {
+                  const label = fecha === hoyStr ? "HOY" : fecha === mananaStr ? "MAÑANA" : fecha.split("-").reverse().join("/");
+                  return (
+                    <div key={fecha} className="panel-v2-grupo">
+                      <div className="panel-v2-grupo-header">
+                        <span className="panel-v2-grupo-label">{label}</span>
+                        <span className="panel-v2-grupo-count">{reservas.length} reserva{reservas.length !== 1 ? "s" : ""}</span>
                       </div>
-                      <span className="panel-card-meta">
-                        {r.fecha.split("-").reverse().join("-")} · {r.hora} · {r.personas} {r.personas === 1 ? "persona" : "personas"}
-                        {r.servicio ? ` · ${r.servicio}` : ""}
-                      </span>
-                      <div className="panel-card-tel">
-                        <a href={`tel:${r.telefono}`}>{r.telefono}</a>
-                        <a href={`https://wa.me/${r.telefono.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer">
-                          <img src={iconWa} alt="WhatsApp" className="panel-wa-icon" />
-                        </a>
-                      </div>
-                      {r.mensaje && <span className="panel-card-mensaje">💬 {r.mensaje}</span>}
+                      {[...reservas].sort((a, b) => (a.hora || "").localeCompare(b.hora || "")).map(r => (
+                        <div key={r.id} className={`panel-v2-card panel-v2-card--${r.estado}`}>
+                          <div className="panel-v2-card-top">
+                            <span className={`panel-badge panel-badge--${r.estado}`}>
+                              {r.estado === "pendiente" ? "Pendiente" : r.estado === "confirmada" ? "Confirmada" : "Cancelada"}
+                            </span>
+                            <span className="panel-v2-card-nombre">{r.nombre}</span>
+                            <span className="panel-v2-card-hora">{r.hora}</span>
+                          </div>
+                          <div className="panel-v2-card-mid">
+                            <span className="panel-v2-card-meta">
+                              <Users size={12} style={{ display: "inline", verticalAlign: "middle", marginRight: 3 }} />
+                              {r.personas} {Number(r.personas) === 1 ? "persona" : "personas"}
+                              {r.servicio ? ` · ${r.servicio}` : ""}
+                            </span>
+                            <div className="panel-v2-card-contacto">
+                              <a href={`tel:${r.telefono}`} className="panel-v2-tel">{r.telefono}</a>
+                              <a href={`https://wa.me/${(r.telefono || "").replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer">
+                                <img src={iconWa} alt="WA" style={{ width: 22, height: 22, display: "block" }} />
+                              </a>
+                            </div>
+                          </div>
+                          <div className="panel-v2-card-actions">
+                            {r.estado === "pendiente" ? (<>
+                              <button type="button" className="panel-btn-confirmar" onClick={() => cambiarEstado(r.id, "confirmada")}>✓ Confirmar</button>
+                              <button type="button" className="panel-btn-cancelar" onClick={() => cambiarEstado(r.id, "cancelada")}>✕ Cancelar</button>
+                            </>) : (<>
+                              <button type="button" className="panel-v2-btn-detalle" onClick={() => setModalDetalle(r)}>Ver detalles</button>
+                              <button type="button" className="panel-btn-eliminar" style={{ flex: "0 0 auto", padding: "7px 10px" }} onClick={() => eliminarReserva(r.id)}>✕</button>
+                            </>)}
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                    {r.estado === "pendiente" && (
-                      <div className="panel-card-actions">
-                        <button type="button" className="panel-btn-confirmar" onClick={() => cambiarEstado(r.id, "confirmada")}>Confirmar</button>
-                        <button type="button" className="panel-btn-cancelar" onClick={() => cambiarEstado(r.id, "cancelada")}>Cancelar</button>
-                      </div>
-                    )}
-                    {r.estado === "cancelada" && (
-                      <div className="panel-card-actions">
-                        <button type="button" className="panel-btn-eliminar" onClick={() => eliminarReserva(r.id)}>✕ Eliminar</button>
-                      </div>
-                    )}
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
-
-            {/* Canceladas de hoy */}
-            {canceladasHoy.length > 0 && (<>
-              <p className="panel-seccion-titulo">Canceladas · {hoyFormateado}</p>
-              <div className="panel-lista">
-                {canceladasHoy.map((r) => (
-                  <div key={r.id} className="panel-card panel-card--cancelada">
-                    <div className="panel-card-info">
-                      <div className="panel-card-nombre-row">
-                        <span className="panel-card-nombre">{r.nombre}</span>
-                        <span className="panel-badge panel-badge--cancelada">Cancelada</span>
-                      </div>
-                      <span className="panel-card-meta">
-                        {r.hora} · {r.personas} {r.personas === 1 ? "persona" : "personas"}
-                        {r.servicio ? ` · ${r.servicio}` : ""}
-                      </span>
-                      <div className="panel-card-tel">
-                        <a href={`tel:${r.telefono}`}>{r.telefono}</a>
-                        <a href={`https://wa.me/${r.telefono.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer">
-                          <img src={iconWa} alt="WhatsApp" className="panel-wa-icon" />
-                        </a>
-                      </div>
-                    </div>
-                    <div className="panel-card-actions">
-                      <button type="button" className="panel-btn-eliminar" onClick={() => eliminarReserva(r.id)}>✕ Eliminar</button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </>)}
           </div>
         )}
 
@@ -984,6 +1060,51 @@ export default function AdminPanel() {
         </>)}
 
       </form>
+
+      {/* Modal Ver detalles de reserva */}
+      {modalDetalle && (
+        <div className="admin-modal-overlay" onClick={() => setModalDetalle(null)}>
+          <div className="admin-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="admin-modal-header">
+              <span className="admin-modal-title">{modalDetalle.nombre}</span>
+              <button type="button" className="admin-modal-close" onClick={() => setModalDetalle(null)}>✕</button>
+            </div>
+            <div className="admin-modal-body">
+              <span className={`panel-badge panel-badge--${modalDetalle.estado}`} style={{ alignSelf: "flex-start" }}>
+                {modalDetalle.estado === "pendiente" ? "Pendiente" : modalDetalle.estado === "confirmada" ? "Confirmada" : "Cancelada"}
+              </span>
+              {[
+                ["Fecha", modalDetalle.fecha?.split("-").reverse().join("/")],
+                ["Hora", modalDetalle.hora],
+                ["Personas", modalDetalle.personas],
+                ["Servicio", modalDetalle.servicio],
+                ["Teléfono", modalDetalle.telefono],
+                ["Email", modalDetalle.email],
+                ["Mensaje", modalDetalle.mensaje],
+              ].filter(([, v]) => v).map(([label, valor]) => (
+                <div key={label} className="panel-v2-detalle-row">
+                  <span className="panel-v2-detalle-label">{label}</span>
+                  <span className="panel-v2-detalle-valor">{valor}</span>
+                </div>
+              ))}
+              <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
+                <a
+                  href={`https://wa.me/${(modalDetalle.telefono || "").replace(/\D/g, "")}`}
+                  target="_blank" rel="noopener noreferrer"
+                  className="panel-btn-confirmar"
+                  style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", textDecoration: "none", borderRadius: 8, padding: "8px", fontSize: 13 }}>
+                  WhatsApp
+                </a>
+                <button type="button" className="panel-btn-eliminar"
+                  style={{ flex: 1 }}
+                  onClick={() => { eliminarReserva(modalDetalle.id); setModalDetalle(null); }}>
+                  ✕ Eliminar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Modal de mensaje del cliente */}
       {modalMensaje && (
