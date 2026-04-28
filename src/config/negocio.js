@@ -20,6 +20,7 @@ export const NEGOCIO_DEFAULT = {
   links: ["", ""],          // hasta 2 URLs externas (web, instagram, etc.)
   logoUrl: "",               // URL de la imagen del logo del negocio
   mostrarNombre: true,       // mostrar nombre del negocio en el formulario público
+  mostrarPanelAyuda: true,   // mostrar columna/btn de ayuda en el formulario
   whatsapp: "34695078648",   // sin espacios ni +
   telefono: "+34695078648",  // con prefijo para el enlace tel:
   storageKey: "turno_ya_reserva",

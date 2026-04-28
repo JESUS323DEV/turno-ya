@@ -425,6 +425,16 @@ export default function AdminPanel() {
               </label>
             </div>
 
+            <div className="admin-dia-header">
+              <span className="admin-dia-nombre">Mostrar panel de ayuda</span>
+              <label className="admin-toggle">
+                <input type="checkbox"
+                  checked={draft.mostrarPanelAyuda ?? true}
+                  onChange={(e) => setField("mostrarPanelAyuda", e.target.checked)} />
+                <span className="admin-toggle-slider" />
+              </label>
+            </div>
+
             <label className="admin-label">
               <span>Color del nombre</span>
               <div className="admin-color-row">

@@ -479,16 +479,20 @@ export default function ReservaWhatsApp({ configOverride = null } = {}) {
 
       </form>
 
-      <aside className="reserva-help-panel">
-        <HelpCards negocio={negocio} />
-      </aside>
+      {(negocio.mostrarPanelAyuda ?? true) && (
+        <aside className="reserva-help-panel">
+          <HelpCards negocio={negocio} />
+        </aside>
+      )}
       </div>
 
-      <button className="reserva-help-fab" type="button" onClick={() => setHelpOpen(true)}>
-        ¿Ayuda?
-      </button>
+      {(negocio.mostrarPanelAyuda ?? true) && (
+        <button className="reserva-help-fab" type="button" onClick={() => setHelpOpen(true)}>
+          ¿Ayuda?
+        </button>
+      )}
 
-      {helpOpen && (
+      {(negocio.mostrarPanelAyuda ?? true) && helpOpen && (
         <>
           <div className="reserva-help-overlay" onClick={() => setHelpOpen(false)} />
           <div className="reserva-help-modal">

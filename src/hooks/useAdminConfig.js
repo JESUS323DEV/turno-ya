@@ -49,6 +49,7 @@ export function useAdminConfig() {
     links: config.links ?? ["", ""],
     logoUrl: config.logoUrl ?? "",
     mostrarNombre: config.mostrarNombre ?? true,
+    mostrarPanelAyuda: config.mostrarPanelAyuda ?? true,
     colorNegocio: config.colorNegocio ?? "#7c3aed",
     whatsapp: config.whatsapp,
     telefono: config.telefono,
