@@ -122,9 +122,11 @@ export default function ReservaWhatsApp({ configOverride = null } = {}) {
               <img src={negocio.logoUrl} alt={negocio.nombre} className="reserva-logo" />
             )}
 
-            <div className="reserva-tittle-negocio">
-              <h1 style={{ color: negocio.colorNegocio }}>{negocio.nombre}</h1>
-            </div>
+            {(negocio.mostrarNombre ?? true) && (
+              <div className="reserva-tittle-negocio">
+                <h1 style={{ color: negocio.colorNegocio }}>{negocio.nombre}</h1>
+              </div>
+            )}
 
 
             {negocio.descripcion && (

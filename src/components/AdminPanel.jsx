@@ -415,6 +415,16 @@ export default function AdminPanel() {
               <span className="admin-counter">{draft.nombre.length} / 20</span>
             </label>
 
+            <div className="admin-dia-header">
+              <span className="admin-dia-nombre">Mostrar nombre en el formulario</span>
+              <label className="admin-toggle">
+                <input type="checkbox"
+                  checked={draft.mostrarNombre ?? true}
+                  onChange={(e) => setField("mostrarNombre", e.target.checked)} />
+                <span className="admin-toggle-slider" />
+              </label>
+            </div>
+
             <label className="admin-label">
               <span>Color del nombre</span>
               <div className="admin-color-row">
