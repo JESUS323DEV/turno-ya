@@ -20,7 +20,7 @@ export default function ReservasPanel({ pin, onBack }) {
   const [paginaPanel, setPaginaPanel] = useState(1);
   const [tabFecha, setTabFecha] = useState("hoy");
   const [nuevasReservas, setNuevasReservas] = useState([]);
-  const lastCreatedAtRef = useRef(null);
+  const knownIdsRef = useRef(null);
 
   const hoyStr = new Date().toISOString().split("T")[0];
   const hoyFormateado = hoyStr.split("-").reverse().join("-");
@@ -31,15 +31,18 @@ export default function ReservasPanel({ pin, onBack }) {
     const cargar = () => {
       fetchReservas(SLUG).then((data) => {
         const mapped = data.map((r) => ({ ...r, fecha: r.dia }));
-        if (lastCreatedAtRef.current === null) {
-          lastCreatedAtRef.current = mapped[0]?.created_at ?? "";
+        if (knownIdsRef.current === null) {
+          knownIdsRef.current = new Set(mapped.map(r => r.id));
         } else {
           const nuevas = mapped.filter(r =>
-            r.estado === "pendiente" && r.created_at > lastCreatedAtRef.current
+            r.estado === "pendiente" && !knownIdsRef.current.has(r.id)
           );
+          mapped.forEach(r => knownIdsRef.current.add(r.id));
           if (nuevas.length > 0) {
-            setNuevasReservas(prev => [...prev, ...nuevas]);
-            lastCreatedAtRef.current = mapped[0]?.created_at ?? lastCreatedAtRef.current;
+            setNuevasReservas(prev => {
+              const yaEstan = new Set(prev.map(n => n.id));
+              return [...prev, ...nuevas.filter(n => !yaEstan.has(n.id))];
+            });
           }
         }
         setReservasMock(mapped);
