@@ -19,6 +19,9 @@ export default function ReservasPanel({ pin, onBack }) {
   const [ultimaActualizacion, setUltimaActualizacion] = useState(null);
   const [paginaPanel, setPaginaPanel] = useState(1);
   const [tabFecha, setTabFecha] = useState("hoy");
+  const [nuevasReservas, setNuevasReservas] = useState([]);
+  const seenIdsRef = useState(() => new Set())[0];
+  const primeraVezRef = useState(true);
 
   const hoyStr = new Date().toISOString().split("T")[0];
   const hoyFormateado = hoyStr.split("-").reverse().join("-");
@@ -28,7 +31,16 @@ export default function ReservasPanel({ pin, onBack }) {
   useEffect(() => {
     const cargar = () => {
       fetchReservas(SLUG).then((data) => {
-        setReservasMock(data.map((r) => ({ ...r, fecha: r.dia })));
+        const mapped = data.map((r) => ({ ...r, fecha: r.dia }));
+        if (primeraVezRef[0]) {
+          mapped.forEach(r => seenIdsRef.add(r.id));
+          primeraVezRef[0] = false;
+        } else {
+          const nuevas = mapped.filter(r => r.estado === "pendiente" && !seenIdsRef.has(r.id));
+          nuevas.forEach(r => seenIdsRef.add(r.id));
+          if (nuevas.length > 0) setNuevasReservas(prev => [...prev, ...nuevas]);
+        }
+        setReservasMock(mapped);
         setUltimaActualizacion(new Date());
       });
     };
@@ -93,6 +105,7 @@ export default function ReservasPanel({ pin, onBack }) {
   // ── Acciones ─────────────────────────────────────────────────────────────────
   const cambiarEstado = async (id, estado) => {
     setReservasMock((prev) => prev.map((r) => r.id === id ? { ...r, estado } : r));
+    setNuevasReservas((prev) => prev.filter(r => r.id !== id));
     try {
       await accionReserva(id, estado === "confirmada" ? "confirmar" : "cancelar", pin, SLUG);
     } catch {
@@ -162,6 +175,44 @@ export default function ReservasPanel({ pin, onBack }) {
             <span className="panel-v2-fecha-header">{hoyFormateado}</span>
           </div>
         </div>
+
+        {/* ── Notificaciones de nuevas reservas ── */}
+        {nuevasReservas.length === 1 && (
+          <div className="notif-nueva">
+            <div className="notif-nueva-header">
+              <span className="notif-nueva-titulo">🔔 Nueva reserva</span>
+              <button type="button" className="admin-modal-close" onClick={() => setNuevasReservas([])}>✕</button>
+            </div>
+            {(() => { const r = nuevasReservas[0]; return (
+              <div className="notif-nueva-card">
+                <div className="notif-nueva-fila">
+                  <span className="pv2-nombre">{r.nombre}</span>
+                  <span className="pv2-hora">{r.hora}</span>
+                </div>
+                <div className="notif-nueva-fila">
+                  <span className="panel-v2-card-meta"><Users size={11} className="pv2-icon" />{r.personas}{r.servicio ? ` · ${r.servicio}` : ""}</span>
+                  <span className="panel-v2-card-meta">📅 {r.fecha?.split("-").reverse().join("/")}</span>
+                </div>
+                <div className="panel-card-tel">
+                  <a href={`tel:${r.telefono}`} className="panel-v2-tel">{r.telefono}</a>
+                  <a href={`https://wa.me/${(r.telefono || "").replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer">
+                    <img src={iconWa} alt="WA" className="panel-wa-icon" />
+                  </a>
+                </div>
+                <div className="panel-card-actions">
+                  <button type="button" className="panel-btn-confirmar" onClick={() => cambiarEstado(r.id, "confirmada")}>Confirmar</button>
+                  <button type="button" className="panel-btn-cancelar" onClick={() => cambiarEstado(r.id, "cancelada")}>Cancelar</button>
+                </div>
+              </div>
+            ); })()}
+          </div>
+        )}
+        {nuevasReservas.length > 1 && (
+          <div className="notif-nueva notif-nueva--multiple">
+            <span className="notif-nueva-titulo">🔔 {nuevasReservas.length} nuevas reservas pendientes</span>
+            <button type="button" className="admin-modal-close" onClick={() => setNuevasReservas([])}>✕</button>
+          </div>
+        )}
 
         <div className="admin-tabs">
           {Object.entries(TABS).map(([key, label]) => (
