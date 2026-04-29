@@ -100,6 +100,7 @@ export default function ReservasPanel({ pin, onBack }) {
   };
 
   const eliminarReserva = async (id) => {
+    if (!window.confirm("¿Eliminar esta reserva? Esta acción no se puede deshacer.")) return;
     setReservasMock((prev) => prev.filter((r) => r.id !== id));
     try {
       await accionReserva(id, "eliminar", pin, SLUG);
