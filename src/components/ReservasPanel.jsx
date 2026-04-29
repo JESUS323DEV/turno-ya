@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Search, Users } from "lucide-react";
 import iconWa from "../assets/icon-whatsapp.png";
 import { fetchReservas, accionReserva, SLUG } from "../lib/supabase";
@@ -20,8 +20,8 @@ export default function ReservasPanel({ pin, onBack }) {
   const [paginaPanel, setPaginaPanel] = useState(1);
   const [tabFecha, setTabFecha] = useState("hoy");
   const [nuevasReservas, setNuevasReservas] = useState([]);
-  const seenIdsRef = useState(() => new Set())[0];
-  const primeraVezRef = useState(true);
+  const seenIdsRef = useRef(new Set());
+  const primeraVezRef = useRef(true);
 
   const hoyStr = new Date().toISOString().split("T")[0];
   const hoyFormateado = hoyStr.split("-").reverse().join("-");
@@ -32,12 +32,12 @@ export default function ReservasPanel({ pin, onBack }) {
     const cargar = () => {
       fetchReservas(SLUG).then((data) => {
         const mapped = data.map((r) => ({ ...r, fecha: r.dia }));
-        if (primeraVezRef[0]) {
-          mapped.forEach(r => seenIdsRef.add(r.id));
-          primeraVezRef[0] = false;
+        if (primeraVezRef.current) {
+          mapped.forEach(r => seenIdsRef.current.add(r.id));
+          primeraVezRef.current = false;
         } else {
-          const nuevas = mapped.filter(r => r.estado === "pendiente" && !seenIdsRef.has(r.id));
-          nuevas.forEach(r => seenIdsRef.add(r.id));
+          const nuevas = mapped.filter(r => r.estado === "pendiente" && !seenIdsRef.current.has(r.id));
+          nuevas.forEach(r => seenIdsRef.current.add(r.id));
           if (nuevas.length > 0) setNuevasReservas(prev => [...prev, ...nuevas]);
         }
         setReservasMock(mapped);
