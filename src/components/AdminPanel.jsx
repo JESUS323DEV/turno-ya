@@ -215,7 +215,7 @@ export default function AdminPanel() {
   // ─── Panel principal (autenticado) ─────────────────────────────────────────
   return (
     <section className="admin-section">
-      <form className={`admin-form${seccion === "reservas" ? " admin-form--panel" : ""}`} onSubmit={guardar}>
+      <form className="admin-form" onSubmit={guardar}>
 
         {/* Cabecera con título y fecha */}
         <div className="admin-header">
@@ -301,24 +301,13 @@ export default function AdminPanel() {
               </div>
             </div>
 
-            {/* Tabla agrupada */}
+            {/* Cards agrupadas */}
             {reservasPanelV2.length === 0 ? (
               <p className="admin-hint" style={{ textAlign: "center", padding: "2rem 0" }}>
                 {hayFiltros ? "No hay reservas con esos filtros." : "No hay reservas próximas."}
               </p>
             ) : (<>
-              <div className="panel-v2-table">
-                {/* Cabeceras de columna */}
-                <div className="panel-v2-thead">
-                  <span>Estado</span>
-                  <span>Cliente</span>
-                  <span>Hora</span>
-                  <span>Personas</span>
-                  <span>Servicio</span>
-                  <span>Contacto</span>
-                  <span>Acciones</span>
-                </div>
-
+              <div className="panel-v2-grupos">
                 {Object.entries(gruposPanelRender).map(([key, reservas]) => {
                   if (!reservas.length) return null;
                   const { label, fechaStr } = GRUPOS_CONFIG[key];
@@ -329,50 +318,44 @@ export default function AdminPanel() {
                         <span className="panel-v2-grupo-label">📅 {titulo}</span>
                         <span className="panel-v2-grupo-badge">{reservas.length} reserva{reservas.length !== 1 ? "s" : ""}</span>
                       </div>
-                      {reservas.map(r => {
-                        const horaCell = key === "_proximos"
-                          ? `${r.fecha.split("-")[2]}/${r.fecha.split("-")[1]} · ${r.hora}`
-                          : r.hora;
-                        return (
-                          <div key={r.id} className={`panel-v2-row panel-v2-row--${r.estado}`}>
-                            <div className="pv2-col pv2-col-estado">
-                              <span className={`panel-badge panel-badge--${r.estado}`}>
-                                {r.estado === "pendiente" ? "Pendiente" : r.estado === "confirmada" ? "Confirmada" : "Cancelada"}
-                              </span>
+                      <div className="panel-v2-lista">
+                        {reservas.map(r => {
+                          const esProximo = key === "_proximos";
+                          const fechaMostrar = esProximo ? `${r.fecha.split("-")[2]}/${r.fecha.split("-")[1]}` : null;
+                          return (
+                            <div key={r.id} className={`panel-v2-card panel-v2-card--${r.estado}`}>
+                              <div className="panel-v2-card-top">
+                                <span className={`panel-badge panel-badge--${r.estado}`}>
+                                  {r.estado === "pendiente" ? "Pendiente" : r.estado === "confirmada" ? "Confirmada" : "Cancelada"}
+                                </span>
+                                <span className="pv2-hora">{fechaMostrar ? `${fechaMostrar} · ${r.hora}` : r.hora}</span>
+                              </div>
+                              <div className="panel-v2-card-mid">
+                                <span className="pv2-nombre">{r.nombre}</span>
+                                <span className="panel-v2-card-meta">
+                                  <Users size={11} className="pv2-icon" />{r.personas}{r.servicio ? ` · ${r.servicio}` : ""}
+                                </span>
+                              </div>
+                              <div className="panel-card-tel">
+                                <a href={`tel:${r.telefono}`} className="panel-v2-tel">{r.telefono}</a>
+                                <a href={`https://wa.me/${(r.telefono || "").replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer">
+                                  <img src={iconWa} alt="WA" className="panel-wa-icon" />
+                                </a>
+                              </div>
+                              <div className="panel-card-actions">
+                                {r.estado === "pendiente" ? (<>
+                                  <button type="button" className="panel-btn-confirmar" onClick={() => cambiarEstado(r.id, "confirmada")}>Confirmar</button>
+                                  <button type="button" className="panel-btn-cancelar" onClick={() => cambiarEstado(r.id, "cancelada")}>Cancelar</button>
+                                  <button type="button" className="pv2-btn-more" onClick={() => setModalDetalle(r)} title="Ver detalles">···</button>
+                                </>) : (<>
+                                  <button type="button" className="panel-v2-btn-detalle" onClick={() => setModalDetalle(r)}>Ver detalles</button>
+                                  <button type="button" className="pv2-btn-more" onClick={() => eliminarReserva(r.id)} title="Eliminar">···</button>
+                                </>)}
+                              </div>
                             </div>
-                            <div className="pv2-col pv2-col-cliente">
-                              <span className="pv2-nombre">{r.nombre}</span>
-                              <span className="pv2-subtexto">Reserva online</span>
-                            </div>
-                            <div className="pv2-col pv2-col-hora">
-                              <span className="pv2-hora">{horaCell}</span>
-                            </div>
-                            <div className="pv2-col pv2-col-personas">
-                              <Users size={12} className="pv2-icon" />
-                              <span>{r.personas}</span>
-                            </div>
-                            <div className="pv2-col pv2-col-servicio">
-                              <span>{r.servicio || "—"}</span>
-                            </div>
-                            <div className="pv2-col pv2-col-contacto">
-                              <a href={`tel:${r.telefono}`} className="panel-v2-tel">{r.telefono}</a>
-                              <a href={`https://wa.me/${(r.telefono || "").replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer">
-                                <img src={iconWa} alt="WA" className="pv2-wa-icon" />
-                              </a>
-                            </div>
-                            <div className="pv2-col pv2-col-acciones">
-                              {r.estado === "pendiente" ? (<>
-                                <button type="button" className="pv2-btn-confirmar" onClick={() => cambiarEstado(r.id, "confirmada")}>Confirmar</button>
-                                <button type="button" className="pv2-btn-cancelar" onClick={() => cambiarEstado(r.id, "cancelada")}>Cancelar</button>
-                                <button type="button" className="pv2-btn-more" onClick={() => setModalDetalle(r)} title="Ver detalles">···</button>
-                              </>) : (<>
-                                <button type="button" className="panel-v2-btn-detalle" onClick={() => setModalDetalle(r)}>Ver detalles</button>
-                                <button type="button" className="pv2-btn-more" onClick={() => eliminarReserva(r.id)} title="Eliminar">···</button>
-                              </>)}
-                            </div>
-                          </div>
-                        );
-                      })}
+                          );
+                        })}
+                      </div>
                     </div>
                   );
                 })}

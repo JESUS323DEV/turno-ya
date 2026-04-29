@@ -1137,7 +1137,6 @@ button.panel-stat {
 
 /* ── Panel v2 ───────────────────────────────────────────────────────────────── */
 
-.admin-form--panel { max-width: 900px; }
 
 .panel-v2 { display: flex; flex-direction: column; gap: 14px; }
 
@@ -1204,23 +1203,13 @@ button.panel-stat {
 }
 .panel-v2-clear:hover { border-color: var(--accent); color: var(--accent); }
 
-/* Tabla */
-.panel-v2-table { display: flex; flex-direction: column; }
-
-.panel-v2-thead {
-  display: grid;
-  grid-template-columns: 110px 1fr 90px 70px 90px 140px 180px;
-  padding: 8px 14px; gap: 8px;
-  font-size: 11px; font-weight: 600; text-transform: uppercase;
-  letter-spacing: 0.5px; color: var(--text);
-  border-bottom: 1.5px solid var(--border);
-}
-
-.panel-v2-grupo { margin-bottom: 4px; }
+/* Cards */
+.panel-v2-grupos { display: flex; flex-direction: column; gap: 4px; }
+.panel-v2-lista { display: flex; flex-direction: column; gap: 8px; padding-bottom: 8px; }
 
 .panel-v2-grupo-header {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 10px 14px 6px; gap: 8px;
+  padding: 10px 2px 6px; gap: 8px;
 }
 .panel-v2-grupo-label { font-size: 13px; font-weight: 600; color: var(--text-h); }
 .panel-v2-grupo-badge {
@@ -1229,46 +1218,38 @@ button.panel-stat {
   border-radius: 20px; color: var(--text); white-space: nowrap;
 }
 
-.panel-v2-row {
-  display: grid;
-  grid-template-columns: 110px 1fr 90px 70px 90px 140px 180px;
-  align-items: center; gap: 8px;
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--border);
-  transition: background 0.1s;
+.panel-v2-card {
+  border: 1.5px solid var(--border);
+  border-left: 3px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex; flex-direction: column; gap: 8px;
+  background: var(--bg);
 }
-.panel-v2-row:last-child { border-bottom: none; }
-.panel-v2-row:hover { background: var(--accent-bg); }
-.panel-v2-row--cancelada { opacity: 0.65; }
+.panel-v2-card--pendiente  { border-left-color: #f59e0b; }
+.panel-v2-card--confirmada { border-left-color: #16a34a; }
+.panel-v2-card--cancelada  { border-left-color: #dc2626; opacity: 0.65; }
 
-.pv2-col { display: flex; align-items: center; gap: 5px; min-width: 0; }
-.pv2-col-cliente { flex-direction: column; align-items: flex-start; gap: 1px; }
+.panel-v2-card-top {
+  display: flex; align-items: center; justify-content: space-between;
+}
 
-.pv2-nombre { font-size: 14px; font-weight: 600; color: var(--text-h); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
-.pv2-subtexto { font-size: 11px; color: var(--text-muted, #9ca3af); }
+.panel-v2-card-mid {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; min-width: 0;
+}
+
+.panel-v2-card-meta {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 12px; color: var(--text); white-space: nowrap; flex-shrink: 0;
+}
+
+.pv2-nombre { font-size: 14px; font-weight: 600; color: var(--text-h); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
 .pv2-hora { font-size: 13px; font-weight: 600; color: var(--text-h); white-space: nowrap; }
 .pv2-icon { color: var(--text); flex-shrink: 0; }
-.pv2-wa-icon { width: 22px; height: 22px; display: block; flex-shrink: 0; }
-
-.pv2-col-contacto { gap: 6px; }
-.pv2-col-acciones { gap: 5px; }
 
 .panel-v2-tel { font-size: 12px; color: var(--accent); text-decoration: none; white-space: nowrap; }
 .panel-v2-tel:hover { text-decoration: underline; }
-
-.pv2-btn-confirmar {
-  padding: 5px 10px; font-size: 12px; font-weight: 600;
-  background: #16a34a; color: #fff; border: none; border-radius: 6px;
-  cursor: pointer; white-space: nowrap; font-family: inherit; transition: filter 0.15s;
-}
-.pv2-btn-confirmar:hover { filter: brightness(1.1); }
-
-.pv2-btn-cancelar {
-  padding: 5px 10px; font-size: 12px; font-weight: 500;
-  background: none; color: #dc2626; border: 1.5px solid #dc2626; border-radius: 6px;
-  cursor: pointer; white-space: nowrap; font-family: inherit; transition: background 0.15s;
-}
-.pv2-btn-cancelar:hover { background: rgba(220,38,38,0.08); }
 
 .panel-v2-btn-detalle {
   padding: 5px 10px; font-size: 12px; font-weight: 500;
@@ -1286,7 +1267,7 @@ button.panel-stat {
 }
 .pv2-btn-more:hover { border-color: var(--accent); }
 
-/* Paginación */
+/* Paginacion */
 .panel-v2-pagination { display: flex; align-items: center; justify-content: center; gap: 4px; padding: 8px 0 4px; }
 .pv2-page-btn {
   min-width: 32px; height: 32px; padding: 0 8px;
@@ -1298,27 +1279,8 @@ button.panel-stat {
 .pv2-page-btn--active { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
 .pv2-page-btn:disabled { opacity: 0.4; cursor: default; }
 
-/* Responsive: en pantallas estrechas colapsa a tarjetas */
 @media (max-width: 640px) {
-  .panel-v2-thead { display: none; }
-  .panel-v2-row {
-    grid-template-columns: 1fr;
-    gap: 6px; padding: 12px 14px;
-    border: 1.5px solid var(--border); border-left: 3px solid var(--border);
-    border-radius: 10px; margin-bottom: 7px;
-  }
-  .panel-v2-row--pendiente  { border-left-color: #f59e0b !important; }
-  .panel-v2-row--confirmada { border-left-color: #16a34a !important; }
-  .panel-v2-row--cancelada  { border-left-color: #dc2626 !important; }
-  .pv2-col-estado { order: 1; }
-  .pv2-col-cliente { order: 2; flex-direction: row; gap: 8px; align-items: center; }
-  .pv2-subtexto { display: none; }
-  .pv2-col-hora { order: 3; }
-  .pv2-col-personas { order: 4; }
-  .pv2-col-servicio { order: 5; }
-  .pv2-col-contacto { order: 6; }
-  .pv2-col-acciones { order: 7; }
-  .panel-v2-stat { padding: 10px 10px; gap: 8px; }
+  .panel-v2-stat { padding: 10px; gap: 8px; }
   .panel-v2-stat-num { font-size: 18px; }
   .panel-v2-stat-icon-wrap { width: 28px; height: 28px; }
 }
