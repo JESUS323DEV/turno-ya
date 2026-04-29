@@ -52,6 +52,7 @@ export default function AdminPanel() {
   const [modalDetalle, setModalDetalle] = useState(null);
   const [ultimaActualizacion, setUltimaActualizacion] = useState(null);
   const [paginaPanel, setPaginaPanel] = useState(1);
+  const [tabFecha, setTabFecha] = useState("hoy");
 
   // ─── Reservas desde Supabase ───────────────────────────────────────────────
   const [reservasMock, setReservasMock] = useState([]);
@@ -113,27 +114,29 @@ export default function AdminPanel() {
     return true;
   });
 
-  const reservasPanelOrdenadas = [...reservasPanelV2].sort(
-    (a, b) => a.fecha.localeCompare(b.fecha) || (a.hora || "").localeCompare(b.hora || "")
-  );
-  const POR_PAGINA = 10;
-  const totalPaginasPanel = Math.ceil(reservasPanelOrdenadas.length / POR_PAGINA);
-  const reservasPaginadas = reservasPanelOrdenadas.slice((paginaPanel - 1) * POR_PAGINA, paginaPanel * POR_PAGINA);
+  const pasadoMananaStr = (() => { const d = new Date(); d.setDate(d.getDate() + 2); return d.toISOString().split("T")[0]; })();
 
-  const gruposPanelRender = { _hoy: [], _manana: [], _proximos: [] };
-  reservasPaginadas.forEach(r => {
-    if (r.fecha === hoyStr) gruposPanelRender._hoy.push(r);
-    else if (r.fecha === mananaStr) gruposPanelRender._manana.push(r);
-    else gruposPanelRender._proximos.push(r);
-  });
-  const GRUPOS_CONFIG = {
-    _hoy: { label: "HOY", fechaStr: hoyStr },
-    _manana: { label: "MAÑANA", fechaStr: mananaStr },
-    _proximos: { label: "PRÓXIMOS DÍAS", fechaStr: null },
-  };
+  const countHoy = reservasPanelV2.filter(r => r.fecha === hoyStr).length;
+  const countManana = reservasPanelV2.filter(r => r.fecha === mananaStr).length;
+  const countProximos = reservasPanelV2.filter(r => r.fecha >= pasadoMananaStr).length;
+
+  const reservasPorTab = reservasPanelV2.filter(r => {
+    if (tabFecha === "hoy") return r.fecha === hoyStr;
+    if (tabFecha === "manana") return r.fecha === mananaStr;
+    return r.fecha >= pasadoMananaStr;
+  }).sort((a, b) => a.fecha.localeCompare(b.fecha) || (a.hora || "").localeCompare(b.hora || ""));
+
+  const POR_PAGINA = 10;
+  const totalPaginasPanel = Math.ceil(reservasPorTab.length / POR_PAGINA);
+  const reservasPaginadas = reservasPorTab.slice((paginaPanel - 1) * POR_PAGINA, paginaPanel * POR_PAGINA);
+
+  const fechasProximas = tabFecha === "proximos"
+    ? [...new Set(reservasPaginadas.map(r => r.fecha))].sort()
+    : [];
+
   const fechaLarga = (str) => {
     const [y, m, d] = str.split("-").map(Number);
-    return new Date(y, m - 1, d).toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" });
+    return new Date(y, m - 1, d).toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" });
   };
 
   // ─── Acciones sobre reservas ───────────────────────────────────────────────
@@ -283,34 +286,46 @@ export default function AdminPanel() {
               </div>
             </div>
 
-            {/* Cards agrupadas */}
-            {reservasPanelV2.length === 0 ? (
+            {/* Pestañas de fecha */}
+            <div className="panel-v2-tabs-fecha">
+              {[
+                { key: "hoy",      label: "Hoy",          count: countHoy },
+                { key: "manana",   label: "Mañana",       count: countManana },
+                { key: "proximos", label: "Próximos días", count: countProximos },
+              ].map(({ key, label, count }) => (
+                <button key={key} type="button"
+                  className={`panel-v2-tab-fecha ${tabFecha === key ? "panel-v2-tab-fecha--active" : ""}`}
+                  onClick={() => { setTabFecha(key); setPaginaPanel(1); }}>
+                  {label}
+                  {count > 0 && <span className="panel-v2-tab-badge">{count}</span>}
+                </button>
+              ))}
+            </div>
+
+            {/* Cards por tab */}
+            {reservasPorTab.length === 0 ? (
               <p className="admin-hint" style={{ textAlign: "center", padding: "2rem 0" }}>
-                {hayFiltros ? "No hay reservas con esos filtros." : "No hay reservas próximas."}
+                {hayFiltros ? "No hay reservas con esos filtros." : "Sin reservas para este período."}
               </p>
             ) : (<>
-              <div className="panel-v2-grupos">
-                {Object.entries(gruposPanelRender).map(([key, reservas]) => {
-                  if (!reservas.length) return null;
-                  const { label, fechaStr } = GRUPOS_CONFIG[key];
-                  const titulo = fechaStr ? `${label} — ${fechaLarga(fechaStr)}` : label;
-                  return (
-                    <div key={key} className="panel-v2-grupo">
-                      <div className="panel-v2-grupo-header">
-                        <span className="panel-v2-grupo-label">📅 {titulo}</span>
-                        <span className="panel-v2-grupo-badge">{reservas.length} reserva{reservas.length !== 1 ? "s" : ""}</span>
-                      </div>
-                      <div className="panel-v2-lista">
-                        {reservas.map(r => {
-                          const esProximo = key === "_proximos";
-                          const fechaMostrar = esProximo ? `${r.fecha.split("-")[2]}/${r.fecha.split("-")[1]}` : null;
-                          return (
+              {tabFecha === "proximos" ? (
+                <div className="panel-v2-grupos">
+                  {fechasProximas.map(fecha => {
+                    const rf = reservasPaginadas.filter(r => r.fecha === fecha);
+                    return (
+                      <div key={fecha} className="panel-v2-grupo">
+                        <div className="panel-v2-grupo-header">
+                          <span className="panel-v2-grupo-label">📅 {fechaLarga(fecha)}</span>
+                          <span className="panel-v2-grupo-badge">{rf.length} reserva{rf.length !== 1 ? "s" : ""}</span>
+                        </div>
+                        <div className="panel-v2-lista">
+                          {rf.map(r => (
                             <div key={r.id} className={`panel-v2-card panel-v2-card--${r.estado}`}>
                               <div className="panel-v2-card-top">
                                 <span className={`panel-badge panel-badge--${r.estado}`}>
                                   {r.estado === "pendiente" ? "Pendiente" : r.estado === "confirmada" ? "Confirmada" : "Cancelada"}
                                 </span>
-                                <span className="pv2-hora">{fechaMostrar ? `${fechaMostrar} · ${r.hora}` : r.hora}</span>
+                                <span className="pv2-hora">{r.hora}</span>
                               </div>
                               <div className="panel-v2-card-mid">
                                 <span className="pv2-nombre">{r.nombre}</span>
@@ -335,15 +350,49 @@ export default function AdminPanel() {
                                 </>)}
                               </div>
                             </div>
-                          );
-                        })}
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="panel-v2-lista">
+                  {reservasPaginadas.map(r => (
+                    <div key={r.id} className={`panel-v2-card panel-v2-card--${r.estado}`}>
+                      <div className="panel-v2-card-top">
+                        <span className={`panel-badge panel-badge--${r.estado}`}>
+                          {r.estado === "pendiente" ? "Pendiente" : r.estado === "confirmada" ? "Confirmada" : "Cancelada"}
+                        </span>
+                        <span className="pv2-hora">{r.hora}</span>
+                      </div>
+                      <div className="panel-v2-card-mid">
+                        <span className="pv2-nombre">{r.nombre}</span>
+                        <span className="panel-v2-card-meta">
+                          <Users size={11} className="pv2-icon" />{r.personas}{r.servicio ? ` · ${r.servicio}` : ""}
+                        </span>
+                      </div>
+                      <div className="panel-card-tel">
+                        <a href={`tel:${r.telefono}`} className="panel-v2-tel">{r.telefono}</a>
+                        <a href={`https://wa.me/${(r.telefono || "").replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer">
+                          <img src={iconWa} alt="WA" className="panel-wa-icon" />
+                        </a>
+                      </div>
+                      <div className="panel-card-actions">
+                        {r.estado === "pendiente" ? (<>
+                          <button type="button" className="panel-btn-confirmar" onClick={() => cambiarEstado(r.id, "confirmada")}>Confirmar</button>
+                          <button type="button" className="panel-btn-cancelar" onClick={() => cambiarEstado(r.id, "cancelada")}>Cancelar</button>
+                          <button type="button" className="pv2-btn-more" onClick={() => setModalDetalle(r)} title="Ver detalles">···</button>
+                        </>) : (<>
+                          <button type="button" className="panel-v2-btn-detalle" onClick={() => setModalDetalle(r)}>Ver detalles</button>
+                          <button type="button" className="pv2-btn-more" onClick={() => eliminarReserva(r.id)} title="Eliminar">···</button>
+                        </>)}
                       </div>
                     </div>
-                  );
-                })}
-              </div>
+                  ))}
+                </div>
+              )}
 
-              {/* Paginación */}
               {totalPaginasPanel > 1 && (
                 <div className="panel-v2-pagination">
                   <button type="button" className="pv2-page-btn" disabled={paginaPanel === 1}
