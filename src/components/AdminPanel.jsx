@@ -9,6 +9,7 @@ import ReservaWhatsApp from "./ReservaWhatsApp";
 import { TEMAS } from "../config/temas";
 import { PERFILES } from "../config/perfiles";
 import "../styles/admin.css";
+import "../styles/panel.css";
 
 // ─── Componente principal ────────────────────────────────────────────────────
 export default function AdminPanel() {
