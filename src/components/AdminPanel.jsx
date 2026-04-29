@@ -1,6 +1,6 @@
 // ─── Imports ────────────────────────────────────────────────────────────────
 import { useState, useEffect } from "react";
-import { Search, Users } from "lucide-react";
+import { Search, Users, Clock, CheckCircle2, XCircle } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import iconWa from "../assets/icon-whatsapp.png";
 import { useAdminConfig, DIAS } from "../hooks/useAdminConfig";
@@ -51,6 +51,7 @@ export default function AdminPanel() {
   const [filtroPersonas, setFiltroPersonas] = useState("todos");
   const [modalDetalle, setModalDetalle] = useState(null);
   const [ultimaActualizacion, setUltimaActualizacion] = useState(null);
+  const [paginaPanel, setPaginaPanel] = useState(1);
 
   // ─── Reservas desde Supabase ───────────────────────────────────────────────
   const [reservasMock, setReservasMock] = useState([]);
@@ -116,12 +117,28 @@ export default function AdminPanel() {
     return true;
   });
 
-  const gruposPanel = {};
-  reservasPanelV2.forEach(r => {
-    if (!gruposPanel[r.fecha]) gruposPanel[r.fecha] = [];
-    gruposPanel[r.fecha].push(r);
+  const reservasPanelOrdenadas = [...reservasPanelV2].sort(
+    (a, b) => a.fecha.localeCompare(b.fecha) || (a.hora || "").localeCompare(b.hora || "")
+  );
+  const POR_PAGINA = 10;
+  const totalPaginasPanel = Math.ceil(reservasPanelOrdenadas.length / POR_PAGINA);
+  const reservasPaginadas = reservasPanelOrdenadas.slice((paginaPanel - 1) * POR_PAGINA, paginaPanel * POR_PAGINA);
+
+  const gruposPanelRender = { _hoy: [], _manana: [], _proximos: [] };
+  reservasPaginadas.forEach(r => {
+    if (r.fecha === hoyStr) gruposPanelRender._hoy.push(r);
+    else if (r.fecha === mananaStr) gruposPanelRender._manana.push(r);
+    else gruposPanelRender._proximos.push(r);
   });
-  const gruposOrdenados = Object.entries(gruposPanel).sort(([a], [b]) => a.localeCompare(b));
+  const GRUPOS_CONFIG = {
+    _hoy:     { label: "HOY",     fechaStr: hoyStr },
+    _manana:  { label: "MAÑANA",  fechaStr: mananaStr },
+    _proximos:{ label: "PRÓXIMOS DÍAS", fechaStr: null },
+  };
+  const fechaLarga = (str) => {
+    const [y, m, d] = str.split("-").map(Number);
+    return new Date(y, m - 1, d).toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" });
+  };
 
   // ─── Acciones sobre reservas ───────────────────────────────────────────────
   const cambiarEstado = async (id, estado) => {
@@ -198,7 +215,7 @@ export default function AdminPanel() {
   // ─── Panel principal (autenticado) ─────────────────────────────────────────
   return (
     <section className="admin-section">
-      <form className="admin-form" onSubmit={guardar}>
+      <form className={`admin-form${seccion === "reservas" ? " admin-form--panel" : ""}`} onSubmit={guardar}>
 
         {/* Cabecera con título y fecha */}
         <div className="admin-header">
@@ -224,128 +241,158 @@ export default function AdminPanel() {
         {tab === "panel" && (
           <div className="panel-v2">
 
-            {/* Indicador "En vivo" */}
+            {/* Header: En vivo + fecha */}
             <div className="panel-v2-header">
               <div className="panel-v2-live">
                 <span className="panel-v2-live-dot" />
                 <span>En vivo</span>
                 {ultimaActualizacion && (
-                  <span className="panel-v2-update">
-                    · {ultimaActualizacion.toLocaleTimeString("es", { hour: "2-digit", minute: "2-digit" })}
-                  </span>
+                  <span className="panel-v2-update">· {ultimaActualizacion.toLocaleTimeString("es", { hour: "2-digit", minute: "2-digit" })}</span>
                 )}
               </div>
               <span className="panel-v2-fecha-header">{hoyFormateado}</span>
             </div>
 
-            {/* Stats: pendientes / confirmadas / canceladas (desde hoy) */}
+            {/* Stats con icono */}
             <div className="panel-v2-stats">
               <div className="panel-v2-stat panel-v2-stat--pendiente">
-                <span className="panel-v2-stat-num">{statsPendientes}</span>
-                <span className="panel-v2-stat-lbl">Pendientes</span>
+                <span className="panel-v2-stat-icon-wrap panel-v2-stat-icon-wrap--pendiente"><Clock size={16} /></span>
+                <div><span className="panel-v2-stat-num">{statsPendientes}</span><span className="panel-v2-stat-lbl">Pendientes</span></div>
               </div>
               <div className="panel-v2-stat panel-v2-stat--confirmada">
-                <span className="panel-v2-stat-num">{statsConfirmadas}</span>
-                <span className="panel-v2-stat-lbl">Confirmadas</span>
+                <span className="panel-v2-stat-icon-wrap panel-v2-stat-icon-wrap--confirmada"><CheckCircle2 size={16} /></span>
+                <div><span className="panel-v2-stat-num">{statsConfirmadas}</span><span className="panel-v2-stat-lbl">Confirmadas</span></div>
               </div>
               <div className="panel-v2-stat panel-v2-stat--cancelada">
-                <span className="panel-v2-stat-num">{statsCanceladas}</span>
-                <span className="panel-v2-stat-lbl">Canceladas</span>
+                <span className="panel-v2-stat-icon-wrap panel-v2-stat-icon-wrap--cancelada"><XCircle size={16} /></span>
+                <div><span className="panel-v2-stat-num">{statsCanceladas}</span><span className="panel-v2-stat-lbl">Canceladas</span></div>
               </div>
             </div>
 
-            {/* Buscador */}
+            {/* Toolbar: buscador + filtros en una fila */}
             <div className="panel-v2-toolbar">
               <div className="panel-v2-search-wrap">
                 <Search size={14} className="panel-v2-search-icon" />
-                <input
-                  type="text"
-                  className="panel-v2-search"
-                  placeholder="Buscar por nombre o teléfono..."
-                  value={busqueda}
-                  onChange={(e) => setBusqueda(e.target.value)}
-                />
+                <input type="text" className="panel-v2-search" placeholder="Buscar por nombre o teléfono..."
+                  value={busqueda} onChange={(e) => { setBusqueda(e.target.value); setPaginaPanel(1); }} />
               </div>
-              <div className="panel-v2-selects">
-                <select className="panel-v2-select" value={filtroPanel} onChange={(e) => setFiltroPanel(e.target.value)}>
-                  <option value="todas">Estado</option>
+              <div className="panel-v2-filters-row">
+                <select className="panel-v2-select" value={filtroPanel} onChange={(e) => { setFiltroPanel(e.target.value); setPaginaPanel(1); }}>
+                  <option value="todas">Estado: Todos</option>
                   <option value="pendiente">Pendiente</option>
                   <option value="confirmada">Confirmada</option>
                   <option value="cancelada">Cancelada</option>
                 </select>
-                {serviciosEnReservas.length > 0 && (
-                  <select className="panel-v2-select" value={filtroServicio} onChange={(e) => setFiltroServicio(e.target.value)}>
-                    <option value="todos">Servicio</option>
-                    {serviciosEnReservas.map(s => <option key={s} value={s}>{s}</option>)}
-                  </select>
-                )}
-                <select className="panel-v2-select" value={filtroPersonas} onChange={(e) => setFiltroPersonas(e.target.value)}>
-                  <option value="todos">Personas</option>
+                <select className="panel-v2-select" value={filtroServicio} onChange={(e) => { setFiltroServicio(e.target.value); setPaginaPanel(1); }}>
+                  <option value="todos">Servicio: Todos</option>
+                  {serviciosEnReservas.map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+                <select className="panel-v2-select" value={filtroPersonas} onChange={(e) => { setFiltroPersonas(e.target.value); setPaginaPanel(1); }}>
+                  <option value="todos">Personas: Todas</option>
                   <option value="1-2">1 – 2</option>
                   <option value="3-5">3 – 5</option>
                   <option value="6+">6 +</option>
                 </select>
+                {hayFiltros && (
+                  <button type="button" className="panel-v2-clear" onClick={() => { limpiarFiltros(); setPaginaPanel(1); }}>
+                    Limpiar filtros
+                  </button>
+                )}
               </div>
-              {hayFiltros && (
-                <button type="button" className="panel-v2-clear" onClick={limpiarFiltros}>
-                  Limpiar filtros
-                </button>
-              )}
             </div>
 
-            {/* Lista agrupada por fecha */}
+            {/* Tabla agrupada */}
             {reservasPanelV2.length === 0 ? (
               <p className="admin-hint" style={{ textAlign: "center", padding: "2rem 0" }}>
                 {hayFiltros ? "No hay reservas con esos filtros." : "No hay reservas próximas."}
               </p>
-            ) : (
-              <div className="panel-v2-grupos">
-                {gruposOrdenados.map(([fecha, reservas]) => {
-                  const label = fecha === hoyStr ? "HOY" : fecha === mananaStr ? "MAÑANA" : fecha.split("-").reverse().join("/");
+            ) : (<>
+              <div className="panel-v2-table">
+                {/* Cabeceras de columna */}
+                <div className="panel-v2-thead">
+                  <span>Estado</span>
+                  <span>Cliente</span>
+                  <span>Hora</span>
+                  <span>Personas</span>
+                  <span>Servicio</span>
+                  <span>Contacto</span>
+                  <span>Acciones</span>
+                </div>
+
+                {Object.entries(gruposPanelRender).map(([key, reservas]) => {
+                  if (!reservas.length) return null;
+                  const { label, fechaStr } = GRUPOS_CONFIG[key];
+                  const titulo = fechaStr ? `${label} — ${fechaLarga(fechaStr)}` : label;
                   return (
-                    <div key={fecha} className="panel-v2-grupo">
+                    <div key={key} className="panel-v2-grupo">
                       <div className="panel-v2-grupo-header">
-                        <span className="panel-v2-grupo-label">{label}</span>
-                        <span className="panel-v2-grupo-count">{reservas.length} reserva{reservas.length !== 1 ? "s" : ""}</span>
+                        <span className="panel-v2-grupo-label">📅 {titulo}</span>
+                        <span className="panel-v2-grupo-badge">{reservas.length} reserva{reservas.length !== 1 ? "s" : ""}</span>
                       </div>
-                      {[...reservas].sort((a, b) => (a.hora || "").localeCompare(b.hora || "")).map(r => (
-                        <div key={r.id} className={`panel-v2-card panel-v2-card--${r.estado}`}>
-                          <div className="panel-v2-card-top">
-                            <span className={`panel-badge panel-badge--${r.estado}`}>
-                              {r.estado === "pendiente" ? "Pendiente" : r.estado === "confirmada" ? "Confirmada" : "Cancelada"}
-                            </span>
-                            <span className="panel-v2-card-nombre">{r.nombre}</span>
-                            <span className="panel-v2-card-hora">{r.hora}</span>
-                          </div>
-                          <div className="panel-v2-card-mid">
-                            <span className="panel-v2-card-meta">
-                              <Users size={12} style={{ display: "inline", verticalAlign: "middle", marginRight: 3 }} />
-                              {r.personas} {Number(r.personas) === 1 ? "persona" : "personas"}
-                              {r.servicio ? ` · ${r.servicio}` : ""}
-                            </span>
-                            <div className="panel-v2-card-contacto">
+                      {reservas.map(r => {
+                        const horaCell = key === "_proximos"
+                          ? `${r.fecha.split("-")[2]}/${r.fecha.split("-")[1]} · ${r.hora}`
+                          : r.hora;
+                        return (
+                          <div key={r.id} className={`panel-v2-row panel-v2-row--${r.estado}`}>
+                            <div className="pv2-col pv2-col-estado">
+                              <span className={`panel-badge panel-badge--${r.estado}`}>
+                                {r.estado === "pendiente" ? "Pendiente" : r.estado === "confirmada" ? "Confirmada" : "Cancelada"}
+                              </span>
+                            </div>
+                            <div className="pv2-col pv2-col-cliente">
+                              <span className="pv2-nombre">{r.nombre}</span>
+                              <span className="pv2-subtexto">Reserva online</span>
+                            </div>
+                            <div className="pv2-col pv2-col-hora">
+                              <span className="pv2-hora">{horaCell}</span>
+                            </div>
+                            <div className="pv2-col pv2-col-personas">
+                              <Users size={12} className="pv2-icon" />
+                              <span>{r.personas}</span>
+                            </div>
+                            <div className="pv2-col pv2-col-servicio">
+                              <span>{r.servicio || "—"}</span>
+                            </div>
+                            <div className="pv2-col pv2-col-contacto">
                               <a href={`tel:${r.telefono}`} className="panel-v2-tel">{r.telefono}</a>
                               <a href={`https://wa.me/${(r.telefono || "").replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer">
-                                <img src={iconWa} alt="WA" style={{ width: 22, height: 22, display: "block" }} />
+                                <img src={iconWa} alt="WA" className="pv2-wa-icon" />
                               </a>
                             </div>
+                            <div className="pv2-col pv2-col-acciones">
+                              {r.estado === "pendiente" ? (<>
+                                <button type="button" className="pv2-btn-confirmar" onClick={() => cambiarEstado(r.id, "confirmada")}>Confirmar</button>
+                                <button type="button" className="pv2-btn-cancelar" onClick={() => cambiarEstado(r.id, "cancelada")}>Cancelar</button>
+                                <button type="button" className="pv2-btn-more" onClick={() => setModalDetalle(r)} title="Ver detalles">···</button>
+                              </>) : (<>
+                                <button type="button" className="panel-v2-btn-detalle" onClick={() => setModalDetalle(r)}>Ver detalles</button>
+                                <button type="button" className="pv2-btn-more" onClick={() => eliminarReserva(r.id)} title="Eliminar">···</button>
+                              </>)}
+                            </div>
                           </div>
-                          <div className="panel-v2-card-actions">
-                            {r.estado === "pendiente" ? (<>
-                              <button type="button" className="panel-btn-confirmar" onClick={() => cambiarEstado(r.id, "confirmada")}>✓ Confirmar</button>
-                              <button type="button" className="panel-btn-cancelar" onClick={() => cambiarEstado(r.id, "cancelada")}>✕ Cancelar</button>
-                            </>) : (<>
-                              <button type="button" className="panel-v2-btn-detalle" onClick={() => setModalDetalle(r)}>Ver detalles</button>
-                              <button type="button" className="panel-btn-eliminar" style={{ flex: "0 0 auto", padding: "7px 10px" }} onClick={() => eliminarReserva(r.id)}>✕</button>
-                            </>)}
-                          </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   );
                 })}
               </div>
-            )}
+
+              {/* Paginación */}
+              {totalPaginasPanel > 1 && (
+                <div className="panel-v2-pagination">
+                  <button type="button" className="pv2-page-btn" disabled={paginaPanel === 1}
+                    onClick={() => setPaginaPanel(p => p - 1)}>‹</button>
+                  {Array.from({ length: totalPaginasPanel }, (_, i) => i + 1).map(n => (
+                    <button key={n} type="button"
+                      className={`pv2-page-btn ${paginaPanel === n ? "pv2-page-btn--active" : ""}`}
+                      onClick={() => setPaginaPanel(n)}>{n}</button>
+                  ))}
+                  <button type="button" className="pv2-page-btn" disabled={paginaPanel === totalPaginasPanel}
+                    onClick={() => setPaginaPanel(p => p + 1)}>›</button>
+                </div>
+              )}
+            </>)}
           </div>
         )}
 
