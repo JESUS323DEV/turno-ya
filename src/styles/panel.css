@@ -1,3 +1,21 @@
+/* ── Tema oscuro fijo del panel de reservas (Carbón) ────────────────────────── */
+
+.reservas-scope {
+  --bg: #1a1a1a;
+  --text: #9ca3af;
+  --text-h: #f3f4f6;
+  --text-muted: #6b7280;
+  --border: #2e2e2e;
+  --code-bg: #242424;
+  --accent: #f59e0b;
+  --accent-bg: rgba(245, 158, 11, 0.12);
+  --accent-border: rgba(245, 158, 11, 0.4);
+  --btn-text: #111;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  background: var(--bg);
+  color: var(--text);
+}
+
 /* ── Panel de reservas (historial) ─────────────────────────────────────────── */
 
 .panel-reservas {

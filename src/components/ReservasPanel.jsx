@@ -145,7 +145,7 @@ export default function ReservasPanel({ pin, onBack }) {
   );
 
   return (
-    <section className="admin-section">
+    <section className="admin-section reservas-scope">
       <form className="admin-form">
 
         <div className="admin-header">
