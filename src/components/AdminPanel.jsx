@@ -1,6 +1,6 @@
 // ─── Imports ────────────────────────────────────────────────────────────────
 import { useState, useEffect } from "react";
-import { Search, Users, Clock, CheckCircle2, XCircle } from "lucide-react";
+import { Search, Users } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import iconWa from "../assets/icon-whatsapp.png";
 import { useAdminConfig, DIAS } from "../hooks/useAdminConfig";
@@ -91,10 +91,6 @@ export default function AdminPanel() {
   // ─── Panel v2: computed ────────────────────────────────────────────────────
   const mananaStr = (() => { const d = new Date(); d.setDate(d.getDate() + 1); return d.toISOString().split("T")[0]; })();
 
-  const statsPendientes = reservasMock.filter(r => r.fecha >= hoyStr && r.estado === "pendiente").length;
-  const statsConfirmadas = reservasMock.filter(r => r.fecha >= hoyStr && r.estado === "confirmada").length;
-  const statsCanceladas = reservasMock.filter(r => r.fecha >= hoyStr && r.estado === "cancelada").length;
-
   const serviciosEnReservas = [...new Set(reservasMock.map(r => r.servicio).filter(Boolean))];
 
   const hayFiltros = busqueda !== "" || filtroPanel !== "todas" || filtroServicio !== "todos" || filtroPersonas !== "todos";
@@ -131,9 +127,9 @@ export default function AdminPanel() {
     else gruposPanelRender._proximos.push(r);
   });
   const GRUPOS_CONFIG = {
-    _hoy:     { label: "HOY",     fechaStr: hoyStr },
-    _manana:  { label: "MAÑANA",  fechaStr: mananaStr },
-    _proximos:{ label: "PRÓXIMOS DÍAS", fechaStr: null },
+    _hoy: { label: "HOY", fechaStr: hoyStr },
+    _manana: { label: "MAÑANA", fechaStr: mananaStr },
+    _proximos: { label: "PRÓXIMOS DÍAS", fechaStr: null },
   };
   const fechaLarga = (str) => {
     const [y, m, d] = str.split("-").map(Number);
@@ -220,7 +216,18 @@ export default function AdminPanel() {
         {/* Cabecera con título y fecha */}
         <div className="admin-header">
           <h2 className="admin-title">{seccion === "reservas" ? "Panel de reservas" : "Configuración"}</h2>
-          {seccion === "reservas" && <p className="admin-fecha-hoy">{hoyFormateado}</p>}
+
+            {/* Header: En vivo + fecha */}
+            <div className="panel-v2-header">
+              <div className="panel-v2-live">
+                <span className="panel-v2-live-dot" />
+                <span>En vivo</span>
+                {ultimaActualizacion && (
+                  <span className="panel-v2-update">· {ultimaActualizacion.toLocaleTimeString("es", { hour: "2-digit", minute: "2-digit" })}</span>
+                )}
+              </div>
+              <span className="panel-v2-fecha-header">{hoyFormateado}</span>
+            </div>
         </div>
 
         {/* Pestañas de navegación */}
@@ -241,33 +248,8 @@ export default function AdminPanel() {
         {tab === "panel" && (
           <div className="panel-v2">
 
-            {/* Header: En vivo + fecha */}
-            <div className="panel-v2-header">
-              <div className="panel-v2-live">
-                <span className="panel-v2-live-dot" />
-                <span>En vivo</span>
-                {ultimaActualizacion && (
-                  <span className="panel-v2-update">· {ultimaActualizacion.toLocaleTimeString("es", { hour: "2-digit", minute: "2-digit" })}</span>
-                )}
-              </div>
-              <span className="panel-v2-fecha-header">{hoyFormateado}</span>
-            </div>
+          
 
-            {/* Stats con icono */}
-            <div className="panel-v2-stats">
-              <div className="panel-v2-stat panel-v2-stat--pendiente">
-                <span className="panel-v2-stat-icon-wrap panel-v2-stat-icon-wrap--pendiente"><Clock size={16} /></span>
-                <div><span className="panel-v2-stat-num">{statsPendientes}</span><span className="panel-v2-stat-lbl">Pendientes</span></div>
-              </div>
-              <div className="panel-v2-stat panel-v2-stat--confirmada">
-                <span className="panel-v2-stat-icon-wrap panel-v2-stat-icon-wrap--confirmada"><CheckCircle2 size={16} /></span>
-                <div><span className="panel-v2-stat-num">{statsConfirmadas}</span><span className="panel-v2-stat-lbl">Confirmadas</span></div>
-              </div>
-              <div className="panel-v2-stat panel-v2-stat--cancelada">
-                <span className="panel-v2-stat-icon-wrap panel-v2-stat-icon-wrap--cancelada"><XCircle size={16} /></span>
-                <div><span className="panel-v2-stat-num">{statsCanceladas}</span><span className="panel-v2-stat-lbl">Canceladas</span></div>
-              </div>
-            </div>
 
             {/* Toolbar: buscador + filtros en una fila */}
             <div className="panel-v2-toolbar">
@@ -488,14 +470,14 @@ export default function AdminPanel() {
 
             <p className="admin-hint" style={{ marginTop: "12px" }}>Ajusta los campos a tu gusto.</p>
             {[
-              { key: "nombre",    label: "Nombre" },
+              { key: "nombre", label: "Nombre" },
               { key: "apellidos", label: "Apellidos" },
-              { key: "telefono",  label: "Teléfono" },
-              { key: "email",     label: "Email" },
-              { key: "personas",  label: "Personas" },
-              { key: "fecha",     label: "Fecha" },
-              { key: "hora",      label: "Hora" },
-              { key: "mensaje",   label: "Mensaje" },
+              { key: "telefono", label: "Teléfono" },
+              { key: "email", label: "Email" },
+              { key: "personas", label: "Personas" },
+              { key: "fecha", label: "Fecha" },
+              { key: "hora", label: "Hora" },
+              { key: "mensaje", label: "Mensaje" },
             ].map(({ key, label }) => (
               <div key={key} className="admin-dia-header">
                 <span className="admin-dia-nombre">{label}</span>
