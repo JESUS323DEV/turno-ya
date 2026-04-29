@@ -11,6 +11,7 @@ export default function ReservasPanel({ pin, onBack }) {
   const [reservasMock, setReservasMock] = useState([]);
   const [filtroPanel, setFiltroPanel] = useState("todas");
   const [modalMensaje, setModalMensaje] = useState(null);
+  const [confirmarEliminar, setConfirmarEliminar] = useState(null);
   const [busqueda, setBusqueda] = useState("");
   const [filtroServicio, setFiltroServicio] = useState("todos");
   const [filtroPersonas, setFiltroPersonas] = useState("todos");
@@ -100,8 +101,8 @@ export default function ReservasPanel({ pin, onBack }) {
   };
 
   const eliminarReserva = async (id) => {
-    if (!window.confirm("¿Eliminar esta reserva? Esta acción no se puede deshacer.")) return;
     setReservasMock((prev) => prev.filter((r) => r.id !== id));
+    setConfirmarEliminar(null);
     try {
       await accionReserva(id, "eliminar", pin, SLUG);
     } catch {
@@ -137,7 +138,7 @@ export default function ReservasPanel({ pin, onBack }) {
           <button type="button" className="pv2-btn-more" onClick={() => setModalDetalle(r)} title="Ver detalles">···</button>
         </>) : (<>
           <button type="button" className="panel-v2-btn-detalle" onClick={() => setModalDetalle(r)}>Ver detalles</button>
-          <button type="button" className="panel-btn-eliminar" onClick={() => eliminarReserva(r.id)}>Eliminar</button>
+          <button type="button" className="panel-btn-eliminar" onClick={() => setConfirmarEliminar(r)}>Eliminar</button>
         </>)}
       </div>
     </div>
@@ -363,6 +364,33 @@ export default function ReservasPanel({ pin, onBack }) {
                   style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", textDecoration: "none", borderRadius: 8, padding: "8px", fontSize: 13 }}>
                   WhatsApp
                 </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal confirmación eliminar */}
+      {confirmarEliminar && (
+        <div className="admin-modal-overlay" onClick={() => setConfirmarEliminar(null)}>
+          <div className="admin-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="admin-modal-header">
+              <span className="admin-modal-title">Eliminar reserva</span>
+              <button type="button" className="admin-modal-close" onClick={() => setConfirmarEliminar(null)}>✕</button>
+            </div>
+            <div className="admin-modal-body">
+              <p style={{ fontSize: "14px", color: "var(--text)", lineHeight: 1.5 }}>
+                ¿Estás seguro de que quieres eliminar la reserva de <strong style={{ color: "var(--text-h)" }}>{confirmarEliminar.nombre}</strong>? Esta acción no se puede deshacer.
+              </p>
+              <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
+                <button type="button" className="panel-btn-eliminar" style={{ flex: 1 }}
+                  onClick={() => eliminarReserva(confirmarEliminar.id)}>
+                  Sí, eliminar
+                </button>
+                <button type="button" className="panel-v2-btn-detalle" style={{ flex: 1 }}
+                  onClick={() => setConfirmarEliminar(null)}>
+                  Cancelar
+                </button>
               </div>
             </div>
           </div>
