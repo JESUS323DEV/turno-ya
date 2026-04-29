@@ -17,10 +17,7 @@
         z-index: 9999;
     }
 
-    .reserva-tittle-negocio h1 {
-        font-size: clamp(1.4rem, 6.5vw, 1.8rem);
-        letter-spacing: 0;
-    }
+
 }
 
 /*SM: Móviles pequeños verticales y móviles estándar(576px – 767px) */
@@ -38,10 +35,7 @@
         z-index: 9999;
     }
 
-    .reserva-tittle-negocio h1 {
-        font-size: 1.8rem;
-        letter-spacing: 0.5px;
-    }
+
 }
 
 /*MD: Tablets verticales (768px – 991px) */
@@ -206,7 +200,7 @@
 
 
 
-   
+
 
 
 }
