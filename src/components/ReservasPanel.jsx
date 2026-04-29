@@ -148,7 +148,6 @@ export default function ReservasPanel({ pin, onBack }) {
         {r.estado === "pendiente" ? (<>
           <button type="button" className="panel-btn-confirmar" onClick={() => cambiarEstado(r.id, "confirmada")}>Confirmar</button>
           <button type="button" className="panel-btn-cancelar" onClick={() => cambiarEstado(r.id, "cancelada")}>Cancelar</button>
-          <button type="button" className="pv2-btn-more" onClick={() => setModalDetalle(r)} title="Ver detalles">···</button>
         </>) : (<>
           <button type="button" className="panel-v2-btn-detalle" onClick={() => setModalDetalle(r)}>Ver detalles</button>
           <button type="button" className="panel-btn-eliminar" onClick={() => setConfirmarEliminar(r)}>Eliminar</button>
