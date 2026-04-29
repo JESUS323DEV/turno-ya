@@ -136,7 +136,7 @@ export default function ReservasPanel({ pin, onBack }) {
           <button type="button" className="pv2-btn-more" onClick={() => setModalDetalle(r)} title="Ver detalles">···</button>
         </>) : (<>
           <button type="button" className="panel-v2-btn-detalle" onClick={() => setModalDetalle(r)}>Ver detalles</button>
-          <button type="button" className="pv2-btn-more" onClick={() => eliminarReserva(r.id)} title="Eliminar">···</button>
+          <button type="button" className="panel-btn-eliminar" onClick={() => eliminarReserva(r.id)}>Eliminar</button>
         </>)}
       </div>
     </div>
@@ -362,10 +362,6 @@ export default function ReservasPanel({ pin, onBack }) {
                   style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", textDecoration: "none", borderRadius: 8, padding: "8px", fontSize: 13 }}>
                   WhatsApp
                 </a>
-                <button type="button" className="panel-btn-eliminar" style={{ flex: 1 }}
-                  onClick={() => { eliminarReserva(modalDetalle.id); setModalDetalle(null); }}>
-                  ✕ Eliminar
-                </button>
               </div>
             </div>
           </div>
