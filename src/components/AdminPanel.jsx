@@ -10,51 +10,65 @@ export default function AdminPanel() {
   const { pin, setPin, autenticado, pinError, verificarPin } = adminConfig;
   const [seccion, setSeccion] = useState(null);
 
-  // ── Selector de sección ────────────────────────────────────────────────────
-  if (!seccion) {
-    return (
-      <section className="admin-section">
-        <div className="admin-pin-form">
-          <h2 className="admin-title">¿A dónde quieres ir?</h2>
-          <button className="admin-seccion-btn" onClick={() => setSeccion("reservas")}>
-            <span className="admin-seccion-icon">📋</span>
-            <span>Panel de reservas</span>
-          </button>
-          <button className="admin-seccion-btn" onClick={() => setSeccion("config")}>
-            <span className="admin-seccion-icon">⚙️</span>
-            <span>Configuración</span>
-          </button>
-        </div>
-      </section>
-    );
-  }
-
-  // ── PIN ────────────────────────────────────────────────────────────────────
+  // ── 1. PIN (siempre primero) ───────────────────────────────────────────────
   if (!autenticado) {
     return (
-      <section className="admin-section">
-        <form className="admin-pin-form" onSubmit={verificarPin}>
-          <button type="button" className="admin-seccion-back" onClick={() => setSeccion(null)}>← Volver</button>
-          <h2 className="admin-title">{seccion === "reservas" ? "Panel de reservas" : "Configuración"}</h2>
-          <p className="admin-subtitle">Ingresa el PIN para continuar</p>
-          <input
-            className={`admin-input ${pinError ? "input-bad" : ""}`}
-            type="password"
-            inputMode="numeric"
-            maxLength={8}
-            placeholder="PIN"
-            value={pin}
-            onChange={(e) => setPin(e.target.value)}
-            autoFocus
-          />
-          {pinError && <p className="admin-error">{pinError}</p>}
-          <button className="admin-btn-primary" type="submit">Entrar</button>
+      <section className="admin-section admin-login-section">
+        <form className="admin-login-card" onSubmit={verificarPin}>
+          <div className="admin-login-logo">🗓️</div>
+          <h2 className="admin-login-title">TurnoYa</h2>
+          <p className="admin-login-sub">Panel de administración</p>
+          <div className="admin-login-field">
+            <input
+              className={`admin-input admin-login-input ${pinError ? "input-bad" : ""}`}
+              type="password"
+              inputMode="numeric"
+              maxLength={8}
+              placeholder="Introduce tu PIN"
+              value={pin}
+              onChange={(e) => setPin(e.target.value)}
+              autoFocus
+            />
+            {pinError && <p className="admin-error">{pinError}</p>}
+          </div>
+          <button className="admin-btn-primary admin-login-btn" type="submit">
+            Entrar
+          </button>
         </form>
       </section>
     );
   }
 
-  // ── Paneles autenticados ───────────────────────────────────────────────────
+  // ── 2. Selector de sección (ya autenticado) ────────────────────────────────
+  if (!seccion) {
+    return (
+      <section className="admin-section admin-login-section">
+        <div className="admin-login-card">
+          <div className="admin-login-logo">🗓️</div>
+          <h2 className="admin-login-title">TurnoYa</h2>
+          <p className="admin-login-sub">¿A dónde quieres ir?</p>
+          <div className="admin-selector-btns">
+            <button className="admin-selector-btn" onClick={() => setSeccion("reservas")}>
+              <span className="admin-selector-icon">📋</span>
+              <div>
+                <div className="admin-selector-label">Panel de reservas</div>
+                <div className="admin-selector-desc">Ver y gestionar reservas</div>
+              </div>
+            </button>
+            <button className="admin-selector-btn" onClick={() => setSeccion("config")}>
+              <span className="admin-selector-icon">⚙️</span>
+              <div>
+                <div className="admin-selector-label">Configuración</div>
+                <div className="admin-selector-desc">Horarios, tema, mensajes</div>
+              </div>
+            </button>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // ── 3. Paneles (autenticado + sección elegida) ─────────────────────────────
   if (seccion === "reservas") {
     return <ReservasPanel pin={pin} onBack={() => setSeccion(null)} />;
   }
