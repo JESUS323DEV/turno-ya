@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Calendar, ClipboardList, Settings } from "lucide-react";
 import { useAdminConfig } from "../hooks/useAdminConfig";
 import ReservasPanel from "./ReservasPanel";
 import ConfigPanel from "./ConfigPanel";
@@ -15,7 +16,7 @@ export default function AdminPanel() {
     return (
       <section className="admin-section admin-login-section">
         <form className="admin-login-card" onSubmit={verificarPin}>
-          <div className="admin-login-logo">🗓️</div>
+          <div className="admin-login-logo"><Calendar size={40} strokeWidth={1.5} /></div>
           <h2 className="admin-login-title">TurnoYa</h2>
           <p className="admin-login-sub">Panel de administración</p>
           <div className="admin-login-field">
@@ -44,19 +45,19 @@ export default function AdminPanel() {
     return (
       <section className="admin-section admin-login-section">
         <div className="admin-login-card">
-          <div className="admin-login-logo">🗓️</div>
+          <div className="admin-login-logo"><Calendar size={40} strokeWidth={1.5} /></div>
           <h2 className="admin-login-title">TurnoYa</h2>
           <p className="admin-login-sub">¿A dónde quieres ir?</p>
           <div className="admin-selector-btns">
             <button className="admin-selector-btn" onClick={() => setSeccion("reservas")}>
-              <span className="admin-selector-icon">📋</span>
+              <span className="admin-selector-icon"><ClipboardList size={26} strokeWidth={1.5} /></span>
               <div>
                 <div className="admin-selector-label">Panel de reservas</div>
                 <div className="admin-selector-desc">Ver y gestionar reservas</div>
               </div>
             </button>
             <button className="admin-selector-btn" onClick={() => setSeccion("config")}>
-              <span className="admin-selector-icon">⚙️</span>
+              <span className="admin-selector-icon"><Settings size={26} strokeWidth={1.5} /></span>
               <div>
                 <div className="admin-selector-label">Configuración</div>
                 <div className="admin-selector-desc">Horarios, tema, mensajes</div>
