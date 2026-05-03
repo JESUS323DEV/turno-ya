@@ -54,89 +54,22 @@ export default function ConfigPanel({ config, onBack }) {
             {abierto === "negocio" && (
               <div className="acc-body">
 
-                <fieldset className="admin-fieldset">
-                  <legend className="admin-legend">Tipo de mensaje</legend>
-                  <p className="admin-hint">Elige un encabezado rápido o escríbelo a tu gusto.</p>
-                  <div className="admin-tema-selector">
-                    {PERFILES.map((p) => (
-                      <button key={p.id} type="button"
-                        className={`admin-tema-btn ${draft.perfil === p.id ? "admin-tema-btn--active" : ""}`}
-                        onClick={() => {
-                          setField("perfil", p.id);
-                          if (p.encabezado) setField("encabezadoMensaje", p.encabezado);
-                        }}>
-                        {p.label}
-                      </button>
-                    ))}
-                  </div>
-
-                  <label className="admin-label" style={{ marginTop: "12px" }}>
-                    <span>Título del mensaje de WhatsApp</span>
-                    <input className="admin-input" type="text" maxLength={60}
-                      value={draft.encabezadoMensaje}
-                      onChange={(e) => { setField("encabezadoMensaje", e.target.value); setField("perfil", "personalizado"); }} />
-                    <span className="admin-counter">{draft.encabezadoMensaje.length} / 60</span>
-                  </label>
-
-                  <label className="admin-label">
-                    <span>Texto de cierre del mensaje</span>
-                    <input className="admin-input" type="text" maxLength={60}
-                      value={draft.textoPie ?? ""}
-                      onChange={(e) => setField("textoPie", e.target.value)} />
-                    <span className="admin-counter">{(draft.textoPie ?? "").length} / 60</span>
-                  </label>
-
-                  <p className="admin-hint" style={{ marginTop: "12px" }}>Ajusta los campos a tu gusto.</p>
-                  {[
-                    { key: "nombre", label: "Nombre" },
-                    { key: "apellidos", label: "Apellidos" },
-                    { key: "telefono", label: "Teléfono" },
-                    { key: "email", label: "Email" },
-                    { key: "personas", label: "Personas" },
-                    { key: "fecha", label: "Fecha" },
-                    { key: "hora", label: "Hora" },
-                    { key: "mensaje", label: "Mensaje" },
-                  ].map(({ key, label }) => (
-                    <div key={key} className="admin-dia-header">
-                      <span className="admin-dia-nombre">{label}</span>
-                      <label className="admin-toggle">
-                        <input type="checkbox"
-                          checked={draft.camposActivos?.[key] ?? true}
-                          onChange={(e) => setField("camposActivos", { ...draft.camposActivos, [key]: e.target.checked })} />
-                        <span>{draft.camposActivos?.[key] ?? true ? "Activo" : "Inactivo"}</span>
-                      </label>
-                    </div>
-                  ))}
-                </fieldset>
-
-                <fieldset className="admin-fieldset">
-                  <legend className="admin-legend">Datos del negocio</legend>
-
+                <div className="cfg-card">
+                  <span className="cfg-card-label">Datos del negocio</span>
                   <label className="admin-label">
                     <span>Nombre del negocio</span>
                     <input className="admin-input" type="text" value={draft.nombre} maxLength={20}
                       onChange={(e) => setField("nombre", e.target.value)} />
                     <span className="admin-counter">{draft.nombre.length} / 20</span>
                   </label>
-
-                  <div className="admin-dia-header">
-                    <span className="admin-dia-nombre">Mostrar nombre en el formulario</span>
-                    <label className="admin-toggle">
-                      <input type="checkbox" checked={draft.mostrarNombre ?? true}
-                        onChange={(e) => setField("mostrarNombre", e.target.checked)} />
-                      <span className="admin-toggle-slider" />
-                    </label>
-                  </div>
-
-                  <div className="admin-dia-header">
-                    <span className="admin-dia-nombre">Mostrar panel de ayuda</span>
-                    <label className="admin-toggle">
-                      <input type="checkbox" checked={draft.mostrarPanelAyuda ?? true}
-                        onChange={(e) => setField("mostrarPanelAyuda", e.target.checked)} />
-                      <span className="admin-toggle-slider" />
-                    </label>
-                  </div>
-
+                  <label className="admin-label">
+                    <span>Descripción</span>
+                    <textarea className="admin-input admin-textarea"
+                      placeholder="Restaurante peruano en el centro de Madrid"
+                      maxLength={155} value={draft.descripcion} rows={3}
+                      onChange={(e) => setField("descripcion", e.target.value)} />
+                    <span className="admin-counter">{draft.descripcion.length} / 155</span>
+                  </label>
                   <label className="admin-label">
                     <span>Color del nombre</span>
                     <div className="admin-color-row">
@@ -147,64 +80,6 @@ export default function ConfigPanel({ config, onBack }) {
                       </span>
                     </div>
                   </label>
-
-                  <label className="admin-label">
-                    <span>Descripción</span>
-                    <textarea className="admin-input admin-textarea"
-                      placeholder="Restaurante peruano en el centro de Madrid"
-                      maxLength={155} value={draft.descripcion} rows={3}
-                      onChange={(e) => setField("descripcion", e.target.value)} />
-                    <span className="admin-counter">{draft.descripcion.length} / 155</span>
-                  </label>
-
-                  <label className="admin-label">
-                    <span>Link 1 (web, Instagram, Facebook...)</span>
-                    <input className="admin-input" type="url" placeholder="https://..."
-                      value={draft.links?.[0] ?? ""}
-                      onChange={(e) => setField("links", [e.target.value, draft.links?.[1] ?? ""])} />
-                  </label>
-
-                  <label className="admin-label">
-                    <span>Link 2</span>
-                    <input className="admin-input" type="url" placeholder="https://..."
-                      value={draft.links?.[1] ?? ""}
-                      onChange={(e) => setField("links", [draft.links?.[0] ?? "", e.target.value])} />
-                  </label>
-
-                  <label className="admin-label">
-                    <span>Título del formulario</span>
-                    <input className="admin-input" type="text" maxLength={21}
-                      value={draft.tituloFormulario}
-                      onChange={(e) => setField("tituloFormulario", e.target.value)} />
-                    <span className="admin-counter">{draft.tituloFormulario.length} / 21</span>
-                  </label>
-
-                  <label className="admin-label">
-                    <span>Texto del botón de envío</span>
-                    <input className="admin-input" type="text" maxLength={15}
-                      value={draft.textoBtnReservar}
-                      onChange={(e) => setField("textoBtnReservar", e.target.value)} />
-                    <span className="admin-counter">{draft.textoBtnReservar.length} / 15</span>
-                  </label>
-
-                  <div className="admin-dia-header">
-                    <span className="admin-dia-nombre">Mostrar enlace de teléfono</span>
-                    <label className="admin-toggle">
-                      <input type="checkbox" checked={draft.mostrarTelefono ?? true}
-                        onChange={(e) => setField("mostrarTelefono", e.target.checked)} />
-                      <span>{draft.mostrarTelefono ?? true ? "Activo" : "Inactivo"}</span>
-                    </label>
-                  </div>
-                  {(draft.mostrarTelefono ?? true) && (
-                    <label className="admin-label">
-                      <span>Texto del enlace de teléfono</span>
-                      <input className="admin-input" type="text" maxLength={36}
-                        value={draft.textoTelefono}
-                        onChange={(e) => setField("textoTelefono", e.target.value)} />
-                      <span className="admin-counter">{draft.textoTelefono.length} / 36</span>
-                    </label>
-                  )}
-
                   <label className="admin-label">
                     <span>Logo (URL de imagen)</span>
                     <input className="admin-input" type="url" placeholder="https://... (jpg, png, webp)"
@@ -212,9 +87,46 @@ export default function ConfigPanel({ config, onBack }) {
                       onChange={(e) => setField("logoUrl", e.target.value)} />
                     {draft.logoUrl && <img src={draft.logoUrl} alt="Logo preview" className="admin-logo-preview" />}
                   </label>
+                </div>
 
+                <div className="cfg-card">
+                  <span className="cfg-card-label">Formulario</span>
                   <label className="admin-label">
-                    <span>Modo de envío de reservas</span>
+                    <span>Título del formulario</span>
+                    <input className="admin-input" type="text" maxLength={21}
+                      value={draft.tituloFormulario}
+                      onChange={(e) => setField("tituloFormulario", e.target.value)} />
+                    <span className="admin-counter">{draft.tituloFormulario.length} / 21</span>
+                  </label>
+                  <label className="admin-label">
+                    <span>Texto del botón de envío</span>
+                    <input className="admin-input" type="text" maxLength={15}
+                      value={draft.textoBtnReservar}
+                      onChange={(e) => setField("textoBtnReservar", e.target.value)} />
+                    <span className="admin-counter">{draft.textoBtnReservar.length} / 15</span>
+                  </label>
+                  <div className="cfg-toggle-row">
+                    <span className="cfg-toggle-label">Mostrar nombre en el formulario</span>
+                    <label className="cfg-toggle">
+                      <input type="checkbox" checked={draft.mostrarNombre ?? true}
+                        onChange={(e) => setField("mostrarNombre", e.target.checked)} />
+                      <span className="cfg-toggle-track" />
+                    </label>
+                  </div>
+                  <div className="cfg-toggle-row">
+                    <span className="cfg-toggle-label">Mostrar panel de ayuda</span>
+                    <label className="cfg-toggle">
+                      <input type="checkbox" checked={draft.mostrarPanelAyuda ?? true}
+                        onChange={(e) => setField("mostrarPanelAyuda", e.target.checked)} />
+                      <span className="cfg-toggle-track" />
+                    </label>
+                  </div>
+                </div>
+
+                <div className="cfg-card">
+                  <span className="cfg-card-label">Contacto</span>
+                  <label className="admin-label">
+                    <span>Modo de envío</span>
                     <div className="admin-tema-selector">
                       <button type="button"
                         className={`admin-tema-btn ${draft.modoEnvio !== "email" ? "admin-tema-btn--active" : ""}`}
@@ -231,10 +143,9 @@ export default function ConfigPanel({ config, onBack }) {
                       </button>
                     </div>
                   </label>
-
                   {draft.modoEnvio === "email" ? (
                     <label className="admin-label">
-                      <span>Email del negocio (recibirás las reservas aquí)</span>
+                      <span>Email del negocio</span>
                       <input className="admin-input" type="email" placeholder="tu@email.com"
                         value={draft.emailNegocio ?? ""}
                         onChange={(e) => setField("emailNegocio", e.target.value)} />
@@ -248,7 +159,6 @@ export default function ConfigPanel({ config, onBack }) {
                       <span className="admin-counter">{draft.whatsapp.length} / 15</span>
                     </label>
                   )}
-
                   <label className="admin-label">
                     <span>Teléfono de contacto</span>
                     <input className="admin-input" type="tel" placeholder="+34600000000"
@@ -256,27 +166,114 @@ export default function ConfigPanel({ config, onBack }) {
                       onChange={(e) => setField("telefono", e.target.value)} />
                     <span className="admin-counter">{draft.telefono.length} / 16</span>
                   </label>
+                  <div className="cfg-toggle-row">
+                    <span className="cfg-toggle-label">Mostrar enlace de teléfono</span>
+                    <label className="cfg-toggle">
+                      <input type="checkbox" checked={draft.mostrarTelefono ?? true}
+                        onChange={(e) => setField("mostrarTelefono", e.target.checked)} />
+                      <span className="cfg-toggle-track" />
+                    </label>
+                  </div>
+                  {(draft.mostrarTelefono ?? true) && (
+                    <label className="admin-label">
+                      <span>Texto del enlace de teléfono</span>
+                      <input className="admin-input" type="text" maxLength={36}
+                        value={draft.textoTelefono}
+                        onChange={(e) => setField("textoTelefono", e.target.value)} />
+                      <span className="admin-counter">{draft.textoTelefono.length} / 36</span>
+                    </label>
+                  )}
+                </div>
 
+                <div className="cfg-card">
+                  <span className="cfg-card-label">Enlaces del negocio</span>
                   <label className="admin-label">
-                    <span>Tema de la app</span>
-                    <div className="admin-tema-selector">
-                      {TEMAS.map(({ id, label }) => (
-                        <button key={id} type="button"
-                          className={`admin-tema-btn ${draft.tema === id ? "admin-tema-btn--active" : ""}`}
-                          onClick={() => {
-                            if (id === "personalizado") {
-                              setModalCustom(true);
-                            } else {
-                              setField("tema", id);
-                              window.dispatchEvent(new CustomEvent("turno-ya:tema", { detail: { tema: id, colorFondo: draft.colorFondo, colorAcento: draft.colorAcento, colorBorde: draft.colorBorde } }));
-                            }
-                          }}>
-                          {label}
-                        </button>
-                      ))}
-                    </div>
+                    <span>Link 1 (web, Instagram, Facebook...)</span>
+                    <input className="admin-input" type="url" placeholder="https://..."
+                      value={draft.links?.[0] ?? ""}
+                      onChange={(e) => setField("links", [e.target.value, draft.links?.[1] ?? ""])} />
                   </label>
-                </fieldset>
+                  <label className="admin-label">
+                    <span>Link 2</span>
+                    <input className="admin-input" type="url" placeholder="https://..."
+                      value={draft.links?.[1] ?? ""}
+                      onChange={(e) => setField("links", [draft.links?.[0] ?? "", e.target.value])} />
+                  </label>
+                </div>
+
+                <div className="cfg-card">
+                  <span className="cfg-card-label">Mensaje de WhatsApp</span>
+                  <div className="admin-tema-selector">
+                    {PERFILES.map((p) => (
+                      <button key={p.id} type="button"
+                        className={`admin-tema-btn ${draft.perfil === p.id ? "admin-tema-btn--active" : ""}`}
+                        onClick={() => {
+                          setField("perfil", p.id);
+                          if (p.encabezado) setField("encabezadoMensaje", p.encabezado);
+                        }}>
+                        {p.label}
+                      </button>
+                    ))}
+                  </div>
+                  <label className="admin-label">
+                    <span>Título del mensaje</span>
+                    <input className="admin-input" type="text" maxLength={60}
+                      value={draft.encabezadoMensaje}
+                      onChange={(e) => { setField("encabezadoMensaje", e.target.value); setField("perfil", "personalizado"); }} />
+                    <span className="admin-counter">{draft.encabezadoMensaje.length} / 60</span>
+                  </label>
+                  <label className="admin-label">
+                    <span>Texto de cierre</span>
+                    <input className="admin-input" type="text" maxLength={60}
+                      value={draft.textoPie ?? ""}
+                      onChange={(e) => setField("textoPie", e.target.value)} />
+                    <span className="admin-counter">{(draft.textoPie ?? "").length} / 60</span>
+                  </label>
+                </div>
+
+                <div className="cfg-card">
+                  <span className="cfg-card-label">Campos del formulario</span>
+                  {[
+                    { key: "nombre", label: "Nombre" },
+                    { key: "apellidos", label: "Apellidos" },
+                    { key: "telefono", label: "Teléfono" },
+                    { key: "email", label: "Email" },
+                    { key: "personas", label: "Personas" },
+                    { key: "fecha", label: "Fecha" },
+                    { key: "hora", label: "Hora" },
+                    { key: "mensaje", label: "Mensaje" },
+                  ].map(({ key, label }) => (
+                    <div key={key} className="cfg-toggle-row">
+                      <span className="cfg-toggle-label">{label}</span>
+                      <label className="cfg-toggle">
+                        <input type="checkbox"
+                          checked={draft.camposActivos?.[key] ?? true}
+                          onChange={(e) => setField("camposActivos", { ...draft.camposActivos, [key]: e.target.checked })} />
+                        <span className="cfg-toggle-track" />
+                      </label>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="cfg-card">
+                  <span className="cfg-card-label">Tema de la app</span>
+                  <div className="admin-tema-selector">
+                    {TEMAS.map(({ id, label }) => (
+                      <button key={id} type="button"
+                        className={`admin-tema-btn ${draft.tema === id ? "admin-tema-btn--active" : ""}`}
+                        onClick={() => {
+                          if (id === "personalizado") {
+                            setModalCustom(true);
+                          } else {
+                            setField("tema", id);
+                            window.dispatchEvent(new CustomEvent("turno-ya:tema", { detail: { tema: id, colorFondo: draft.colorFondo, colorAcento: draft.colorAcento, colorBorde: draft.colorBorde } }));
+                          }
+                        }}>
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
 
               </div>
             )}

@@ -529,6 +529,82 @@
   box-shadow: var(--shadow);
 }
 
+/* Config cards */
+.cfg-card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cfg-card-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+
+/* Toggle switch iOS */
+.cfg-toggle {
+  position: relative;
+  display: inline-flex;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.cfg-toggle input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.cfg-toggle-track {
+  width: 42px;
+  height: 24px;
+  background: #374151;
+  border-radius: 999px;
+  position: relative;
+  transition: background 0.2s;
+}
+
+.cfg-toggle input:checked + .cfg-toggle-track {
+  background: var(--accent);
+}
+
+.cfg-toggle-track::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border-radius: 50%;
+  top: 3px;
+  left: 3px;
+  transition: left 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.cfg-toggle input:checked + .cfg-toggle-track::after {
+  left: 21px;
+}
+
+.cfg-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 32px;
+}
+
+.cfg-toggle-label {
+  font-size: 14px;
+  color: var(--text-h);
+}
+
 /* Acordeón de configuración */
 .acc-list {
   display: flex;
