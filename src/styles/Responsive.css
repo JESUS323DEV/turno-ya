@@ -137,15 +137,20 @@
 
 
     .admin-form {
-        max-width: 780px;
+        max-width: min(90vw, 1400px);
     }
 
     .admin-section {
-        padding: 2.5rem 2rem;
+        padding: 2.5rem 3rem;
     }
 
     .admin-title {
         font-size: 2.2rem;
+    }
+
+    .cfg-layout {
+        grid-template-columns: 1fr 480px;
+        gap: 3rem;
     }
 
     .panel-stats {
