@@ -289,43 +289,45 @@ export default function ConfigPanel({ config, onBack }) {
             {abierto === "horarios" && (
               <div className="acc-body">
 
-                <fieldset className="admin-fieldset">
-                  <legend className="admin-legend">Horarios semanales</legend>
-                  {Object.entries(draft.horarios).map(([day, { abierto: diaAbierto, turnos }]) => (
-                    <div key={day} className="admin-dia">
-                      <div className="admin-dia-header">
-                        <span className="admin-dia-nombre">{DIAS[day]}</span>
-                        <label className="admin-toggle">
-                          <input type="checkbox" checked={diaAbierto}
-                            onChange={(e) => setDia(day, { abierto: e.target.checked })} />
-                          <span>{diaAbierto ? "Abierto" : "Cerrado"}</span>
-                        </label>
-                      </div>
-                      {diaAbierto && (
-                        <div className="admin-turnos">
-                          {turnos.map((turno, i) => (
-                            <div key={i} className="admin-turno">
-                              <input className="admin-input admin-input-time" type="time" value={turno.start}
-                                onChange={(e) => setTurno(day, i, "start", e.target.value)} />
-                              <span className="admin-turno-sep">—</span>
-                              <input className="admin-input admin-input-time" type="time" value={turno.end}
-                                onChange={(e) => setTurno(day, i, "end", e.target.value)} />
-                              {turnos.length > 1 && (
-                                <button type="button" className="admin-btn-remove" onClick={() => removeTurno(day, i)}>✕</button>
-                              )}
-                            </div>
-                          ))}
-                          {turnos.length < 2 && (
-                            <button type="button" className="admin-btn-add" onClick={() => addTurno(day)}>+ Agregar turno</button>
-                          )}
+                {Object.entries(draft.horarios).map(([day, { abierto: diaAbierto, turnos }]) => (
+                  <div key={day} className="cfg-card">
+                    <div className="cfg-toggle-row">
+                      <div>
+                        <div className="cfg-dia-nombre">{DIAS[day]}</div>
+                        <div className={`cfg-dia-status ${diaAbierto ? "cfg-dia-status--open" : "cfg-dia-status--closed"}`}>
+                          {diaAbierto ? "Abierto" : "Cerrado"}
                         </div>
-                      )}
+                      </div>
+                      <label className="cfg-toggle">
+                        <input type="checkbox" checked={diaAbierto}
+                          onChange={(e) => setDia(day, { abierto: e.target.checked })} />
+                        <span className="cfg-toggle-track" />
+                      </label>
                     </div>
-                  ))}
-                </fieldset>
+                    {diaAbierto && (
+                      <div className="admin-turnos">
+                        {turnos.map((turno, i) => (
+                          <div key={i} className="admin-turno">
+                            <input className="admin-input admin-input-time" type="time" value={turno.start}
+                              onChange={(e) => setTurno(day, i, "start", e.target.value)} />
+                            <span className="admin-turno-sep">—</span>
+                            <input className="admin-input admin-input-time" type="time" value={turno.end}
+                              onChange={(e) => setTurno(day, i, "end", e.target.value)} />
+                            {turnos.length > 1 && (
+                              <button type="button" className="admin-btn-remove" onClick={() => removeTurno(day, i)}>✕</button>
+                            )}
+                          </div>
+                        ))}
+                        {turnos.length < 2 && (
+                          <button type="button" className="admin-btn-add" onClick={() => addTurno(day)}>+ Agregar turno</button>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ))}
 
-                <fieldset className="admin-fieldset">
-                  <legend className="admin-legend">Fechas bloqueadas</legend>
+                <div className="cfg-card">
+                  <span className="cfg-card-label">Fechas bloqueadas</span>
                   <p className="admin-hint">Vacaciones, festivos o días puntuales cerrados.</p>
                   <div className="admin-fecha-add">
                     <input className="admin-input" type="date" value={nuevaFecha}
@@ -344,10 +346,10 @@ export default function ConfigPanel({ config, onBack }) {
                       ))}
                     </ul>
                   )}
-                </fieldset>
+                </div>
 
-                <fieldset className="admin-fieldset">
-                  <legend className="admin-legend">Cierre temporal</legend>
+                <div className="cfg-card">
+                  <span className="cfg-card-label">Cierre temporal</span>
                   <p className="admin-hint">Cierra el negocio hoy sin modificar el horario semanal. Se reabre automáticamente mañana.</p>
                   <div className="admin-cierre-row">
                     <span className="admin-cierre-estado">
@@ -359,7 +361,7 @@ export default function ConfigPanel({ config, onBack }) {
                       {draft.cierreTemporalFecha === hoy ? "Reabrir hoy" : "Cerrar hoy"}
                     </button>
                   </div>
-                </fieldset>
+                </div>
 
               </div>
             )}

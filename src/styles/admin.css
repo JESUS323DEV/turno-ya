@@ -605,6 +605,21 @@
   color: var(--text-h);
 }
 
+.cfg-dia-nombre {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+.cfg-dia-status {
+  font-size: 12px;
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.cfg-dia-status--open  { color: #22c55e; }
+.cfg-dia-status--closed { color: #ef4444; }
+
 /* Acordeón de configuración */
 .acc-list {
   display: flex;
