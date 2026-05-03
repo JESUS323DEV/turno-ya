@@ -290,7 +290,7 @@ export default function ConfigPanel({ config, onBack }) {
               <div className="acc-body">
 
                 {Object.entries(draft.horarios).map(([day, { abierto: diaAbierto, turnos }]) => (
-                  <div key={day} className="cfg-card">
+                  <div key={day} className="cfg-card cfg-card--dia">
                     <div className="cfg-toggle-row">
                       <div>
                         <div className="cfg-dia-nombre">{DIAS[day]}</div>

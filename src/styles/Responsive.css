@@ -186,14 +186,14 @@
 
         gap: 0.7rem;
     }
-    .cfg-card {
+    .cfg-card:not(.cfg-card--dia) {
         border: none;
         border-radius: 0;
         padding: 0 4px;
         gap: 12px;
     }
 
-    .cfg-card + .cfg-card {
+    .cfg-card:not(.cfg-card--dia) + .cfg-card:not(.cfg-card--dia) {
         padding-top: 12px;
         border-top: 1px solid var(--border);
     }
