@@ -36,7 +36,9 @@ export default function ConfigPanel({ config, onBack }) {
   return (
     <section className="admin-section">
       <form className="admin-form" onSubmit={guardar}>
+        <div className="cfg-layout">
 
+        <div className="cfg-col-left">
         <div className="admin-header">
           <button type="button" className="admin-seccion-back" onClick={onBack}>← Volver</button>
           <h2 className="admin-title">Configuración</h2>
@@ -595,7 +597,7 @@ export default function ConfigPanel({ config, onBack }) {
           </div>
 
           {/* ── VISTA PREVIA ── */}
-          <div className="acc-seccion">
+          <div className="acc-seccion acc-seccion--preview">
             <button type="button" className={`acc-header ${abierto === "preview" ? "acc-header--open" : ""}`}
               onClick={() => toggle("preview")}>
               <span>Vista previa</span>
@@ -620,6 +622,15 @@ export default function ConfigPanel({ config, onBack }) {
         </button>
         {errorGuardado && <p className="admin-error">{errorGuardado}</p>}
 
+        </div>{/* cfg-col-left */}
+
+        <div className="cfg-col-right">
+          <div className="admin-preview-phone">
+            <ReservaWhatsApp configOverride={getConfigFinal()} />
+          </div>
+        </div>
+
+        </div>{/* cfg-layout */}
       </form>
 
       {/* Modal tema personalizado */}

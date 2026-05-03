@@ -1,5 +1,8 @@
 /* ── Admin panel (configuración) ────────────────────────────────────────────── */
 
+.cfg-layout { display: block; }
+.cfg-col-right { display: none; }
+
 /* ── Login / selector de sección ────────────────────────────────────────────── */
 
 .admin-login-section {
