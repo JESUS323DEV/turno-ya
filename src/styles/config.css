@@ -651,9 +651,12 @@
 }
 
 
+.acc-header:hover {
+  background: var(--accent-bg);
+}
+
 .acc-header--open {
   color: var(--accent);
-  background: var(--accent-bg);
 }
 
 .acc-arrow {
