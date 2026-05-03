@@ -318,9 +318,7 @@ export default function ConfigPanel({ config, onBack }) {
                             )}
                           </div>
                         ))}
-                        {turnos.length < 2 && (
-                          <button type="button" className="admin-btn-add" onClick={() => addTurno(day)}>+ Agregar turno</button>
-                        )}
+                        <button type="button" className="admin-btn-add" onClick={() => addTurno(day)}>+ Agregar turno</button>
                       </div>
                     )}
                   </div>
