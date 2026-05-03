@@ -113,7 +113,15 @@
 
 
     .admin-form {
-        max-width: 650px;
+        max-width: 780px;
+    }
+
+    .admin-section {
+        padding: 2.5rem 2rem;
+    }
+
+    .admin-title {
+        font-size: 2.2rem;
     }
 
     .panel-stats {
@@ -192,7 +200,7 @@
     }
 
     .acc-header {
-        padding: 10px 0;
+        padding: 0.5rem 1rem;
         font-size: 13px;
         letter-spacing: 0.06em;
         text-transform: uppercase;
