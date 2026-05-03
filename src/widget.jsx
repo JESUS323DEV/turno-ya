@@ -1,7 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import ReservaWhatsApp from "./components/ReservaWhatsApp";
-import "./styles/reserva.css";
+import "./styles/formulario.css";
 
 (function () {
   const el = document.getElementById("turno-ya");

@@ -650,9 +650,6 @@
   transition: background 0.15s, color 0.15s;
 }
 
-.acc-header:hover {
-  background: var(--accent-bg);
-}
 
 .acc-header--open {
   color: var(--accent);

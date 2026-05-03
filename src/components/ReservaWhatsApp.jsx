@@ -7,7 +7,7 @@ import "react-day-picker/style.css";
 import icon1 from "../assets/icon-whatsapp.png";
 import { useReservaForm } from "../hooks/useReservaForm";
 import { descargarIcs } from "../utils/ics";
-import "../styles/reserva.css";
+import "../styles/formulario.css";
 
 // ─── Icono Instagram (SVG inline — lucide-react no incluye iconos de marca) ──
 function InstagramIcon({ size = 22 }) {

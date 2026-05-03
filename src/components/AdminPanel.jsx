@@ -3,8 +3,8 @@ import { Calendar, ClipboardList, Settings } from "lucide-react";
 import { useAdminConfig } from "../hooks/useAdminConfig";
 import ReservasPanel from "./ReservasPanel";
 import ConfigPanel from "./ConfigPanel";
-import "../styles/admin.css";
-import "../styles/panel.css";
+import "../styles/config.css";
+import "../styles/reservas.css";
 
 export default function AdminPanel() {
   const adminConfig = useAdminConfig();
