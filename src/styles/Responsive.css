@@ -186,15 +186,20 @@
 
         gap: 0.7rem;
     }
-    .cfg-card:not(.cfg-card--dia) {
+    .acc-seccion {
         border: none;
         border-radius: 0;
-        padding: 0 4px;
-        gap: 12px;
     }
 
-    .cfg-card:not(.cfg-card--dia) + .cfg-card:not(.cfg-card--dia) {
-        padding-top: 12px;
-        border-top: 1px solid var(--border);
+    .acc-header {
+        padding: 10px 0;
+        font-size: 13px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .acc-body {
+        padding: 16px 0;
     }
 }
