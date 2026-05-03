@@ -1,8 +1,8 @@
-/* =====================
+﻿/* =====================
    MEDIA QUERIES RESPONSIVE
    ===================== */
 
-/* Móviles XS (≤575px) */
+/* MÃ³viles XS (â‰¤575px) */
 @media (max-width: 575px) {
     body::before {
         content: "XS";
@@ -20,7 +20,7 @@
 
 }
 
-/*SM: Móviles pequeños verticales y móviles estándar(576px – 767px) */
+/*SM: MÃ³viles pequeÃ±os verticales y mÃ³viles estÃ¡ndar(576px â€“ 767px) */
 @media (min-width: 576px) and (max-width: 767px) {
     body::before {
         content: "SM";
@@ -38,7 +38,7 @@
 
 }
 
-/*MD: Tablets verticales (768px – 991px) */
+/*MD: Tablets verticales (768px â€“ 991px) */
 @media (min-width: 768px) and (max-width: 991px) {
     body::before {
         content: "MD";
@@ -54,7 +54,7 @@
     }
 }
 
-/* LG Tablets horizontales / laptops pequeñas-mini LG (992px – 1199px) */
+/* LG Tablets horizontales / laptops pequeÃ±as-mini LG (992px â€“ 1199px) */
 @media (min-width: 992px) and (max-width: 1199px) {
 
     body::before {
@@ -72,7 +72,7 @@
     }
 }
 
-/*SXL: laptos pequeñas(1200px – 1279px) */
+/*SXL: laptos pequeÃ±as(1200px â€“ 1279px) */
 @media (min-width: 1200px) and (max-width: 1279px) {
     body::before {
         content: "1200px-1279px";
@@ -89,7 +89,7 @@
     }
 }
 
-/*XL laptos grandes (1280px – 1399px) */
+/*XL laptos grandes (1280px â€“ 1399px) */
 @media (min-width: 1280px) and (max-width: 1399px) {
 
     body::before {
@@ -107,7 +107,7 @@
 
 }
 
-/*XXL: Pantallas grandes ≥1400px */
+/*XXL: Pantallas grandes â‰¥1400px */
 @media (min-width: 1400px) {
  
 
@@ -186,10 +186,15 @@
 
         gap: 0.7rem;
     }
+    .cfg-card {
+        border: none;
+        border-radius: 0;
+        padding: 0 4px;
+        gap: 12px;
+    }
 
-
-
-
-
-
+    .cfg-card + .cfg-card {
+        padding-top: 12px;
+        border-top: 1px solid var(--border);
+    }
 }
