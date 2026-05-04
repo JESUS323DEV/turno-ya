@@ -72,29 +72,6 @@
     }
 }
 
-/* 2 columnas desde LG ≥992px */
-@media (min-width: 992px) {
-    .admin-form {
-        max-width: 95vw;
-    }
-
-    .cfg-layout {
-        display: grid;
-        grid-template-columns: 1fr 340px;
-        gap: 2rem;
-        align-items: start;
-    }
-
-    .cfg-col-right {
-        display: block;
-        position: sticky;
-        top: 1rem;
-    }
-
-    .acc-seccion--preview {
-        display: none;
-    }
-}
 
 /*SXL: laptos pequeÃ±as(1200px â€” 1279px) */
 @media (min-width: 1200px) and (max-width: 1279px) {
