@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Calendar, ClipboardList, Settings } from "lucide-react";
 import { useAdminConfig } from "../hooks/useAdminConfig";
+import { getPanelVars } from "../config/temasPanel";
 import ReservasPanel from "./ReservasPanel";
 import ConfigPanel from "./ConfigPanel";
 import "../styles/config.css";
@@ -11,10 +12,13 @@ export default function AdminPanel() {
   const { pin, setPin, autenticado, pinError, verificarPin } = adminConfig;
   const [seccion, setSeccion] = useState(null);
 
+  const temaPanel = localStorage.getItem("turno-ya-tema-panel") || "claro";
+  const panelVars = getPanelVars(temaPanel);
+
   // ── 1. PIN (siempre primero) ───────────────────────────────────────────────
   if (!autenticado) {
     return (
-      <section className="admin-section admin-login-section">
+      <section className="admin-section admin-login-section" style={panelVars}>
         <form className="admin-login-card" onSubmit={verificarPin}>
           <div className="admin-login-logo"><Calendar size={40} strokeWidth={1.5} /></div>
           <h2 className="admin-login-title">TurnoYa</h2>
@@ -43,7 +47,7 @@ export default function AdminPanel() {
   // ── 2. Selector de sección (ya autenticado) ────────────────────────────────
   if (!seccion) {
     return (
-      <section className="admin-section admin-login-section">
+      <section className="admin-section admin-login-section" style={panelVars}>
         <div className="admin-login-card">
           <div className="admin-login-logo"><Calendar size={40} strokeWidth={1.5} /></div>
           <h2 className="admin-login-title">TurnoYa</h2>

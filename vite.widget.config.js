@@ -4,7 +4,8 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
   build: {
-    outDir: "dist-widget",
+    outDir: "dist",
+    emptyOutDir: false,
     lib: {
       entry: "src/widget.jsx",
       name: "TurnoYA",
@@ -13,7 +14,8 @@ export default defineConfig({
     },
     rollupOptions: {
       output: {
-        inlineDynamicImports: true,
+        entryFileNames: "turno-ya.js",
+        assetFileNames: "turno-ya.[ext]",
       },
     },
   },

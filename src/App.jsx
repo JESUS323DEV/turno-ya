@@ -25,50 +25,54 @@ function hexToRgba(hex, alpha) {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
+const FORM_VARS = ["--bg","--accent","--accent-bg","--accent-border","--border","--border-input","--text","--text-h","--btn-text"];
+
 function applyTema({ tema, colorFondo, colorAcento, colorBorde } = {}) {
   const root = document.documentElement;
-  root.style.removeProperty("--bg");
-  root.style.removeProperty("--accent");
-  root.style.removeProperty("--accent-bg");
-  root.style.removeProperty("--accent-border");
-  root.style.removeProperty("--border");
-  root.style.removeProperty("--border-input");
-  root.style.removeProperty("--text");
-  root.style.removeProperty("--text-h");
-  root.style.removeProperty("--btn-text");
+  FORM_VARS.forEach(v => root.style.removeProperty(v));
+  root.removeAttribute("data-tema");
+
+  const formEl = document.getElementById("turno-ya-form");
+  if (!formEl) {
+    document.body.style.removeProperty("background-color");
+    return;
+  }
+
+  FORM_VARS.forEach(v => formEl.style.removeProperty(v));
 
   const preset = TEMAS.find((t) => t.id === tema);
 
   if (tema === "personalizado") {
-    root.setAttribute("data-tema", "claro");
-    if (colorFondo) root.style.setProperty("--bg", colorFondo);
+    formEl.setAttribute("data-tema", "claro");
+    const bg = colorFondo || "#ffffff";
+    formEl.style.setProperty("--bg", bg);
     if (colorAcento) {
-      root.style.setProperty("--accent", colorAcento);
-      root.style.setProperty("--accent-bg", hexToRgba(colorAcento, 0.12));
-      root.style.setProperty("--accent-border", hexToRgba(colorAcento, 0.5));
-      root.style.setProperty("--btn-text", isDark(colorAcento) ? "#fff" : "#111");
+      formEl.style.setProperty("--accent", colorAcento);
+      formEl.style.setProperty("--accent-bg", hexToRgba(colorAcento, 0.12));
+      formEl.style.setProperty("--accent-border", hexToRgba(colorAcento, 0.5));
+      formEl.style.setProperty("--btn-text", isDark(colorAcento) ? "#fff" : "#111");
     }
-    if (colorBorde) root.style.setProperty("--border-input", colorBorde);
-    if (colorFondo && isDark(colorFondo)) {
-      root.style.setProperty("--text", "#d1d5db");
-      root.style.setProperty("--text-h", "#f9fafb");
+    if (colorBorde) formEl.style.setProperty("--border-input", colorBorde);
+    if (isDark(bg)) {
+      formEl.style.setProperty("--text", "#d1d5db");
+      formEl.style.setProperty("--text-h", "#f9fafb");
     }
+    document.body.style.backgroundColor = bg;
   } else if (preset) {
-    root.setAttribute("data-tema", preset.base);
+    formEl.setAttribute("data-tema", preset.base);
     if (preset.accent) {
-      root.style.setProperty("--accent", preset.accent);
-      root.style.setProperty("--accent-bg", hexToRgba(preset.accent, 0.12));
-      root.style.setProperty("--accent-border", hexToRgba(preset.accent, 0.5));
-      root.style.setProperty("--btn-text", isDark(preset.accent) ? "#fff" : "#111");
+      formEl.style.setProperty("--accent", preset.accent);
+      formEl.style.setProperty("--accent-bg", hexToRgba(preset.accent, 0.12));
+      formEl.style.setProperty("--accent-border", hexToRgba(preset.accent, 0.5));
+      formEl.style.setProperty("--btn-text", isDark(preset.accent) ? "#fff" : "#111");
     }
-    if (preset.bg) {
-      root.style.setProperty("--bg", preset.bg);
-    }
-    if (preset.border) {
-      root.style.setProperty("--border", preset.border);
-    }
+    const bg = preset.bg || (preset.base === "oscuro" ? "#16171d" : "#ffffff");
+    formEl.style.setProperty("--bg", bg);
+    if (preset.border) formEl.style.setProperty("--border", preset.border);
+    document.body.style.backgroundColor = bg;
   } else {
-    root.setAttribute("data-tema", "claro");
+    formEl.setAttribute("data-tema", "claro");
+    document.body.style.backgroundColor = "#ffffff";
   }
 }
 
@@ -76,11 +80,15 @@ function App() {
   const [vista, setVista] = useState(getVista);
 
   useEffect(() => {
-    applyTema(getConfig());
     const onTema = (e) => applyTema(e.detail);
     window.addEventListener("turno-ya:tema", onTema);
     return () => window.removeEventListener("turno-ya:tema", onTema);
   }, []);
+
+  useEffect(() => {
+    if (vista === "reserva") applyTema(getConfig());
+    else document.body.style.removeProperty("background-color");
+  }, [vista]);
 
   useEffect(() => {
     const onHash = () => setVista(getVista());
@@ -89,7 +97,7 @@ function App() {
   }, []);
 
   if (vista === "admin") return <AdminPanel />;
-  return <ReservaWhatsApp />;
+  return <div id="turno-ya-form"><ReservaWhatsApp /></div>;
 }
 
 export default App;

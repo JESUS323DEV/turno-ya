@@ -344,6 +344,19 @@ button.panel-stat { font-family: inherit; text-align: center; width: 100%; }
 }
 .panel-v2-clear:hover { border-color: var(--accent); color: var(--accent); }
 
+.admin-form-reservas {
+  width: 100%;
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+   border: 1px solid red;
+
+
+
+}
+
 /* Pestañas de fecha */
 .panel-v2-tabs-fecha { display: flex; gap: 6px; }
 

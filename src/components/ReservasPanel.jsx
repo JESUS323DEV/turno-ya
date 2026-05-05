@@ -163,7 +163,7 @@ export default function ReservasPanel({ pin, onBack }) {
 
   return (
     <section className="admin-section reservas-scope">
-      <form className="admin-form">
+      <form className="admin-form-reservas ">
 
         <div className="admin-header">
           <button type="button" className="admin-seccion-back" onClick={onBack}>← Volver</button>

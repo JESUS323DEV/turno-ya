@@ -196,7 +196,7 @@
   color-scheme: light;
 }
 
-:root[data-tema="oscuro"] .reserva-input {
+[data-tema="oscuro"] .reserva-input {
   color-scheme: dark;
 }
 
