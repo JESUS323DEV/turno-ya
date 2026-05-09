@@ -73,6 +73,7 @@ body {
   overscroll-behavior-y: none;
 }
 
+
 #root {
   width: 1126px;
   max-width: 100%;
@@ -86,7 +87,10 @@ body {
 
 #turno-ya-form {
   flex: 1;
-  background: var(--bg);
+  background-color: var(--bg);
+  background-image: var(--bg-gradient, none);
+  background-size: cover;
+  background-position: center;
   min-height: 100svh;
 }
 

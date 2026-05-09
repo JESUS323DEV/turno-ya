@@ -1,41 +1,33 @@
-﻿/* =====================
-   MEDIA QUERIES RESPONSIVE
+/* =====================
+   RESPONSIVE — FORMULARIO
    ===================== */
 
-/* MÃ³viles XS (â‰¤575px) */
+/* XS (≤575px) */
 @media (max-width: 575px) {
-
-
 
 }
 
-/*SM: MÃ³viles pequeÃ±os verticales y mÃ³viles estÃ¡ndar(576px â€“ 767px) */
+/* SM (576px – 767px) */
 @media (min-width: 576px) and (max-width: 767px) {
     body::before {
         content: "SM";
         position: fixed;
-        top: 0;
-        left: 0;
-        width: 20px;
-        height: 20px;
+        top: 0; left: 0;
+        width: 20px; height: 20px;
         background: rgb(0, 255, 30);
         color: rgb(0, 0, 0);
         padding: 5px;
         z-index: 9999;
     }
-
-
 }
 
-/*MD: Tablets verticales (768px â€“ 991px) */
+/* MD (768px – 991px) */
 @media (min-width: 768px) and (max-width: 991px) {
     body::before {
         content: "MD";
         position: fixed;
-        top: 0;
-        left: 0;
-        width: 20px;
-        height: 20px;
+        top: 0; left: 0;
+        width: 20px; height: 20px;
         background: rgb(1, 22, 255);
         color: rgb(0, 0, 0);
         padding: 5px;
@@ -43,244 +35,50 @@
     }
 }
 
-/* LG Tablets horizontales / laptops pequeÃ±as-mini LG (992px â€“ 1199px) */
+/* LG (992px – 1199px) */
 @media (min-width: 992px) and (max-width: 1199px) {
-
     body::before {
         content: "LG";
         position: fixed;
-        top: 0;
-        left: 0;
-        width: 20px;
-        height: 20px;
+        top: 0; left: 0;
+        width: 20px; height: 20px;
         background: rgb(196, 1, 255);
         color: rgb(0, 0, 0);
         padding: 5px;
         z-index: 9999;
-
-    }
-
-    .cfg-card-cont {
-
-
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        width: 35rem;
-        margin: auto;
-    }
-
-    .cfg-card-subtitle {
-
-        grid-column: 1/-1 !important;
     }
 }
 
-
-/*SXL: laptos pequeÃ±as(1200px â€” 1279px) */
+/* SXL (1200px – 1279px) */
 @media (min-width: 1200px) and (max-width: 1279px) {
     body::before {
         content: "1200px-1279px";
         position: fixed;
-        top: 0;
-        left: 0;
-        width: 50px;
-        height: 20px;
+        top: 0; left: 0;
+        width: 50px; height: 20px;
         background: rgb(0, 0, 0);
         color: rgb(255, 255, 255);
         padding: 5px;
         z-index: 9999;
-
     }
 }
 
-/*XL laptos grandes (1280px â€“ 1399px) */
+/* XL (1280px – 1399px) */
 @media (min-width: 1280px) and (max-width: 1399px) {
-
     body::before {
         content: "XL";
         position: fixed;
-        top: 0;
-        left: 0;
-        width: 50px;
-        height: 20px;
+        top: 0; left: 0;
+        width: 50px; height: 20px;
         background: rgb(255, 102, 0);
         color: rgb(255, 255, 255);
         padding: 5px;
         z-index: 9999;
     }
-
-    .cfg-card-cont {
-
-
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        width: 35rem;
-        margin: auto;
-    }
-
-    .cfg-card-subtitle {
-
-        grid-column: 1/-1 !important;
-    }
-
 }
 
-/* Desktop sidebar layout (â‰¥992px) */
-@media (min-width: 992px) {
-
-    .admin-section {
-        padding: 0;
-        min-height: 100dvh;
-        align-items: stretch;
-    }
-
-    .cfg-wrapper {
-        display: grid;
-        grid-template-columns: 210px 1fr;
-        min-height: 100dvh;
-        width: 100%;
-    }
-
-    .cfg-sidebar {
-        display: flex;
-        flex-direction: column;
-        border-right: 1px solid var(--border);
-        background: var(--bg);
-        position: sticky;
-        top: 0;
-        height: 100dvh;
-        overflow-y: auto;
-    }
-
-    .cfg-sidebar-logo {
-        display: flex;
-        align-items: center;
-        gap: 0.55rem;
-        padding: 1.2rem 1rem 1.1rem;
-        font-size: 1rem;
-        font-weight: 700;
-        color: var(--text-h);
-        border-bottom: 1px solid var(--border);
-    }
-
-    .cfg-sidebar-nav {
-        display: flex;
-        flex-direction: column;
-        gap: 0.15rem;
-        padding: 0.6rem 0.5rem;
-    }
-
-    .cfg-sidebar-item {
-        display: flex;
-        align-items: center;
-        gap: 0.65rem;
-        padding: 0.55rem 0.75rem;
-        border: none;
-        border-radius: 8px;
-        background: none;
-        color: var(--text);
-        font-size: 0.875rem;
-        font-weight: 500;
-        cursor: pointer;
-        font-family: inherit;
-        text-align: left;
-        width: 100%;
-        transition: background 0.15s, color 0.15s;
-    }
-
-    .cfg-sidebar-item:hover {
-        background: var(--accent-bg);
-        color: var(--text-h);
-    }
-
-    .cfg-sidebar-item--active {
-        background: var(--accent-bg);
-        color: var(--accent);
-        font-weight: 600;
-    }
-
-    .admin-form.cfg-main {
-        max-width: none;
-        gap: 0;
-        display: flex;
-        flex-direction: column;
-        overflow-y: auto;
-    }
-
-    .cfg-topbar {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        padding: 0.85rem 1.5rem;
-        border-bottom: 1px solid var(--border);
-        position: sticky;
-        top: 0;
-        background: var(--bg);
-        z-index: 10;
-    }
-
-    .cfg-topbar-title {
-        flex: 1;
-        font-size: 1rem;
-        font-weight: 600;
-        color: var(--text-h);
-    }
-
-    .cfg-topbar .admin-btn-primary {
-        width: auto;
-        padding: 0.55rem 1.2rem;
-        font-size: 0.875rem;
-        margin: 0;
-    }
-
-    .admin-header {
-        display: none;
-    }
-
-    .acc-header {
-        display: none;
-    }
-
-    .acc-seccion {
-        border: none;
-        border-radius: 0;
-    }
-
-    .acc-body {
-        border-top: none;
-        padding: 1.5rem;
-    }
-
-    .acc-list {
-        flex: 1;
-    }
-
-    .cfg-mobile-save {
-        display: none;
-    }
-
-    .cfg-tabnav-wrap {
-        display: none;
-    }
-}
-
-/*XXL: Pantallas grandes â‰¥1400px */
+/* XXL (≥1400px) */
 @media (min-width: 1400px) {
-
-
-
-    .panel-stats {
-        grid-template-columns: repeat(5, 1fr);
-    }
-
-    .admin-preview-phone {
-        width: 100%;
-        border: none;
-        border-radius: 0;
-        box-shadow: none;
-    }
-
-    /* Formulario en XXL */
     .reserva-logo {
         max-width: 190px;
         max-height: 190px;
@@ -293,16 +91,11 @@
     .reserva-descripcion {
         font-size: 16px;
         width: 100%;
-
-
     }
 
     .reserva-links {
         justify-content: center;
-
         width: 100%;
-
-
     }
 
     .reserva-link-item {
@@ -317,7 +110,6 @@
         font-size: 2.2rem;
     }
 
-    /* Calendario en XXL: evitar que el overflow:hidden recorte la primera fila */
     .reserva-form {
         max-width: 580px;
         padding: 2rem 3rem;
@@ -327,7 +119,6 @@
         overflow: visible;
         display: flex;
         justify-content: center;
-
     }
 
     .reserva-calendar-wrap .rdp {
@@ -336,23 +127,6 @@
     }
 
     .cabecera {
-
         gap: 0.7rem;
     }
-
-
-    .cfg-card-cont {
-
-
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        width: 35rem;
-        margin: auto;
-    }
-
-    .cfg-card-subtitle {
-
-        grid-column: 1/-1 !important;
-    }
-
 }

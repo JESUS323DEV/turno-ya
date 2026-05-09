@@ -6,6 +6,7 @@ import ReservasPanel from "./ReservasPanel";
 import ConfigPanel from "./ConfigPanel";
 import "../styles/config.css";
 import "../styles/reservas.css";
+import "../styles/ResponsivePanel.css";
 
 export default function AdminPanel() {
   const adminConfig = useAdminConfig();

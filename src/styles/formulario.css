@@ -76,7 +76,7 @@
   text-align: center;
   font-size: 0.9rem;
   line-height: 1.3;
-  color: var(--text-s);
+  color: var(--text-desc, var(--text-s));
   white-space: pre-wrap;
   width: 90%;
   margin: auto;

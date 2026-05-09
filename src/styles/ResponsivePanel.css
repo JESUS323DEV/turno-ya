@@ -1,0 +1,217 @@
+/* =====================
+   RESPONSIVE — PANEL ADMIN
+   ===================== */
+
+/* LG (992px – 1199px): toggles en grid 2 columnas */
+@media (min-width: 992px) and (max-width: 1199px) {
+    .cfg-card-cont {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        width: 35rem;
+        margin: auto;
+    }
+    .cfg-card-subtitle {
+        grid-column: 1 / -1 !important;
+    }
+}
+
+/* XL (1280px – 1399px): ídem */
+@media (min-width: 1280px) and (max-width: 1399px) {
+    .cfg-card-cont {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        width: 35rem;
+        margin: auto;
+    }
+    .cfg-card-subtitle {
+        grid-column: 1 / -1 !important;
+    }
+}
+
+/* ≥768px: layout con sidebar */
+@media (min-width: 768px) {
+
+    .admin-section {
+        padding: 0;
+        height: 100dvh;
+        align-items: stretch;
+        overflow: hidden;
+    }
+
+    .cfg-wrapper {
+        display: grid;
+        grid-template-columns: 210px 1fr;
+        height: 100dvh;
+        width: 100%;
+    }
+
+    .cfg-sidebar {
+        display: flex;
+        flex-direction: column;
+        border-right: 1px solid var(--border);
+        background: var(--bg);
+        position: sticky;
+        top: 0;
+        height: 100dvh;
+        overflow-y: auto;
+    }
+
+    .cfg-sidebar-logo {
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
+        padding: 0.75rem 0.75rem 0.75rem 1rem;
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--text-h);
+        border-bottom: 1px solid var(--border);
+    }
+
+    .cfg-sidebar-nombre {
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 0.9rem;
+    }
+
+    .cfg-sidebar-avatar-wrap {
+        position: relative;
+        flex-shrink: 0;
+    }
+
+    .cfg-sidebar-menu {
+        top: calc(100% + 0.4rem);
+        left: 0;
+        right: auto;
+        min-width: 200px;
+        z-index: 200;
+    }
+
+    .cfg-sidebar-nav {
+        display: flex;
+        flex-direction: column;
+        gap: 0.15rem;
+        padding: 0.6rem 0.5rem;
+    }
+
+    .cfg-sidebar-item {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        padding: 0.55rem 0.75rem;
+        border: none;
+        border-radius: 8px;
+        background: none;
+        color: var(--text);
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        font-family: inherit;
+        text-align: left;
+        width: 100%;
+        transition: background 0.15s, color 0.15s;
+    }
+
+    .cfg-sidebar-item:hover {
+        background: var(--accent-bg);
+        color: var(--text-h);
+    }
+
+    .cfg-sidebar-item--active {
+        background: var(--accent-bg);
+        color: var(--accent);
+        font-weight: 600;
+    }
+
+    .admin-form.cfg-main {
+        max-width: none;
+        gap: 0;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+    }
+
+    .cfg-topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.95rem 1.5rem;
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        background: var(--bg);
+        z-index: 10;
+    }
+
+    .cfg-topbar-title {
+        flex: 1;
+        text-align: center;
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text-h);
+        margin: 0;
+    }
+
+    .cfg-topbar .admin-btn-primary {
+        width: auto;
+        padding: 0.55rem 1.2rem;
+        font-size: 0.875rem;
+        margin: 0;
+    }
+
+    .admin-header {
+        display: none;
+    }
+
+    .acc-header {
+        display: none;
+    }
+
+    .acc-seccion {
+        border: none;
+        border-radius: 0;
+    }
+
+    .acc-body {
+        border-top: none;
+        padding: 1.5rem;
+    }
+
+    .acc-list {
+        flex: 1;
+    }
+
+    .cfg-mobile-save {
+        display: none;
+    }
+
+    .cfg-tabnav-wrap {
+        display: none;
+    }
+}
+
+/* XXL (≥1400px) */
+@media (min-width: 1400px) {
+    .panel-stats {
+        grid-template-columns: repeat(5, 1fr);
+    }
+
+    .admin-preview-phone {
+        width: 100%;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .cfg-card-cont {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        width: 35rem;
+        margin: auto;
+    }
+
+    .cfg-card-subtitle {
+        grid-column: 1 / -1 !important;
+    }
+}

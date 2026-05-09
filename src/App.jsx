@@ -25,7 +25,7 @@ function hexToRgba(hex, alpha) {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
-const FORM_VARS = ["--bg","--accent","--accent-bg","--accent-border","--border","--border-input","--text","--text-h","--btn-text"];
+const FORM_VARS = ["--bg", "--bg-gradient", "--accent", "--accent-bg", "--accent-border", "--border", "--border-input", "--text", "--text-h", "--btn-text", "--text-desc"];
 
 function applyTema({ tema, colorFondo, colorAcento, colorBorde } = {}) {
   const root = document.documentElement;
@@ -39,6 +39,16 @@ function applyTema({ tema, colorFondo, colorAcento, colorBorde } = {}) {
   }
 
   FORM_VARS.forEach(v => formEl.style.removeProperty(v));
+  formEl.style.removeProperty("background-image");
+  formEl.style.removeProperty("background-size");
+  formEl.style.removeProperty("background-position");
+  formEl.style.removeProperty("background-repeat");
+  formEl.style.removeProperty("background-color");
+  formEl.style.removeProperty("background");
+  document.body.style.removeProperty("background-image");
+  document.body.style.removeProperty("background-size");
+  document.body.style.removeProperty("background-repeat");
+  document.body.style.removeProperty("background-position");
 
   const preset = TEMAS.find((t) => t.id === tema);
 
@@ -69,6 +79,22 @@ function applyTema({ tema, colorFondo, colorAcento, colorBorde } = {}) {
     const bg = preset.bg || (preset.base === "oscuro" ? "#16171d" : "#ffffff");
     formEl.style.setProperty("--bg", bg);
     if (preset.border) formEl.style.setProperty("--border", preset.border);
+    if (preset.textDesc) formEl.style.setProperty("--text-desc", preset.textDesc);
+    if (preset.bgImage) {
+      document.body.style.backgroundImage = `url("${preset.bgImage}")`;
+      document.body.style.backgroundSize = "100% 100%";
+      document.body.style.backgroundPosition = "center top";
+      document.body.style.backgroundRepeat = "no-repeat";
+      document.body.style.backgroundImage = `
+  linear-gradient(rgba(0,0,0,0.10), rgba(0,0,0,0.10)),
+  url("${preset.bgImage}")
+`;
+      formEl.style.setProperty("background-color", "transparent");
+    }
+    if (preset.gradient) {
+      formEl.style.setProperty("--bg-gradient", preset.gradient);
+      document.body.style.removeProperty("background");
+    }
     document.body.style.backgroundColor = bg;
   } else {
     formEl.setAttribute("data-tema", "claro");
@@ -80,10 +106,10 @@ function App() {
   const [vista, setVista] = useState(getVista);
 
   useEffect(() => {
-    const onTema = (e) => applyTema(e.detail);
+    const onTema = (e) => { if (vista === "reserva") applyTema(e.detail); };
     window.addEventListener("turno-ya:tema", onTema);
     return () => window.removeEventListener("turno-ya:tema", onTema);
-  }, []);
+  }, [vista]);
 
   useEffect(() => {
     if (vista === "reserva") applyTema(getConfig());

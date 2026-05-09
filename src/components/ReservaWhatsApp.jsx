@@ -312,7 +312,7 @@ export default function ReservaWhatsApp({ configOverride = null } = {}) {
                   )}
                 </div>
 
-                <div className="form-fields-grid2">
+                {(campos.fecha || campos.hora) && <div className="form-fields-grid2">
                   <h4 className="form-section-title col-span-2">Cuándo deseas venir:</h4>
                   {campos.fecha && (
                     <div className="reserva-label">
@@ -387,7 +387,7 @@ export default function ReservaWhatsApp({ configOverride = null } = {}) {
                       )}
                     </div>
                   )}
-                </div>
+                </div>}
               </div>
 
               <div className="reserva-label">
