@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { ChevronDown, ChevronLeft, ChevronRight, ArrowLeft, Lock, LogOut, Settings, FlaskConical, ScrollText, Store, Clock, Settings2, HelpCircle, SlidersHorizontal, Eye, Calendar, CalendarX, User, UserCheck, Phone, Mail, Users, MessageSquare, Trash2, Pencil, FileText, Sun, Moon, Image as ImageIcon, LayoutGrid, Check,Star  } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight, ArrowLeft, Lock, LogOut, Settings, FlaskConical, ScrollText, Store, Clock, Settings2, HelpCircle, SlidersHorizontal, Eye, Calendar, CalendarX, User, UserCheck, Phone, Mail, Users, MessageSquare, Trash2, Pencil, FileText, Sun, Moon, Image as ImageIcon, LayoutGrid, Check, Star } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { DIAS } from "../hooks/useAdminConfig";
 import ReservaWhatsApp from "./ReservaWhatsApp";
@@ -390,7 +390,10 @@ export default function ConfigPanel({ config, onBack }) {
 
                 <button type="button" className="cfg-mobile-back-btn" onClick={onBack}>
                   <ArrowLeft size={18} />
+                  Volver
                 </button>
+
+
 
                 {/* Centro absoluto: avatar + nombre, siempre visible */}
                 <div className="cfg-header-mid">
@@ -505,11 +508,13 @@ export default function ConfigPanel({ config, onBack }) {
                     {/* ── Visibilidad ── */}
                     <div className="cfg-card">
                       <div className="cfg-card-desktop cfg-card-mobile">
-                        <span className="cfg-card-label">Visibilidad</span>
 
+                        <div className="cont-header-titles">
+                          <h2 className="cfg-card-label">Visibilidad</h2>
+                          <p className="cfg-card-subtitle">Campos del formulario</p>
+                        </div>
                         {/* Campos del formulario */}
                         <div className="cfg-card-cont">
-                          <span className="cfg-card-subtitle">Campos del formulario</span>
                           {[
                             { key: "nombre", label: "Nombre", icon: <User size={15} /> },
                             { key: "apellidos", label: "Apellidos", icon: <UserCheck size={15} /> },
@@ -534,7 +539,7 @@ export default function ConfigPanel({ config, onBack }) {
 
                         {/* Datos del negocio */}
                         <div className="cfg-card-cont">
-                          <span className="cfg-card-subtitle">Funciones</span>
+                          <p className="cfg-card-subtitle">Funciones</p>
 
                           {/* Mostrar nombre del negocio */}
                           <div className="cfg-toggle-row">
@@ -573,7 +578,7 @@ export default function ConfigPanel({ config, onBack }) {
                     {/* ── Configuración del negocio ── */}
                     <div className="cfg-card">
                       <div className="cfg-card-desktop cfg-card-mobile">
-                        <span className="cfg-card-label">Configuración del negocio</span>
+                        <h2 className="cfg-card-label">Configuración del negocio</h2>
 
                         <label className="admin-label">
                           <span>Nombre del negocio</span>
@@ -616,7 +621,7 @@ export default function ConfigPanel({ config, onBack }) {
                     {/* ── Formulario ── */}
                     <div className="cfg-card">
                       <div className="cfg-card-desktop cfg-card-mobile">
-                        <span className="cfg-card-label">Formulario</span>
+                        <h2 className="cfg-card-label">Formulario</h2>
                         <label className="admin-label">
                           <span>Título del formulario</span>
                           <input className="admin-input" type="text" maxLength={21}
@@ -637,7 +642,7 @@ export default function ConfigPanel({ config, onBack }) {
                     {/* ── Enlaces del negocio ── */}
                     <div className="cfg-card">
                       <div className="cfg-card-desktop cfg-card-mobile">
-                        <span className="cfg-card-label">Enlaces del negocio</span>
+                        <h2 className="cfg-card-label">Enlaces del negocio</h2>
                         <label className="admin-label">
                           <span>Link 1 (web, Instagram, Facebook...)</span>
                           <input className="admin-input" type="url" placeholder="https://..."
@@ -656,7 +661,7 @@ export default function ConfigPanel({ config, onBack }) {
                     {/* ── Mensaje de WhatsApp (solo modo WA) ── */}
                     {draft.modoEnvio !== "email" && <div className="cfg-card">
                       <div className="cfg-card-desktop cfg-card-mobile">
-                        <span className="cfg-card-label">Mensaje de WhatsApp</span>
+                        <h2 className="cfg-card-label">Mensaje de WhatsApp</h2>
                         <div className="admin-tema-selector">
                           {PERFILES.map((p) => (
                             <button key={p.id} type="button"
@@ -700,9 +705,11 @@ export default function ConfigPanel({ config, onBack }) {
                 {abierto === "horarios" && (
                   <div className="acc-body">
                     <div className="cfg-card-desktop cfg-card-mobile">
-                      <span className="cfg-card-label">Horarios de atención</span>
-                      <span className="cfg-card-subtitle">Configura los días y turnos disponibles.</span>
 
+                      <div className="cont-header-titles">
+                        <h2 className="cfg-card-label">Horarios de atención</h2>
+                        <p className="cfg-card-subtitle">Configura los días y turnos disponibles.</p>
+                      </div>
                       {/* Días de la semana */}
                       {Object.entries(draft.horarios).map(([day, { abierto: diaAbierto, turnos }]) => (
 
@@ -824,18 +831,20 @@ export default function ConfigPanel({ config, onBack }) {
                 {abierto === "reservas" && (
                   <div className="acc-body">
                     <div className="cfg-card-desktop cfg-card-mobile">
-                      <span className="cfg-card-label">Gestión de reservas</span>
-                      <span className="cfg-card-subtitle">Ajusta límites, antelación y capacidad de las reservas.</span>
+                      <div className="cont-header-titles">
+                        <h2 className="cfg-card-label">Gestión de reservas</h2>
+                        <p className="cfg-card-subtitle">Ajusta límites, antelación y capacidad de las reservas.</p>
+                      </div>
                       {/* ── TIEMPO ── */}
                       <div className="cfg-rsv-section cfg-rsv-section--tiempo">
                         <div className="cfg-rsv-section-head">
                           <span className="cfg-rsv-badge"><Clock size={14} /></span>
-                          <span className="cfg-rsv-section-title">Tiempo</span>
+                          <h3 className="cfg-rsv-section-title">Tiempo</h3>
                         </div>
                         <div className="cfg-rsv-row">
                           <div className="cfg-rsv-row-label">
-                            <span className="cfg-rsv-label">Duración de cada reserva (Min)</span>
-                            <span className="cfg-rsv-hint">Franja horaria disponible.</span>
+                            <h5 className="cfg-rsv-label">Duración de cada reserva (Min)</h5>
+                            <p className="cfg-rsv-hint">Franja horaria disponible.</p>
                           </div>
                           <select className="admin-input cfg-rsv-input" value={draft.slotInterval}
                             onChange={(e) => setField("slotInterval", Number(e.target.value))}>
@@ -850,8 +859,8 @@ export default function ConfigPanel({ config, onBack }) {
                         </div>
                         <div className="cfg-rsv-row">
                           <div className="cfg-rsv-row-label">
-                            <span className="cfg-rsv-label">Antelación mínima (horas)</span>
-                            <span className="cfg-rsv-hint">0 = reserva inmediata.</span>
+                            <h5 className="cfg-rsv-label">Antelación mínima (horas)</h5>
+                            <p className="cfg-rsv-hint">0 = reserva inmediata.</p>
                           </div>
                           <input className="admin-input cfg-rsv-input" type="number" min="0" max="72"
                             value={draft.antelacionMinHoras}
@@ -859,8 +868,8 @@ export default function ConfigPanel({ config, onBack }) {
                         </div>
                         <div className="cfg-rsv-row">
                           <div className="cfg-rsv-row-label">
-                            <span className="cfg-rsv-label">Antelación máxima (días)</span>
-                            <span className="cfg-rsv-hint">Días máximos para reservar.</span>
+                            <h5 className="cfg-rsv-label">Antelación máxima (días)</h5>
+                            <p className="cfg-rsv-hint">Días máximos para reservar.</p>
                           </div>
                           <input className="admin-input cfg-rsv-input" type="number" min="1" max="365"
                             value={draft.antelacionMaxDias}
@@ -872,12 +881,12 @@ export default function ConfigPanel({ config, onBack }) {
                       <div className="cfg-rsv-section cfg-rsv-section--capacidad">
                         <div className="cfg-rsv-section-head">
                           <span className="cfg-rsv-badge"><Users size={14} /></span>
-                          <span className="cfg-rsv-section-title">Capacidad</span>
+                          <h3 className="cfg-rsv-section-title">Capacidad</h3>
                         </div>
                         <div className="cfg-rsv-row">
                           <div className="cfg-rsv-row-label">
-                            <span className="cfg-rsv-label">Mínimo de personas</span>
-                            <span className="cfg-rsv-hint">Por reserva.</span>
+                            <h5 className="cfg-rsv-label">Mínimo de personas</h5>
+                            <p className="cfg-rsv-hint">Por reserva.</p>
                           </div>
                           <input className="admin-input cfg-rsv-input" type="number" min="1" max="99"
                             value={draft.minPersonas}
@@ -885,8 +894,8 @@ export default function ConfigPanel({ config, onBack }) {
                         </div>
                         <div className="cfg-rsv-row">
                           <div className="cfg-rsv-row-label">
-                            <span className="cfg-rsv-label">Máximo de personas</span>
-                            <span className="cfg-rsv-hint">Por reserva.</span>
+                            <h5 className="cfg-rsv-label">Máximo de personas</h5>
+                            <p className="cfg-rsv-hint">Por reserva.</p>
                           </div>
                           <input className="admin-input cfg-rsv-input" type="number" min="1" max="100"
                             value={draft.maxPersonas}
@@ -898,12 +907,12 @@ export default function ConfigPanel({ config, onBack }) {
                       <div className="cfg-rsv-section cfg-rsv-section--aforo">
                         <div className="cfg-rsv-section-head">
                           <span className="cfg-rsv-badge"><SlidersHorizontal size={14} /></span>
-                          <span className="cfg-rsv-section-title">Aforo</span>
+                          <h3 className="cfg-rsv-section-title">Aforo</h3>
                         </div>
                         <div className="cfg-rsv-row">
                           <div className="cfg-rsv-row-label">
-                            <span className="cfg-rsv-label">Aforo máximo por horario</span>
-                            <span className="cfg-rsv-hint">0 = sin límite. Requiere panel de reservas.</span>
+                            <h5 className="cfg-rsv-label">Aforo máximo por horario</h5>
+                            <p className="cfg-rsv-hint">0 = sin límite. Requiere panel de reservas.</p>
                           </div>
                           <input className="admin-input cfg-rsv-input" type="number" min="0" max="999"
                             value={draft.aforoPorSlot}
@@ -928,11 +937,10 @@ export default function ConfigPanel({ config, onBack }) {
                     <div className="cfg-card-desktop cfg-card-mobile">
 
                       {/* Cabecera */}
-                      <div className="cfg-preguntas-head">
-                        <span className="cfg-preguntas-title">Preguntas personalizadas</span>
-                        <span className="cfg-preguntas-sub">Campos extra que verá el cliente al reservar.</span>
+                      <div className="cont-header-titles">
+                        <h2 className="cfg-card-label">Preguntas personalizadas</h2>
+                        <p className="cfg-card-subtitle">Campos extra que verá el cliente al reservar.</p>
                       </div>
-
                       <div className="cfg-preguntas-list">
                         {/* Lista de preguntas */}
                         {draft.preguntasExtra.map((p, i) => (
@@ -1033,14 +1041,14 @@ export default function ConfigPanel({ config, onBack }) {
                   return (
                     <div className="acc-body">
                       <div className="cfg-card-desktop cfg-card-mobile">
-
+                        <div className="cont-header-titles">
+                          <h2 className="cfg-card-label">Tema del formulario</h2>
+                          <p className="cfg-card-subtitle">Elige el estilo visual de tu formulario.</p>
+                        </div>
                         {/* Selector de tema del formulario */}
                         <div className="cfg-card">
                           <div className="cfg-card-desktop cfg-card-mobile">
-                            <div className="cfg-tema-head">
-                              <span className="cfg-card-label">Tema del formulario</span>
-                              <span className="cfg-card-subtitle">Elige el estilo visual de tu formulario.</span>
-                            </div>
+
 
                             {/* Tabs de categoría */}
                             <div className="cfg-tema-cats">
@@ -1049,8 +1057,8 @@ export default function ConfigPanel({ config, onBack }) {
                                 { id: "claro", label: "Claros", icon: <Sun size={13} /> },
                                 { id: "oscuro", label: "Oscuros", icon: <Moon size={13} /> },
                                 { id: "fondo", label: "Artísticos", icon: <ImageIcon size={13} /> },
-                                {id: "favoritos", label: "Favoritos", icon: <Star size={13} />},
-                                
+                                { id: "favoritos", label: "Favoritos", icon: <Star size={13} /> },
+
                               ].map(({ id, label, icon }) => (
                                 <button key={id} type="button"
                                   className={`cfg-tema-cat-btn ${categoriaTema === id ? "cfg-tema-cat-btn--active" : ""}`}
@@ -1169,7 +1177,7 @@ export default function ConfigPanel({ config, onBack }) {
             </div>
 
             {/* Botón guardar móvil */}
-       
+
 
           </form>
         </div>

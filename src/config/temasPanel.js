@@ -4,6 +4,8 @@ export const TEMAS_PANEL = [
     "--border": "#e5e7eb", "--accent": "#2e2e2e",
     "--accent-bg": "rgba(130, 129, 129, 0.22)", "--btn-text": "#ffffff",
   }},
+
+  
   { id: "oscuro", label: "Oscuro", vars: {
     "--bg": "#1a1a1a", "--text": "#9ca3af", "--text-h": "#f3f4f6",
     "--border": "#2e2e2e", "--accent": "#f59e0b",
