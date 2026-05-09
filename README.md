@@ -9,9 +9,6 @@
   Sistema de reservas configurable para negocios reales
 </p>
 
-
-Sistema de reservas configurable orientado a negocios reales.
-
 TurnoYa permite crear formularios de reserva personalizados con branding dinámico, panel de configuración, gestión de reservas y soporte multi-negocio usando rutas por slug.
 
 ---
@@ -24,6 +21,112 @@ TurnoYa permite crear formularios de reserva personalizados con branding dinámi
 - CSS puro (sin frameworks UI)
 - Mobile-first
 - Netlify
+
+---
+
+# Features
+
+| Feature | Estado |
+|---|---|
+| Sistema de reservas funcional | ✅ |
+| Panel de configuración | ✅ |
+| Panel de reservas en vivo | ✅ |
+| Confirmación y cancelación de reservas | ✅ |
+| Multi-negocio mediante slug | ✅ |
+| Branding dinámico | ✅ |
+| Temas claros y oscuros | ✅ |
+| Fondos artísticos dinámicos | ✅ |
+| Responsive mobile-first | ✅ |
+| Previews reales en vivo | ✅ |
+| Configuración de horarios | ✅ |
+| Servicios personalizados | ✅ |
+| Preguntas extra dinámicas | ✅ |
+| Integración WhatsApp | ✅ |
+| Emails automáticos | ✅ |
+| Exportación widget | ✅ |
+| Polling en tiempo real | ✅ |
+| Sistema de slots automáticos | ✅ |
+| Overlay dinámico para fondos | ✅ |
+| Configuración persistente | ✅ |
+| Sistema PIN admin | ✅ |
+| Optimización UX/UI móvil | ✅ |
+| Arquitectura escalable | ✅ |
+
+---
+
+# Posibles mejoras futuras
+
+| Mejora | Estado |
+|---|---|
+| Protección anti overbooking avanzado | 🟡 |
+| Locks para edición simultánea | 🟡 |
+| Validación avanzada de logos/imágenes | 🟡 |
+| Protección anti spam/fake reservations | 🟡 |
+| Recuperación de PIN | 🟡 |
+| Horarios especiales | 🟡 |
+| Vacaciones/cierres temporales | 🟡 |
+| Reservas recurrentes | 🟡 |
+| Multi empleados | 🟡 |
+| Gestión de mesas | 🟡 |
+| Sistema de pagos | 🟡 |
+| Optimización Android antiguos | 🟡 |
+| Mejor sincronización multi-admin | 🟡 |
+| Cache/config refresh automático | 🟡 |
+| Mejor deliverability emails | 🟡 |
+| Prevención slugs duplicados | 🟡 |
+
+---
+# Capturas
+
+# Perfiles y branding dinámico
+
+## Vanessa Psicopedagogía
+
+![Formulario Vanessa](./src/assets/screenshots/form-vanessa.png)
+
+## Estrella Creator
+
+![Formulario Estrella](./src/assets/screenshots/form-estrella.png)
+
+## JesúsDev
+
+![Formulario JesúsDev](./src/assets/screenshots/form-jesusdev.png)
+
+## Olla Perú
+
+![Formulario OllaPerú](./src/assets/screenshots/form-ollaperu1.png)
+
+![Formulario OllaPerú2](./src/assets/screenshots/form-ollaperu2.png)
+
+
+
+## Panel de configuración
+
+## Configuración y personalización del negocio
+
+![Formulario Configuración del negocio](./src/assets/screenshots/tab-negocios.png)
+
+
+## Configuración de horarios
+
+![Formulario Configuración de horarios](./src/assets/screenshots/tab-horario.png)
+
+## Gestión de reservas
+
+![Formulario Gestión de reservas](./src/assets/screenshots/tab-config.png)
+
+
+## Sistema de temas
+
+![Formulario Sistema de temas](./src/assets/screenshots/tab-apariencia.png)
+
+
+
+
+
+
+
+
 
 ---
 
