@@ -7,7 +7,7 @@ import "react-day-picker/style.css";
 import icon1 from "../assets/icon-whatsapp.png";
 import { useReservaForm } from "../hooks/useReservaForm";
 import { descargarIcs } from "../utils/ics";
-import "../styles/formulario.css";
+import "../styles/formFinal.css";
 
 // ─── Icono Instagram (SVG inline — lucide-react no incluye iconos de marca) ──
 function InstagramIcon({ size = 22 }) {
@@ -68,7 +68,7 @@ function dateToStr(date) {
 }
 
 // ─── Componente principal ────────────────────────────────────────────────────
-export default function ReservaWhatsApp({ configOverride = null } = {}) {
+export default function FormFinal({ configOverride = null } = {}) {
   const {
     form,
     today,

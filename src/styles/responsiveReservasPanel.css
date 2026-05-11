@@ -1,0 +1,16 @@
+/* ── Responsive ReservasPanel ────────────────────────────────────────────────── */
+
+@media (min-width: 768px) {
+    .res-section {
+        padding: 0;
+        height: 100dvh;
+        align-items: stretch;
+        overflow: hidden;
+    }
+}
+
+@media (min-width: 1400px) {
+    .panel-stats {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}

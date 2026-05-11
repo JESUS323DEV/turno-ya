@@ -4,11 +4,13 @@ import { useAdminConfig } from "../hooks/useAdminConfig";
 import { getPanelVars } from "../config/temasPanel";
 import ReservasPanel from "./ReservasPanel";
 import ConfigPanel from "./ConfigPanel";
-import "../styles/config.css";
-import "../styles/reservas.css";
-import "../styles/ResponsivePanel.css";
+import "../styles/loginPanel.css";
+import "../styles/configPanel.css";
+import "../styles/reservasPanel.css";
+import "../styles/responsiveConfigPanel.css";
+import "../styles/responsiveReservasPanel.css";
 
-export default function AdminPanel() {
+export default function LoginPanel() {
   const adminConfig = useAdminConfig();
   const { pin, setPin, autenticado, pinError, verificarPin } = adminConfig;
   const [seccion, setSeccion] = useState(null);

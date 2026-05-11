@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import ReservaWhatsApp from "./components/ReservaWhatsApp";
-import AdminPanel from "./components/AdminPanel";
+import FormFinal from "./components/FormFinal";
+import LoginPanel from "./components/LoginPanel";
 import { getConfig } from "./config/negocio";
 import { TEMAS } from "./config/temas";
 
@@ -122,8 +122,8 @@ function App() {
     return () => window.removeEventListener("hashchange", onHash);
   }, []);
 
-  if (vista === "admin") return <AdminPanel />;
-  return <div id="turno-ya-form"><ReservaWhatsApp /></div>;
+  if (vista === "admin") return <LoginPanel />;
+  return <div id="turno-ya-form"><FormFinal /></div>;
 }
 
 export default App;

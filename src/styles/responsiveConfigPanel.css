@@ -193,10 +193,6 @@
 
 /* XXL (≥1400px) */
 @media (min-width: 1400px) {
-    .panel-stats {
-        grid-template-columns: repeat(5, 1fr);
-    }
-
     .admin-preview-phone {
         width: 100%;
         border: none;

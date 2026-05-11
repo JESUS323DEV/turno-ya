@@ -162,12 +162,12 @@ export default function ReservasPanel({ pin, onBack }) {
   );
 
   return (
-    <section className="admin-section reservas-scope">
+    <section className="res-section reservas-scope">
       <form className="admin-form-reservas ">
 
-        <div className="admin-header">
-          <button type="button" className="admin-seccion-back" onClick={onBack}>← Volver</button>
-          <h2 className="admin-title">Panel de reservas</h2>
+        <div className="res-header">
+          <button type="button" className="res-back" onClick={onBack}>← Volver</button>
+          <h2 className="res-title">Panel de reservas</h2>
           <div className="panel-v2-header">
             <div className="panel-v2-live">
               <span className="panel-v2-live-dot" />
@@ -185,7 +185,7 @@ export default function ReservasPanel({ pin, onBack }) {
           <div className="notif-nueva">
             <div className="notif-nueva-header">
               <span className="notif-nueva-titulo">🔔 Nueva reserva</span>
-              <button type="button" className="admin-modal-close" onClick={() => setNuevasReservas([])}>✕</button>
+              <button type="button" className="res-modal-close" onClick={() => setNuevasReservas([])}>✕</button>
             </div>
             {(() => { const r = nuevasReservas[0]; return (
               <div className="notif-nueva-card">
@@ -214,14 +214,14 @@ export default function ReservasPanel({ pin, onBack }) {
         {nuevasReservas.length > 1 && (
           <div className="notif-nueva notif-nueva--multiple">
             <span className="notif-nueva-titulo">🔔 {nuevasReservas.length} nuevas reservas pendientes</span>
-            <button type="button" className="admin-modal-close" onClick={() => setNuevasReservas([])}>✕</button>
+            <button type="button" className="res-modal-close" onClick={() => setNuevasReservas([])}>✕</button>
           </div>
         )}
 
-        <div className="admin-tabs">
+        <div className="res-tabs">
           {Object.entries(TABS).map(([key, label]) => (
             <button key={key} type="button"
-              className={`admin-tab ${tab === key ? "admin-tab--active" : ""}`}
+              className={`res-tab ${tab === key ? "res-tab--active" : ""}`}
               onClick={() => setTab(key)}>
               {label}
             </button>
@@ -278,7 +278,7 @@ export default function ReservasPanel({ pin, onBack }) {
             </div>
 
             {reservasPorTab.length === 0 ? (
-              <p className="admin-hint" style={{ textAlign: "center", padding: "2rem 0" }}>
+              <p className="res-hint" style={{ textAlign: "center", padding: "2rem 0" }}>
                 {hayFiltros ? "No hay reservas con esos filtros." : "Sin reservas para este período."}
               </p>
             ) : (<>
@@ -323,7 +323,7 @@ export default function ReservasPanel({ pin, onBack }) {
           <div className="panel-reservas">
             <p className="panel-seccion-titulo">Hoy · {hoyFormateado}</p>
             {reservasHoy.length === 0 ? (
-              <p className="admin-hint" style={{ textAlign: "center" }}>Sin reservas hoy.</p>
+              <p className="res-hint" style={{ textAlign: "center" }}>Sin reservas hoy.</p>
             ) : (
               <div className="panel-lista">
                 {reservasHoy.map((r) => (
@@ -381,7 +381,7 @@ export default function ReservasPanel({ pin, onBack }) {
               </div>
             ))}
             {fechasHistorial.length === 0 && (
-              <p className="admin-hint" style={{ textAlign: "center" }}>Sin historial de días anteriores.</p>
+              <p className="res-hint" style={{ textAlign: "center" }}>Sin historial de días anteriores.</p>
             )}
           </div>
         )}
@@ -389,13 +389,13 @@ export default function ReservasPanel({ pin, onBack }) {
 
       {/* Modal detalle de reserva */}
       {modalDetalle && (
-        <div className="admin-modal-overlay" onClick={() => setModalDetalle(null)}>
-          <div className="admin-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="admin-modal-header">
-              <span className="admin-modal-title">{modalDetalle.nombre}</span>
-              <button type="button" className="admin-modal-close" onClick={() => setModalDetalle(null)}>✕</button>
+        <div className="res-modal-overlay" onClick={() => setModalDetalle(null)}>
+          <div className="res-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="res-modal-header">
+              <span className="res-modal-title">{modalDetalle.nombre}</span>
+              <button type="button" className="res-modal-close" onClick={() => setModalDetalle(null)}>✕</button>
             </div>
-            <div className="admin-modal-body">
+            <div className="res-modal-body">
               <span className={`panel-badge panel-badge--${modalDetalle.estado}`} style={{ alignSelf: "flex-start" }}>
                 {modalDetalle.estado === "pendiente" ? "Pendiente" : modalDetalle.estado === "confirmada" ? "Confirmada" : "Cancelada"}
               </span>
@@ -427,13 +427,13 @@ export default function ReservasPanel({ pin, onBack }) {
 
       {/* Modal confirmación eliminar */}
       {confirmarEliminar && (
-        <div className="admin-modal-overlay" onClick={() => setConfirmarEliminar(null)}>
-          <div className="admin-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="admin-modal-header">
-              <span className="admin-modal-title">Eliminar reserva</span>
-              <button type="button" className="admin-modal-close" onClick={() => setConfirmarEliminar(null)}>✕</button>
+        <div className="res-modal-overlay" onClick={() => setConfirmarEliminar(null)}>
+          <div className="res-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="res-modal-header">
+              <span className="res-modal-title">Eliminar reserva</span>
+              <button type="button" className="res-modal-close" onClick={() => setConfirmarEliminar(null)}>✕</button>
             </div>
-            <div className="admin-modal-body">
+            <div className="res-modal-body">
               <p style={{ fontSize: "14px", color: "var(--text)", lineHeight: 1.5 }}>
                 ¿Estás seguro de que quieres eliminar la reserva de <strong style={{ color: "var(--text-h)" }}>{confirmarEliminar.nombre}</strong>? Esta acción no se puede deshacer.
               </p>
@@ -453,13 +453,13 @@ export default function ReservasPanel({ pin, onBack }) {
       )}
 
       {modalMensaje && (
-        <div className="admin-modal-overlay" onClick={() => setModalMensaje(null)}>
-          <div className="admin-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="admin-modal-header">
-              <span className="admin-modal-title">Mensaje del cliente</span>
-              <button type="button" className="admin-modal-close" onClick={() => setModalMensaje(null)}>✕</button>
+        <div className="res-modal-overlay" onClick={() => setModalMensaje(null)}>
+          <div className="res-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="res-modal-header">
+              <span className="res-modal-title">Mensaje del cliente</span>
+              <button type="button" className="res-modal-close" onClick={() => setModalMensaje(null)}>✕</button>
             </div>
-            <div className="admin-modal-body">
+            <div className="res-modal-body">
               <p style={{ fontSize: "14px", lineHeight: "1.6", color: "var(--text)" }}>💬 {modalMensaje}</p>
             </div>
           </div>

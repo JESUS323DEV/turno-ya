@@ -1,6 +1,6 @@
 import { StrictMode, useEffect } from "react";
 import { createRoot } from "react-dom/client";
-import ReservaWhatsApp from "./components/ReservaWhatsApp";
+import FormFinal from "./components/FormFinal";
 import { getConfig } from "./config/negocio";
 import { TEMAS } from "./config/temas";
 
@@ -87,7 +87,7 @@ function applyTema({ tema, colorFondo, colorAcento, colorBorde } = {}) {
 /* ── Componente raíz del widget ── */
 function WidgetRoot() {
   useEffect(() => { applyTema(getConfig()); }, []);
-  return <div id="turno-ya-form"><ReservaWhatsApp /></div>;
+  return <div id="turno-ya-form"><FormFinal /></div>;
 }
 
 /* ── Auto-init al encontrar <div id="turno-ya" data-config='...'> ── */

@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { ChevronDown, ChevronLeft, ChevronRight, ArrowLeft, Lock, LogOut, Settings, FlaskConical, ScrollText, Store, Clock, Settings2, HelpCircle, SlidersHorizontal, Eye, Calendar, CalendarX, User, UserCheck, Phone, Mail, Users, MessageSquare, Trash2, Pencil, FileText, Sun, Moon, Image as ImageIcon, LayoutGrid, Check, Star } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { DIAS } from "../hooks/useAdminConfig";
-import ReservaWhatsApp from "./ReservaWhatsApp";
+import FormFinal from "./FormFinal";
 import { TEMAS } from "../config/temas";
 import { TEMAS_PANEL, getPanelVars } from "../config/temasPanel";
 import { PERFILES } from "../config/perfiles";
@@ -1166,7 +1166,7 @@ export default function ConfigPanel({ config, onBack }) {
                         <div className="cfg-tema-preview-wrap" data-tema={dataTema} style={bgImage
                           ? { ...vars, backgroundColor: "var(--bg)", backgroundImage: `url("${bgImage}")`, backgroundSize: "cover", backgroundPosition: "center" }
                           : { ...vars, background: gradient || "var(--bg)" }}>
-                          <ReservaWhatsApp configOverride={getConfigFinal()} />
+                          <FormFinal configOverride={getConfigFinal()} />
                         </div>
                       </div>
                     </div>
