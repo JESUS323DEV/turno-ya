@@ -94,7 +94,7 @@ export default function ReservasPanel({ pin, onBack }) {
     if (tabFecha === "hoy") return r.fecha === hoyStr;
     if (tabFecha === "manana") return r.fecha === mananaStr;
     return r.fecha >= pasadoMananaStr;
-  }).sort((a, b) => a.fecha.localeCompare(b.fecha) || (a.hora || "").localeCompare(b.hora || ""));
+  }).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
   const totalPaginasPanel = Math.ceil(reservasPorTab.length / POR_PAGINA);
   const reservasPaginadas = reservasPorTab.slice((paginaPanel - 1) * POR_PAGINA, paginaPanel * POR_PAGINA);
