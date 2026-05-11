@@ -1,14 +1,14 @@
 /* ── ConfigPanel ─────────────────────────────────────────────────────────────── */
 
 /* Contador de caracteres */
-.admin-counter {
+.cfg-counter {
   font-size: 11px;
   color: var(--text);
   text-align: right;
   margin-top: -8px;
 }
 
-.admin-section {
+.cfg-section {
   display: flex;
   justify-content: center;
   overscroll-behavior-y: none;
@@ -17,8 +17,8 @@
   min-height: 100dvh;
 }
 
-.admin-pin-form,
-.admin-form {
+.cfg-pin-form,
+.cfg-form {
   width: 100%;
   max-width: 520px;
   display: flex;
@@ -29,7 +29,7 @@
 
 
 
-.admin-header {
+.cfg-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -38,7 +38,7 @@
   position: relative;
 }
 
-.admin-header-cont {
+.cfg-header-cont {
 
   display: flex;
   flex-direction: column;
@@ -285,13 +285,13 @@
   cursor: default;
 }
 
-.admin-title {
+.cfg-title {
   margin: 0;
   text-align: center;
   font-size: 1.7rem;
 }
 
-.admin-seccion-btn {
+.cfg-seccion-btn {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -309,15 +309,15 @@
   width: 100%;
 }
 
-.admin-seccion-btn:hover {
+.cfg-seccion-btn:hover {
   border-color: var(--accent);
 }
 
-.admin-seccion-icon {
+.cfg-seccion-icon {
   font-size: 22px;
 }
 
-.admin-seccion-back {
+.cfg-seccion-back {
   background: none;
   border: none;
   color: var(--accent);
@@ -328,24 +328,24 @@
   font-family: inherit;
 }
 
-.admin-subtitle {
+.cfg-subtitle {
   color: var(--text);
   font-size: 14px;
   margin-top: -12px;
 }
 
-.admin-back {
+.cfg-back {
   font-size: 14px;
   color: var(--accent);
   text-decoration: none;
 }
 
-.admin-back:hover {
+.cfg-back:hover {
   text-decoration: underline;
 }
 
 /* Fieldset */
-.admin-fieldset {
+.cfg-fieldset {
   border: none;
   border-radius: 10px;
   display: flex;
@@ -353,7 +353,7 @@
   gap: 1.2rem;
 }
 
-.admin-legend {
+.cfg-legend {
   font-size: 13px;
   font-weight: 600;
   color: var(--text);
@@ -363,7 +363,7 @@
 }
 
 /* Labels e inputs */
-.admin-label {
+.cfg-label {
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -373,11 +373,11 @@
   text-align: left;
 }
 
-.admin-label span {
+.cfg-label span {
   padding-left: 0.3rem;
 }
 
-.admin-input {
+.cfg-input {
   width: 100%;
   padding: 9px 12px;
   border: 1.5px solid var(--border);
@@ -392,47 +392,47 @@
   color-scheme: light;
 }
 
-[data-tema-panel="oscuro"] .admin-input {
+[data-tema-panel="oscuro"] .cfg-input {
   color-scheme: dark;
 }
 
-.admin-input:focus {
+.cfg-input:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-bg);
 }
 
-.admin-input.input-bad {
+.cfg-input.input-bad {
   border-color: #ef4444;
 }
 
-.admin-input:disabled {
+.cfg-input:disabled {
   opacity: 0.4;
   cursor: not-allowed;
 }
 
-.admin-input-time {
+.cfg-input-time {
   width: auto;
   flex: 1;
 }
 
-.admin-error {
+.cfg-error {
   color: #ef4444;
   font-size: 13px;
   margin-top: -10px;
 }
 
 /* Días */
-.admin-dia {
+.cfg-dia {
   border-bottom: 1px solid var(--border);
   padding-bottom: 12px;
 }
 
-.admin-dia:last-child {
+.cfg-dia:last-child {
   border-bottom: none;
   padding-bottom: 0;
 }
 
-.admin-acordeon-header {
+.cfg-acordeon-header {
   width: 100%;
   display: flex;
   align-items: center;
@@ -447,20 +447,20 @@
   font-family: inherit;
 }
 
-.admin-dia-header {
+.cfg-dia-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 8px;
 }
 
-.admin-dia-nombre {
+.cfg-dia-nombre {
   font-size: 15px;
   font-weight: 500;
   color: var(--text-h);
 }
 
-.admin-toggle {
+.cfg-toggle {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -469,7 +469,7 @@
   cursor: pointer;
 }
 
-.admin-toggle input[type="checkbox"] {
+.cfg-toggle input[type="checkbox"] {
   width: 16px;
   height: 16px;
   accent-color: var(--accent);
@@ -478,24 +478,24 @@
 }
 
 /* Turnos */
-.admin-turnos {
+.cfg-turnos {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.admin-turno {
+.cfg-turno {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.admin-turno-sep {
+.cfg-turno-sep {
   color: var(--text);
   font-size: 13px;
 }
 
-.admin-btn-remove {
+.cfg-btn-remove {
   background: none;
   border: none;
   color: #ef4444;
@@ -505,11 +505,11 @@
   border-radius: 4px;
 }
 
-.admin-btn-remove:hover {
+.cfg-btn-remove:hover {
   background: rgba(239, 68, 68, 0.1);
 }
 
-.admin-btn-add {
+.cfg-btn-add {
   background: none;
   border: 1.5px dashed var(--accent);
   border-radius: 8px;
@@ -523,14 +523,14 @@
   font-weight: 500;
 }
 
-.admin-btn-add:hover {
+.cfg-btn-add:hover {
   background: var(--accent-bg);
   border-color: var(--accent);
   color: var(--accent);
 }
 
 /* Botón guardar */
-.admin-btn-primary {
+.cfg-btn-primary {
   padding: 13px;
   background: var(--accent);
   color: var(--btn-text, #fff);
@@ -544,27 +544,27 @@
   transition: background 0.15s;
 }
 
-.admin-btn-primary:hover {
+.cfg-btn-primary:hover {
   filter: brightness(1.1);
 }
 
 /* Fechas bloqueadas */
-.admin-hint {
+.cfg-hint {
   font-size: 11px;
   color: var(--text);
   margin: 0;
 }
 
-.admin-fecha-add {
+.cfg-fecha-add {
   display: flex;
   gap: 8px;
 }
 
-.admin-fecha-add .admin-input {
+.cfg-fecha-add .cfg-input {
   flex: 1;
 }
 
-.admin-btn-add-fecha {
+.cfg-btn-add-fecha {
   padding: 9px 14px;
   background: var(--accent);
   color: #fff;
@@ -576,11 +576,11 @@
   white-space: nowrap;
 }
 
-.admin-btn-add-fecha:hover {
+.cfg-btn-add-fecha:hover {
   filter: brightness(1.1);
 }
 
-.admin-fechas-list {
+.cfg-fechas-list {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -589,7 +589,7 @@
   gap: 6px;
 }
 
-.admin-fecha-item {
+.cfg-fecha-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -600,20 +600,20 @@
   color: var(--text-h);
 }
 
-.admin-mensaje-wrap {
+.cfg-mensaje-wrap {
   display: flex;
   flex-direction: column;
   gap: 12px;
 
 }
 
-.admin-preview {
+.cfg-preview {
   background: var(--code-bg);
   border-radius: 8px;
   padding: 12px 14px;
 }
 
-.admin-preview-label {
+.cfg-preview-label {
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
@@ -622,7 +622,7 @@
   margin: 0 0 8px;
 }
 
-.admin-preview-text {
+.cfg-preview-text {
   font-family: var(--sans);
   font-size: 13px;
   line-height: 1.6;
@@ -631,7 +631,7 @@
   margin: 0;
 }
 
-.admin-textarea {
+.cfg-textarea {
   resize: vertical;
   min-height: 160px;
   font-family: var(--mono);
@@ -639,7 +639,7 @@
   line-height: 1.6;
 }
 
-.admin-fieldset code {
+.cfg-fieldset code {
   font-size: 12px;
   padding: 2px 6px;
   background: var(--code-bg);
@@ -648,7 +648,7 @@
 }
 
 /* Vista previa */
-.admin-preview-wrapper {
+.cfg-preview-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -656,7 +656,7 @@
   padding: 8px 0 16px;
 }
 
-.admin-preview-phone {
+.cfg-preview-phone {
   width: 375px;
   max-width: 100%;
   border: 2px solid var(--border);
@@ -919,7 +919,7 @@
   gap: 1.2rem;
 }
 
-.admin-tema-dot {
+.cfg-tema-dot {
   display: inline-block;
   width: 8px;
   height: 8px;
@@ -928,7 +928,7 @@
   flex-shrink: 0;
 }
 
-.admin-tab {
+.cfg-tab {
   flex-shrink: 0;
   padding: 8px 16px;
   border: 1.5px solid var(--border);
@@ -941,12 +941,12 @@
   transition: border-color 0.15s, color 0.15s, background 0.15s;
 }
 
-.admin-tab:hover {
+.cfg-tab:hover {
   border-color: var(--accent);
   color: var(--text-h);
 }
 
-.admin-tab--active {
+.cfg-tab--active {
   border-color: var(--accent);
   background: var(--accent-bg);
   color: var(--text-h);
@@ -954,13 +954,13 @@
 }
 
 /* Tema personalizado */
-.admin-tema-custom {
+.cfg-tema-custom {
   display: flex;
   gap: 16px;
   margin-top: 4px;
 }
 
-.admin-tema-custom-item {
+.cfg-tema-custom-item {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -971,13 +971,13 @@
 }
 
 /* Selector de tema */
-.admin-tema-selector {
+.cfg-tema-selector {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
 
-.admin-tema-btn {
+.cfg-tema-btn {
   display: flex;
   align-items: center;
   padding: 6px 10px;
@@ -992,18 +992,18 @@
   justify-content: center;
 }
 
-.admin-tema-btn:hover {
+.cfg-tema-btn:hover {
   border-color: var(--accent);
 }
 
-.admin-tema-btn--active {
+.cfg-tema-btn--active {
   border-color: var(--accent);
   background: var(--accent);
   color: var(--btn-text, #fff);
   font-weight: 600;
 }
 
-.admin-tema-btn--locked {
+.cfg-tema-btn--locked {
   opacity: 0.4;
   cursor: not-allowed;
   gap: 4px;
@@ -1040,7 +1040,7 @@
 }
 
 /* Logo preview */
-.admin-logo-preview {
+.cfg-logo-preview {
   display: block;
   max-width: 80px;
   max-height: 80px;
@@ -1051,19 +1051,19 @@
 
 
 /* Servicios */
-.admin-servicio {
+.cfg-servicio {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.admin-servicio-rango {
+.cfg-servicio-rango {
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
-.admin-servicio-card {
+.cfg-servicio-card {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1074,56 +1074,56 @@
   background: var(--accent-bg);
 }
 
-.admin-servicio-info {
+.cfg-servicio-info {
   display: flex;
   flex-direction: column;
   gap: 3px;
 }
 
-.admin-servicio-nombre {
+.cfg-servicio-nombre {
   font-size: 14px;
   font-weight: 600;
   color: var(--text-h);
 }
 
-.admin-servicio-horario {
+.cfg-servicio-horario {
   font-size: 12px;
   color: var(--text);
 }
 
-.admin-servicio-card-actions {
+.cfg-servicio-card-actions {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.admin-servicio-activo {
+.cfg-servicio-activo {
   color: #16a34a;
   font-size: 16px;
   line-height: 1;
 }
 
-.admin-servicio-confirmar {
+.cfg-servicio-confirmar {
   font-size: 12px;
   color: var(--text);
 }
 
 
 /* Cierre temporal */
-.admin-cierre-row {
+.cfg-cierre-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
 }
 
-.admin-cierre-estado {
+.cfg-cierre-estado {
   font-size: 15px;
   font-weight: 500;
   color: var(--text-h);
 }
 
-.admin-btn-cerrar {
+.cfg-btn-cerrar {
   padding: 9px 16px;
   background: #ef4444;
   color: #fff;
@@ -1134,11 +1134,11 @@
   cursor: pointer;
 }
 
-.admin-btn-cerrar:hover {
+.cfg-btn-cerrar:hover {
   filter: brightness(1.1);
 }
 
-.admin-btn-reabrir {
+.cfg-btn-reabrir {
   padding: 9px 16px;
   background: #22c55e;
   color: #fff;
@@ -1149,7 +1149,7 @@
   cursor: pointer;
 }
 
-.admin-btn-reabrir:hover {
+.cfg-btn-reabrir:hover {
   filter: brightness(1.1);
 }
 
@@ -1211,13 +1211,13 @@
 }
 
 /* Color picker */
-.admin-color-row {
+.cfg-color-row {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.admin-input-color {
+.cfg-input-color {
   width: 48px;
   height: 40px;
   border: 1.5px solid var(--border);
@@ -1227,7 +1227,7 @@
   cursor: pointer;
 }
 
-.admin-color-preview {
+.cfg-color-preview {
   font-size: 0.7rem;
   line-height: 1.4;
   font-weight: 600;
@@ -1264,22 +1264,22 @@
 
 
 /* PIN form centrado */
-.admin-pin-form {
+.cfg-pin-form {
   max-width: 320px;
   margin: 80px auto 0;
   text-align: center;
 }
 
-.admin-pin-form .admin-title {
+.cfg-pin-form .cfg-title {
   text-align: center;
 }
 
-.admin-pin-form .admin-btn-primary {
+.cfg-pin-form .cfg-btn-primary {
   margin-top: 4px;
 }
 
 /* ── Botón secundario ── */
-.admin-btn-secondary {
+.cfg-btn-secondary {
   padding: 9px 16px;
   background: transparent;
   color: var(--text-h);
@@ -1293,7 +1293,7 @@
   width: 100%;
 }
 
-.admin-btn-secondary:hover {
+.cfg-btn-secondary:hover {
   border-color: var(--accent);
   background: var(--accent-bg);
 }
@@ -1321,7 +1321,7 @@
     z-index: 200;
   }
 
-  .cfg-mobile-header-sticky:has(.admin-header--compact) {
+  .cfg-mobile-header-sticky:has(.cfg-header--compact) {
     box-shadow: 0 2px 16px rgba(0, 0, 0, 0.15);
   }
 }

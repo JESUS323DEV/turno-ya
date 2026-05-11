@@ -1,4 +1,4 @@
-/* ── Tab Cuenta ───────────────────────────────────────────────────────────── */
+/* â”€â”€ Tab Cuenta â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 .cfg-cuenta-page {
   min-height: 100dvh;
@@ -98,14 +98,14 @@
 }
 
 /* QR */
-.admin-qr-wrapper {
+.cfg-qr-wrapper {
   display: flex;
   justify-content: center;
   padding: 16px 0 8px;
 }
 
 /* Exportar widget */
-.admin-btn-export {
+.cfg-btn-export {
   padding: 11px;
   background: transparent;
   color: var(--accent);
@@ -117,6 +117,6 @@
   transition: background 0.15s;
 }
 
-.admin-btn-export:hover {
+.cfg-btn-export:hover {
   background: var(--accent-bg);
 }

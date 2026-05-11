@@ -68,36 +68,36 @@ export default function TabNegocio({ draft, setField }) {
       <div className="cfg-card">
         <div className="cfg-card-desktop cfg-card-mobile">
           <h2 className="cfg-card-label">Configuración del negocio</h2>
-          <label className="admin-label">
+          <label className="cfg-label">
             <span>Nombre del negocio</span>
-            <input className="admin-input" type="text" value={draft.nombre} maxLength={20}
+            <input className="cfg-input" type="text" value={draft.nombre} maxLength={20}
               onChange={(e) => setField("nombre", e.target.value)} />
-            <span className="admin-counter">{draft.nombre.length} / 20</span>
+            <span className="cfg-counter">{draft.nombre.length} / 20</span>
           </label>
-          <label className="admin-label">
+          <label className="cfg-label">
             <span>Descripción</span>
-            <textarea className="admin-input admin-textarea"
+            <textarea className="cfg-input cfg-textarea"
               placeholder="Restaurante peruano en el centro de Madrid"
               maxLength={155} value={draft.descripcion} rows={3}
               onChange={(e) => setField("descripcion", e.target.value)} />
-            <span className="admin-counter">{draft.descripcion.length} / 155</span>
+            <span className="cfg-counter">{draft.descripcion.length} / 155</span>
           </label>
-          <label className="admin-label">
+          <label className="cfg-label">
             <span>Color del nombre</span>
-            <div className="admin-color-row">
-              <input className="admin-input-color" type="color" value={draft.colorNegocio}
+            <div className="cfg-color-row">
+              <input className="cfg-input-color" type="color" value={draft.colorNegocio}
                 onChange={(e) => setField("colorNegocio", e.target.value)} />
-              <span className="admin-color-preview" style={{ color: draft.colorNegocio }}>
+              <span className="cfg-color-preview" style={{ color: draft.colorNegocio }}>
                 {draft.nombre || "Vista previa"}
               </span>
             </div>
           </label>
-          <label className="admin-label">
+          <label className="cfg-label">
             <span>Logo (URL de imagen)</span>
-            <input className="admin-input" type="url" placeholder="https://... (jpg, png, webp)"
+            <input className="cfg-input" type="url" placeholder="https://... (jpg, png, webp)"
               value={draft.logoUrl}
               onChange={(e) => setField("logoUrl", e.target.value)} />
-            {draft.logoUrl && <img src={draft.logoUrl} alt="Logo preview" className="admin-logo-preview" />}
+            {draft.logoUrl && <img src={draft.logoUrl} alt="Logo preview" className="cfg-logo-preview" />}
           </label>
         </div>
       </div>
@@ -106,19 +106,19 @@ export default function TabNegocio({ draft, setField }) {
       <div className="cfg-card">
         <div className="cfg-card-desktop cfg-card-mobile">
           <h2 className="cfg-card-label">Formulario</h2>
-          <label className="admin-label">
+          <label className="cfg-label">
             <span>Título del formulario</span>
-            <input className="admin-input" type="text" maxLength={21}
+            <input className="cfg-input" type="text" maxLength={21}
               value={draft.tituloFormulario}
               onChange={(e) => setField("tituloFormulario", e.target.value)} />
-            <span className="admin-counter">{draft.tituloFormulario.length} / 21</span>
+            <span className="cfg-counter">{draft.tituloFormulario.length} / 21</span>
           </label>
-          <label className="admin-label">
+          <label className="cfg-label">
             <span>Texto del botón de envío</span>
-            <input className="admin-input" type="text" maxLength={15}
+            <input className="cfg-input" type="text" maxLength={15}
               value={draft.textoBtnReservar}
               onChange={(e) => setField("textoBtnReservar", e.target.value)} />
-            <span className="admin-counter">{draft.textoBtnReservar.length} / 15</span>
+            <span className="cfg-counter">{draft.textoBtnReservar.length} / 15</span>
           </label>
         </div>
       </div>
@@ -127,15 +127,15 @@ export default function TabNegocio({ draft, setField }) {
       <div className="cfg-card">
         <div className="cfg-card-desktop cfg-card-mobile">
           <h2 className="cfg-card-label">Enlaces del negocio</h2>
-          <label className="admin-label">
+          <label className="cfg-label">
             <span>Link 1 (web, Instagram, Facebook...)</span>
-            <input className="admin-input" type="url" placeholder="https://..."
+            <input className="cfg-input" type="url" placeholder="https://..."
               value={draft.links?.[0] ?? ""}
               onChange={(e) => setField("links", [e.target.value, draft.links?.[1] ?? ""])} />
           </label>
-          <label className="admin-label">
+          <label className="cfg-label">
             <span>Link 2</span>
-            <input className="admin-input" type="url" placeholder="https://..."
+            <input className="cfg-input" type="url" placeholder="https://..."
               value={draft.links?.[1] ?? ""}
               onChange={(e) => setField("links", [draft.links?.[0] ?? "", e.target.value])} />
           </label>
@@ -147,10 +147,10 @@ export default function TabNegocio({ draft, setField }) {
         <div className="cfg-card">
           <div className="cfg-card-desktop cfg-card-mobile">
             <h2 className="cfg-card-label">Mensaje de WhatsApp</h2>
-            <div className="admin-tema-selector">
+            <div className="cfg-tema-selector">
               {PERFILES.map((p) => (
                 <button key={p.id} type="button"
-                  className={`admin-tema-btn ${draft.perfil === p.id ? "admin-tema-btn--active" : ""}`}
+                  className={`cfg-tema-btn ${draft.perfil === p.id ? "cfg-tema-btn--active" : ""}`}
                   onClick={() => {
                     setField("perfil", p.id);
                     if (p.encabezado) setField("encabezadoMensaje", p.encabezado);
@@ -159,19 +159,19 @@ export default function TabNegocio({ draft, setField }) {
                 </button>
               ))}
             </div>
-            <label className="admin-label">
+            <label className="cfg-label">
               <span>Título del mensaje</span>
-              <input className="admin-input" type="text" maxLength={60}
+              <input className="cfg-input" type="text" maxLength={60}
                 value={draft.encabezadoMensaje}
                 onChange={(e) => { setField("encabezadoMensaje", e.target.value); setField("perfil", "personalizado"); }} />
-              <span className="admin-counter">{draft.encabezadoMensaje.length} / 60</span>
+              <span className="cfg-counter">{draft.encabezadoMensaje.length} / 60</span>
             </label>
-            <label className="admin-label">
+            <label className="cfg-label">
               <span>Texto de cierre</span>
-              <input className="admin-input" type="text" maxLength={60}
+              <input className="cfg-input" type="text" maxLength={60}
                 value={draft.textoPie ?? ""}
                 onChange={(e) => setField("textoPie", e.target.value)} />
-              <span className="admin-counter">{(draft.textoPie ?? "").length} / 60</span>
+              <span className="cfg-counter">{(draft.textoPie ?? "").length} / 60</span>
             </label>
           </div>
         </div>

@@ -9,6 +9,43 @@ import TabPreguntas from "./config-tabs/TabPreguntas";
 import TabApariencia from "./config-tabs/TabApariencia";
 import TabCuenta from "./config-tabs/TabCuenta";
 
+function MenuContent({ onCuenta, draft, temaPanel, aplicarTemaPanel }) {
+  return (
+    <>
+      <div className="cfg-menu-header">
+        <span className="cfg-menu-nombre">{draft.nombre || "TurnoYa"}</span>
+        <span className="cfg-menu-email">{draft.emailNegocio || "—"}</span>
+      </div>
+      <hr className="cfg-menu-sep" />
+      <div className="cfg-menu-items">
+        <button type="button" className="cfg-menu-item" onClick={onCuenta}>
+          <Settings size={15} />Configuración de cuenta
+        </button>
+        <button type="button" className="cfg-menu-item" disabled>
+          <FlaskConical size={15} />Vistas previas
+        </button>
+        <button type="button" className="cfg-menu-item" disabled>
+          <ScrollText size={15} />Registro de cambios
+        </button>
+      </div>
+      <hr className="cfg-menu-sep" />
+      <div className="cfg-menu-section">
+        <span className="cfg-menu-section-label">Tema</span>
+        <div className="cfg-menu-tema-list">
+          {TEMAS_PANEL.map(({ id, label }) => (
+            <button key={id} type="button"
+              className={`cfg-menu-tema-item ${temaPanel === id ? "cfg-menu-tema-item--active" : ""}`}
+              onClick={() => aplicarTemaPanel(id)}>
+              <span className="cfg-menu-tema-dot" />
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
+    </>
+  );
+}
+
 export default function ConfigPanel({ config, onBack }) {
   const {
     draft, setField, setDia, setTurno, addTurno, removeTurno,
@@ -68,42 +105,6 @@ export default function ConfigPanel({ config, onBack }) {
     { key: "preview", icon: <Eye size={17} />, label: "Apariencia" },
   ];
 
-  const MenuContent = ({ onCuenta }) => (
-    <>
-      <div className="cfg-menu-header">
-        <span className="cfg-menu-nombre">{draft.nombre || "TurnoYa"}</span>
-        <span className="cfg-menu-email">{draft.emailNegocio || "—"}</span>
-      </div>
-      <hr className="cfg-menu-sep" />
-      <div className="cfg-menu-items">
-        <button type="button" className="cfg-menu-item"
-          onClick={() => { onCuenta(); closeMenu(); }}>
-          <Settings size={15} />Configuración de cuenta
-        </button>
-        <button type="button" className="cfg-menu-item" disabled>
-          <FlaskConical size={15} />Vistas previas
-        </button>
-        <button type="button" className="cfg-menu-item" disabled>
-          <ScrollText size={15} />Registro de cambios
-        </button>
-      </div>
-      <hr className="cfg-menu-sep" />
-      <div className="cfg-menu-section">
-        <span className="cfg-menu-section-label">Tema</span>
-        <div className="cfg-menu-tema-list">
-          {TEMAS_PANEL.map(({ id, label }) => (
-            <button key={id} type="button"
-              className={`cfg-menu-tema-item ${temaPanel === id ? "cfg-menu-tema-item--active" : ""}`}
-              onClick={() => aplicarTemaPanel(id)}>
-              <span className="cfg-menu-tema-dot" />
-              {label}
-            </button>
-          ))}
-        </div>
-      </div>
-    </>
-  );
-
   /* ── Sub-vista Cuenta ── */
   if (cuentaOpen) {
     return (
@@ -129,13 +130,13 @@ export default function ConfigPanel({ config, onBack }) {
           <div className="cfg-mobile-menu cfg-portal-menu"
             data-tema-panel={temaPanel}
             style={{ top: menuPos.top, left: menuPos.left }}>
-            <MenuContent onCuenta={() => setCuentaOpen(true)} />
+            <MenuContent onCuenta={() => setCuentaOpen(true)} draft={draft} temaPanel={temaPanel} aplicarTemaPanel={aplicarTemaPanel} />
           </div>
         </>,
         document.body
       )}
 
-      <section className="admin-section" data-tema-panel={temaPanel}>
+      <section className="cfg-section" data-tema-panel={temaPanel}>
         <div className="cfg-wrapper">
 
           {/* ── Sidebar desktop ── */}
@@ -163,19 +164,19 @@ export default function ConfigPanel({ config, onBack }) {
             </nav>
           </aside>
 
-          <form className="admin-form cfg-main" onSubmit={guardar}>
+          <form className="cfg-form cfg-main" onSubmit={guardar}>
 
             {/* ── Topbar desktop ── */}
             <div className="cfg-topbar">
-              <button type="button" className="admin-seccion-back" onClick={onBack}>← Volver</button>
-              <button className="admin-btn-primary" type="submit">
+              <button type="button" className="cfg-seccion-back" onClick={onBack}>← Volver</button>
+              <button className="cfg-btn-primary" type="submit">
                 {guardado ? "✓ Guardado" : "Guardar cambios"}
               </button>
             </div>
 
             {/* ── Header móvil + Tabnav (sticky) ── */}
             <div className="cfg-mobile-header-sticky" ref={stickyRef}>
-              <div className="admin-header">
+              <div className="cfg-header">
                 <button type="button" className="cfg-mobile-back-btn" onClick={onBack}>
                   <ArrowLeft size={18} />
                   Volver
@@ -194,7 +195,7 @@ export default function ConfigPanel({ config, onBack }) {
                     <>
                       <div className="cfg-menu-overlay" onClick={() => setMobileMenuOpen(false)} />
                       <div className="cfg-mobile-menu">
-                        <MenuContent onCuenta={() => { setCuentaOpen(true); setMobileMenuOpen(false); }} />
+                        <MenuContent onCuenta={() => { setCuentaOpen(true); setMobileMenuOpen(false); }} draft={draft} temaPanel={temaPanel} aplicarTemaPanel={aplicarTemaPanel} />
                         <hr className="cfg-menu-sep" />
                         <button type="button" className="cfg-menu-logout" disabled>
                           <LogOut size={15} />Cerrar sesión
@@ -203,7 +204,7 @@ export default function ConfigPanel({ config, onBack }) {
                     </>
                   )}
                 </div>
-                <button type="submit" className="admin-btn-primary cfg-header-save-btn">
+                <button type="submit" className="cfg-btn-primary cfg-header-save-btn">
                   {guardado ? "✓ Guardado" : "Guardar"}
                 </button>
               </div>

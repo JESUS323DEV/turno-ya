@@ -36,22 +36,22 @@ export default function TabHorarios({ draft, setField, setDia, setTurno, addTurn
               </label>
             </div>
             {diaAbierto && (
-              <div className="admin-turnos">
+              <div className="cfg-turnos">
                 {turnos.map((turno, i) => (
-                  <div key={i} className="admin-turno">
-                    <input className="admin-input admin-input-time" type="time" value={turno.start}
+                  <div key={i} className="cfg-turno">
+                    <input className="cfg-input cfg-input-time" type="time" value={turno.start}
                       onChange={(e) => setTurno(day, i, "start", e.target.value)} />
-                    <span className="admin-turno-sep">—</span>
-                    <input className="admin-input admin-input-time" type="time" value={turno.end}
+                    <span className="cfg-turno-sep">—</span>
+                    <input className="cfg-input cfg-input-time" type="time" value={turno.end}
                       onChange={(e) => setTurno(day, i, "end", e.target.value)} />
                     {turnos.length > 1 && (
-                      <button type="button" className="admin-btn-remove" onClick={() => removeTurno(day, i)}>
+                      <button type="button" className="cfg-btn-remove" onClick={() => removeTurno(day, i)}>
                         <Trash2 size={14} />
                       </button>
                     )}
                   </div>
                 ))}
-                <button type="button" className="admin-btn-add" onClick={() => addTurno(day)}>+ Agregar turno</button>
+                <button type="button" className="cfg-btn-add" onClick={() => addTurno(day)}>+ Agregar turno</button>
               </div>
             )}
           </div>
@@ -74,23 +74,23 @@ export default function TabHorarios({ draft, setField, setDia, setTurno, addTurn
               </div>
             </div>
           </div>
-          <div className="admin-turnos">
+          <div className="cfg-turnos">
             {draft.fechasBloqueadas.length > 0 && (
-              <ul className="admin-fechas-list">
+              <ul className="cfg-fechas-list">
                 {draft.fechasBloqueadas.map((fecha) => (
-                  <li key={fecha} className="admin-fecha-item">
+                  <li key={fecha} className="cfg-fecha-item">
                     <span>{fecha.split("-").reverse().join("/")}</span>
-                    <button type="button" className="admin-btn-remove" onClick={() => removeFechaBloqueada(fecha)}>
+                    <button type="button" className="cfg-btn-remove" onClick={() => removeFechaBloqueada(fecha)}>
                       <Trash2 size={14} />
                     </button>
                   </li>
                 ))}
               </ul>
             )}
-            <div className="admin-fecha-add">
-              <input className="admin-input" type="date" value={nuevaFecha}
+            <div className="cfg-fecha-add">
+              <input className="cfg-input" type="date" value={nuevaFecha}
                 min={hoy} onChange={(e) => setNuevaFecha(e.target.value)} />
-              <button type="button" className="admin-btn-add-fecha" onClick={addFechaBloqueada}>Bloquear</button>
+              <button type="button" className="cfg-btn-add-fecha" onClick={addFechaBloqueada}>Bloquear</button>
             </div>
           </div>
         </div>

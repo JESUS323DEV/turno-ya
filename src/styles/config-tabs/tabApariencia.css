@@ -166,7 +166,7 @@
 }
 
 /* Modal tema personalizado */
-.admin-modal-overlay {
+.cfg-modal-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.45);
@@ -177,7 +177,7 @@
   padding: 16px;
 }
 
-.admin-modal {
+.cfg-modal {
   background: var(--bg);
   border: 1.5px solid var(--border);
   border-radius: 16px;
@@ -190,19 +190,19 @@
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
 }
 
-.admin-modal-header {
+.cfg-modal-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.admin-modal-title {
+.cfg-modal-title {
   font-size: 16px;
   font-weight: 600;
   color: var(--text-h);
 }
 
-.admin-modal-close {
+.cfg-modal-close {
   background: none;
   border: none;
   font-size: 16px;
@@ -212,33 +212,33 @@
   line-height: 1;
 }
 
-.admin-modal-body {
+.cfg-modal-body {
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
 
-.admin-color-hex {
+.cfg-color-hex {
   font-size: 13px;
   font-family: var(--mono);
   color: var(--text);
   text-transform: uppercase;
 }
 
-.admin-modal-sep {
+.cfg-modal-sep {
   border: none;
   border-top: 1px solid var(--border);
   margin: 2px 0;
 }
 
 /* Favoritos */
-.admin-favoritos {
+.cfg-favoritos {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.admin-favoritos-label {
+.cfg-favoritos-label {
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
@@ -246,13 +246,13 @@
   color: var(--text);
 }
 
-.admin-favorito-item {
+.cfg-favorito-item {
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
-.admin-favorito-btn {
+.cfg-favorito-btn {
   flex: 1;
   display: flex;
   align-items: center;
@@ -266,30 +266,30 @@
   text-align: left;
 }
 
-.admin-favorito-btn:hover {
+.cfg-favorito-btn:hover {
   border-color: var(--accent);
 }
 
-.admin-favorito-dots {
+.cfg-favorito-dots {
   display: flex;
   gap: 3px;
   flex-shrink: 0;
 }
 
-.admin-favorito-dots span {
+.cfg-favorito-dots span {
   display: block;
   width: 14px;
   height: 14px;
   border-radius: 50%;
 }
 
-.admin-favorito-nombre {
+.cfg-favorito-nombre {
   font-size: 13px;
   font-weight: 500;
   color: var(--text-h);
 }
 
-.admin-favorito-save {
+.cfg-favorito-save {
   display: flex;
   gap: 8px;
 }

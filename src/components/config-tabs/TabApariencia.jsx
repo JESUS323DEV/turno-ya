@@ -174,83 +174,83 @@ export default function TabApariencia({ draft, setField, addTemaGuardado, remove
 
       {/* ── Modal tema personalizado ── */}
       {modalCustom && (
-        <div className="admin-modal-overlay" onClick={() => setModalCustom(false)}>
-          <div className="admin-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="admin-modal-header">
-              <span className="admin-modal-title">Tema personalizado</span>
-              <button type="button" className="admin-modal-close" onClick={() => setModalCustom(false)}>✕</button>
+        <div className="cfg-modal-overlay" onClick={() => setModalCustom(false)}>
+          <div className="cfg-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="cfg-modal-header">
+              <span className="cfg-modal-title">Tema personalizado</span>
+              <button type="button" className="cfg-modal-close" onClick={() => setModalCustom(false)}>✕</button>
             </div>
-            <div className="admin-modal-body">
+            <div className="cfg-modal-body">
               {draft.temasGuardados.length > 0 && (
-                <div className="admin-favoritos">
-                  <span className="admin-favoritos-label">Favoritos</span>
+                <div className="cfg-favoritos">
+                  <span className="cfg-favoritos-label">Favoritos</span>
                   {draft.temasGuardados.map((t) => (
-                    <div key={t.id} className="admin-favorito-item">
-                      <button type="button" className="admin-favorito-btn" onClick={() => {
+                    <div key={t.id} className="cfg-favorito-item">
+                      <button type="button" className="cfg-favorito-btn" onClick={() => {
                         setField("colorFondo", t.colorFondo);
                         setField("colorAcento", t.colorAcento);
                         setField("colorBorde", t.colorBorde);
                         setField("tema", "personalizado");
                         window.dispatchEvent(new CustomEvent("turno-ya:tema", { detail: { tema: "personalizado", colorFondo: t.colorFondo, colorAcento: t.colorAcento, colorBorde: t.colorBorde } }));
                       }}>
-                        <span className="admin-favorito-dots">
+                        <span className="cfg-favorito-dots">
                           <span style={{ background: t.colorFondo, border: `2px solid ${t.colorBorde}` }} />
                           <span style={{ background: t.colorAcento }} />
                         </span>
-                        <span className="admin-favorito-nombre">{t.nombre}</span>
+                        <span className="cfg-favorito-nombre">{t.nombre}</span>
                       </button>
-                      <button type="button" className="admin-btn-remove" onClick={() => removeTemaGuardado(t.id)}>✕</button>
+                      <button type="button" className="cfg-btn-remove" onClick={() => removeTemaGuardado(t.id)}>✕</button>
                     </div>
                   ))}
-                  <hr className="admin-modal-sep" />
+                  <hr className="cfg-modal-sep" />
                 </div>
               )}
-              <label className="admin-label">
+              <label className="cfg-label">
                 <span>Color de fondo</span>
-                <div className="admin-color-row">
-                  <input type="color" className="admin-input-color" value={draft.colorFondo}
+                <div className="cfg-color-row">
+                  <input type="color" className="cfg-input-color" value={draft.colorFondo}
                     onChange={(e) => {
                       setField("colorFondo", e.target.value);
                       setField("tema", "personalizado");
                       window.dispatchEvent(new CustomEvent("turno-ya:tema", { detail: { tema: "personalizado", colorFondo: e.target.value, colorAcento: draft.colorAcento, colorBorde: draft.colorBorde } }));
                     }} />
-                  <span className="admin-color-hex">{draft.colorFondo}</span>
+                  <span className="cfg-color-hex">{draft.colorFondo}</span>
                 </div>
               </label>
-              <label className="admin-label">
+              <label className="cfg-label">
                 <span>Color principal</span>
-                <div className="admin-color-row">
-                  <input type="color" className="admin-input-color" value={draft.colorAcento}
+                <div className="cfg-color-row">
+                  <input type="color" className="cfg-input-color" value={draft.colorAcento}
                     onChange={(e) => {
                       setField("colorAcento", e.target.value);
                       setField("tema", "personalizado");
                       window.dispatchEvent(new CustomEvent("turno-ya:tema", { detail: { tema: "personalizado", colorFondo: draft.colorFondo, colorAcento: e.target.value, colorBorde: draft.colorBorde } }));
                     }} />
-                  <span className="admin-color-hex">{draft.colorAcento}</span>
+                  <span className="cfg-color-hex">{draft.colorAcento}</span>
                 </div>
               </label>
-              <label className="admin-label">
+              <label className="cfg-label">
                 <span>Color de bordes</span>
-                <div className="admin-color-row">
-                  <input type="color" className="admin-input-color" value={draft.colorBorde}
+                <div className="cfg-color-row">
+                  <input type="color" className="cfg-input-color" value={draft.colorBorde}
                     onChange={(e) => {
                       setField("colorBorde", e.target.value);
                       setField("tema", "personalizado");
                       window.dispatchEvent(new CustomEvent("turno-ya:tema", { detail: { tema: "personalizado", colorFondo: draft.colorFondo, colorAcento: draft.colorAcento, colorBorde: e.target.value } }));
                     }} />
-                  <span className="admin-color-hex">{draft.colorBorde}</span>
+                  <span className="cfg-color-hex">{draft.colorBorde}</span>
                 </div>
               </label>
-              <div className="admin-favorito-save">
-                <input className="admin-input" type="text" placeholder="Nombre del favorito"
+              <div className="cfg-favorito-save">
+                <input className="cfg-input" type="text" placeholder="Nombre del favorito"
                   maxLength={30} value={nombreTema} onChange={(e) => setNombreTema(e.target.value)} />
-                <button type="button" className="admin-btn-add-fecha" disabled={!nombreTema.trim()}
+                <button type="button" className="cfg-btn-add-fecha" disabled={!nombreTema.trim()}
                   onClick={() => { addTemaGuardado(nombreTema.trim()); setNombreTema(""); }}>
                   Guardar
                 </button>
               </div>
             </div>
-            <button type="button" className="admin-btn-primary" onClick={() => {
+            <button type="button" className="cfg-btn-primary" onClick={() => {
               setField("tema", "personalizado");
               setModalCustom(false);
             }}>Aplicar</button>

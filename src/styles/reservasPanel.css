@@ -628,7 +628,7 @@ button.panel-stat {
   color: var(--accent);
 }
 
-.admin-form-reservas {
+.res-form {
   width: 100%;
   max-width: 520px;
   display: flex;

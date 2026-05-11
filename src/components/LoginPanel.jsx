@@ -21,14 +21,14 @@ export default function LoginPanel() {
   // ── 1. PIN (siempre primero) ───────────────────────────────────────────────
   if (!autenticado) {
     return (
-      <section className="admin-section admin-login-section" style={panelVars}>
-        <form className="admin-login-card" onSubmit={verificarPin}>
-          <div className="admin-login-logo"><Calendar size={40} strokeWidth={1.5} /></div>
-          <h2 className="admin-login-title">TurnoYa</h2>
-          <p className="admin-login-sub">Panel de administración</p>
-          <div className="admin-login-field">
+      <section className="cfg-section login-section" style={panelVars}>
+        <form className="login-card" onSubmit={verificarPin}>
+          <div className="login-logo"><Calendar size={40} strokeWidth={1.5} /></div>
+          <h2 className="login-title">TurnoYa</h2>
+          <p className="login-sub">Panel de administración</p>
+          <div className="login-field">
             <input
-              className={`admin-input admin-login-input ${pinError ? "input-bad" : ""}`}
+              className={`cfg-input login-input ${pinError ? "input-bad" : ""}`}
               type="password"
               inputMode="numeric"
               maxLength={8}
@@ -37,9 +37,9 @@ export default function LoginPanel() {
               onChange={(e) => setPin(e.target.value)}
               autoFocus
             />
-            {pinError && <p className="admin-error">{pinError}</p>}
+            {pinError && <p className="cfg-error">{pinError}</p>}
           </div>
-          <button className="admin-btn-primary admin-login-btn" type="submit">
+          <button className="cfg-btn-primary login-btn" type="submit">
             Entrar
           </button>
         </form>
@@ -50,24 +50,24 @@ export default function LoginPanel() {
   // ── 2. Selector de sección (ya autenticado) ────────────────────────────────
   if (!seccion) {
     return (
-      <section className="admin-section admin-login-section" style={panelVars}>
-        <div className="admin-login-card">
-          <div className="admin-login-logo"><Calendar size={40} strokeWidth={1.5} /></div>
-          <h2 className="admin-login-title">TurnoYa</h2>
-          <p className="admin-login-sub">¿A dónde quieres ir?</p>
-          <div className="admin-selector-btns">
-            <button className="admin-selector-btn" onClick={() => setSeccion("reservas")}>
-              <span className="admin-selector-icon"><ClipboardList size={26} strokeWidth={1.5} /></span>
+      <section className="cfg-section login-section" style={panelVars}>
+        <div className="login-card">
+          <div className="login-logo"><Calendar size={40} strokeWidth={1.5} /></div>
+          <h2 className="login-title">TurnoYa</h2>
+          <p className="login-sub">¿A dónde quieres ir?</p>
+          <div className="login-selector-btns">
+            <button className="login-selector-btn" onClick={() => setSeccion("reservas")}>
+              <span className="login-selector-icon"><ClipboardList size={26} strokeWidth={1.5} /></span>
               <div>
-                <div className="admin-selector-label">Panel de reservas</div>
-                <div className="admin-selector-desc">Ver y gestionar reservas</div>
+                <div className="login-selector-label">Panel de reservas</div>
+                <div className="login-selector-desc">Ver y gestionar reservas</div>
               </div>
             </button>
-            <button className="admin-selector-btn" onClick={() => setSeccion("config")}>
-              <span className="admin-selector-icon"><Settings size={26} strokeWidth={1.5} /></span>
+            <button className="login-selector-btn" onClick={() => setSeccion("config")}>
+              <span className="login-selector-icon"><Settings size={26} strokeWidth={1.5} /></span>
               <div>
-                <div className="admin-selector-label">Configuración</div>
-                <div className="admin-selector-desc">Horarios, tema, mensajes</div>
+                <div className="login-selector-label">Configuración</div>
+                <div className="login-selector-desc">Horarios, tema, mensajes</div>
               </div>
             </button>
           </div>

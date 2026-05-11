@@ -1,4 +1,4 @@
-/* ── Tab Preguntas ────────────────────────────────────────────────────────── */
+/* â”€â”€ Tab Preguntas â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 .cfg-preguntas-head {
   text-align: center;
@@ -114,7 +114,7 @@
   border-color: #ef4444;
 }
 
-.admin-pregunta {
+.cfg-pregunta {
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -122,28 +122,28 @@
   border-bottom: 1px solid var(--border);
 }
 
-.admin-pregunta:last-of-type {
+.cfg-pregunta:last-of-type {
   border-bottom: none;
   padding-bottom: 0;
 }
 
-.admin-pregunta-row {
+.cfg-pregunta-row {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.admin-input-tipo {
+.cfg-input-tipo {
   width: auto;
   flex-shrink: 0;
 }
 
-.admin-pregunta-btns {
+.cfg-pregunta-btns {
   display: flex;
   gap: 8px;
 }
 
-.admin-btn-secondary-sm {
+.cfg-btn-secondary-sm {
   padding: 5px 10px;
   font-size: 12px;
   background: none;
@@ -154,12 +154,12 @@
   transition: border-color 0.15s, color 0.15s;
 }
 
-.admin-btn-secondary-sm:hover {
+.cfg-btn-secondary-sm:hover {
   border-color: #ef4444;
   color: #ef4444;
 }
 
-.admin-check-label {
+.cfg-check-label {
   display: flex;
   align-items: center;
   gap: 5px;

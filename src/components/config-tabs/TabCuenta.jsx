@@ -31,7 +31,7 @@ export default function TabCuenta({ draft, setField, guardar, guardado, errorGua
   };
 
   return (
-    <section className="admin-section cfg-cuenta-page" data-tema-panel={temaPanel}>
+    <section className="cfg-section cfg-cuenta-page" data-tema-panel={temaPanel}>
       <div className="cfg-cuenta-inner">
 
         <div className="cfg-cuenta-topbar">
@@ -56,16 +56,16 @@ export default function TabCuenta({ draft, setField, guardar, guardado, errorGua
         <div className="cfg-cuenta-section">
           <span className="cfg-cuenta-section-label">Destino de reservas</span>
           <div className="cfg-card cfg-card-mobile">
-            <label className="admin-label">
+            <label className="cfg-label">
               <span>Modo de envío</span>
-              <div className="admin-tema-selector">
+              <div className="cfg-tema-selector">
                 <button type="button"
-                  className={`admin-tema-btn ${draft.modoEnvio !== "email" ? "admin-tema-btn--active" : ""}`}
+                  className={`cfg-tema-btn ${draft.modoEnvio !== "email" ? "cfg-tema-btn--active" : ""}`}
                   onClick={() => setField("modoEnvio", "whatsapp")}>
                   WhatsApp
                 </button>
                 <button type="button"
-                  className={`admin-tema-btn ${draft.modoEnvio === "email" ? "admin-tema-btn--active" : ""}`}
+                  className={`cfg-tema-btn ${draft.modoEnvio === "email" ? "cfg-tema-btn--active" : ""}`}
                   onClick={() => {
                     setField("modoEnvio", "email");
                     setField("camposActivos", { ...draft.camposActivos, email: true });
@@ -75,19 +75,19 @@ export default function TabCuenta({ draft, setField, guardar, guardado, errorGua
               </div>
             </label>
             {draft.modoEnvio === "email" ? (
-              <label className="admin-label">
+              <label className="cfg-label">
                 <span>Email donde recibes las reservas</span>
-                <input className="admin-input" type="email" placeholder="tu@email.com"
+                <input className="cfg-input" type="email" placeholder="tu@email.com"
                   value={draft.emailNegocio ?? ""}
                   onChange={(e) => setField("emailNegocio", e.target.value)} />
               </label>
             ) : (
-              <label className="admin-label">
+              <label className="cfg-label">
                 <span>Número de WhatsApp (sin + ni espacios)</span>
-                <input className="admin-input" type="tel" placeholder="34600000000"
+                <input className="cfg-input" type="tel" placeholder="34600000000"
                   maxLength={15} value={draft.whatsapp}
                   onChange={(e) => setField("whatsapp", e.target.value.replace(/[^\d]/g, ""))} />
-                <span className="admin-counter">{draft.whatsapp.length} / 15</span>
+                <span className="cfg-counter">{draft.whatsapp.length} / 15</span>
               </label>
             )}
           </div>
@@ -97,21 +97,21 @@ export default function TabCuenta({ draft, setField, guardar, guardado, errorGua
         <div className="cfg-cuenta-section">
           <span className="cfg-cuenta-section-label">Datos de contacto</span>
           <div className="cfg-card cfg-card-mobile">
-            <label className="admin-label">
+            <label className="cfg-label">
               <span>Teléfono de contacto visible</span>
-              <input className="admin-input" type="tel" placeholder="+34600000000"
+              <input className="cfg-input" type="tel" placeholder="+34600000000"
                 disabled={!(draft.camposActivos?.telefono ?? true)}
                 maxLength={16} value={draft.telefono}
                 onChange={(e) => setField("telefono", e.target.value)} />
-              <span className="admin-counter">{draft.telefono.length} / 16</span>
+              <span className="cfg-counter">{draft.telefono.length} / 16</span>
             </label>
-            <label className="admin-label">
+            <label className="cfg-label">
               <span>Texto del enlace de teléfono</span>
-              <input className="admin-input" type="text" maxLength={36}
+              <input className="cfg-input" type="text" maxLength={36}
                 disabled={!(draft.mostrarTelefono ?? true)}
                 value={draft.textoTelefono}
                 onChange={(e) => setField("textoTelefono", e.target.value)} />
-              <span className="admin-counter">{draft.textoTelefono.length} / 36</span>
+              <span className="cfg-counter">{draft.textoTelefono.length} / 36</span>
             </label>
             <div className="cfg-toggle-row">
               <span className="cfg-toggle-label1">Mostrar enlace de teléfono</span>
@@ -128,12 +128,12 @@ export default function TabCuenta({ draft, setField, guardar, guardado, errorGua
         <div className="cfg-cuenta-section">
           <span className="cfg-cuenta-section-label">Seguridad</span>
           <div className="cfg-card cfg-card-mobile">
-            <label className="admin-label">
+            <label className="cfg-label">
               <span>Cambiar PIN de acceso</span>
-              <input className="admin-input" type="password" inputMode="numeric"
+              <input className="cfg-input" type="password" inputMode="numeric"
                 maxLength={8} placeholder="Nuevo PIN" value={draft.pinAdmin}
                 onChange={(e) => setField("pinAdmin", e.target.value)} />
-              <span className="admin-counter">{draft.pinAdmin.length} / 8</span>
+              <span className="cfg-counter">{draft.pinAdmin.length} / 8</span>
             </label>
           </div>
         </div>
@@ -142,32 +142,32 @@ export default function TabCuenta({ draft, setField, guardar, guardado, errorGua
         <div className="cfg-cuenta-section">
           <span className="cfg-cuenta-section-label">Herramientas</span>
           <div className="cfg-card cfg-card-mobile">
-            <p className="admin-hint">Imprímelo o compártelo para que tus clientes accedan directamente.</p>
-            <div className="admin-qr-wrapper">
+            <p className="cfg-hint">Imprímelo o compártelo para que tus clientes accedan directamente.</p>
+            <div className="cfg-qr-wrapper">
               <QRCodeSVG id="turno-ya-qr"
                 value={window.location.href.replace("#admin", "").replace("#", "") || window.location.origin}
                 size={160} level="M" />
             </div>
-            <button type="button" className="admin-btn-secondary" onClick={descargarQR}>
+            <button type="button" className="cfg-btn-secondary" onClick={descargarQR}>
               Descargar QR
             </button>
-            <hr className="admin-modal-sep" />
-            <button className="admin-btn-export" type="button" onClick={copiarWidget}>
+            <hr className="cfg-modal-sep" />
+            <button className="cfg-btn-export" type="button" onClick={copiarWidget}>
               {copiado ? "✓ Copiado" : "Copiar código del widget"}
             </button>
-            <hr className="admin-modal-sep" />
-            <p className="admin-hint">Si la app no refleja los últimos cambios, limpia la caché.</p>
-            <button className="admin-btn-secondary" type="button"
+            <hr className="cfg-modal-sep" />
+            <p className="cfg-hint">Si la app no refleja los últimos cambios, limpia la caché.</p>
+            <button className="cfg-btn-secondary" type="button"
               onClick={() => { localStorage.clear(); window.location.reload(); }}>
               Limpiar caché
             </button>
           </div>
         </div>
 
-        <button className="admin-btn-primary cfg-cuenta-save" type="button" onClick={guardar}>
+        <button className="cfg-btn-primary cfg-cuenta-save" type="button" onClick={guardar}>
           {guardado ? "✓ Guardado" : "Guardar cambios"}
         </button>
-        {errorGuardado && <p className="admin-error">{errorGuardado}</p>}
+        {errorGuardado && <p className="cfg-error">{errorGuardado}</p>}
 
       </div>
     </section>

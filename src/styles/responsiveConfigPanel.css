@@ -31,7 +31,7 @@
 /* ≥768px: layout con sidebar */
 @media (min-width: 768px) {
 
-    .admin-section {
+    .cfg-section {
         padding: 0;
         height: 100dvh;
         align-items: stretch;
@@ -124,7 +124,7 @@
         font-weight: 600;
     }
 
-    .admin-form.cfg-main {
+    .cfg-form.cfg-main {
         max-width: none;
         gap: 0;
         display: flex;
@@ -153,14 +153,14 @@
         margin: 0;
     }
 
-    .cfg-topbar .admin-btn-primary {
+    .cfg-topbar .cfg-btn-primary {
         width: auto;
         padding: 0.55rem 1.2rem;
         font-size: 0.875rem;
         margin: 0;
     }
 
-    .admin-header {
+    .cfg-header {
         display: none;
     }
 
@@ -193,7 +193,7 @@
 
 /* XXL (≥1400px) */
 @media (min-width: 1400px) {
-    .admin-preview-phone {
+    .cfg-preview-phone {
         width: 100%;
         border: none;
         border-radius: 0;

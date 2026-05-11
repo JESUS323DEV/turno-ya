@@ -50,49 +50,49 @@ export default function TabPreguntas({ draft, addPregunta, removePregunta, setPr
                 )}
               </div>
             ) : (
-              <div key={p.id} className="admin-pregunta">
-                <input className="admin-input" type="text" placeholder="Pregunta (ej: ¿Tienes alergias?)"
+              <div key={p.id} className="cfg-pregunta">
+                <input className="cfg-input" type="text" placeholder="Pregunta (ej: ¿Tienes alergias?)"
                   maxLength={120} value={p.label} onChange={(e) => setPregunta(i, "label", e.target.value)} />
-                <div className="admin-pregunta-row">
-                  <select className="admin-input admin-input-tipo" value={p.tipo}
+                <div className="cfg-pregunta-row">
+                  <select className="cfg-input cfg-input-tipo" value={p.tipo}
                     onChange={(e) => setPregunta(i, "tipo", e.target.value)}>
                     <option value="texto">Texto libre</option>
                     <option value="seleccion">Opciones</option>
                   </select>
                   {p.tipo === "texto" && (
-                    <select className="admin-input admin-input-tipo" value={p.campoTipo ?? "input"}
+                    <select className="cfg-input cfg-input-tipo" value={p.campoTipo ?? "input"}
                       onChange={(e) => setPregunta(i, "campoTipo", e.target.value)}>
                       <option value="input">Campo corto</option>
                       <option value="textarea">Texto largo</option>
                     </select>
                   )}
-                  <label className="admin-check-label">
+                  <label className="cfg-check-label">
                     <input type="checkbox" checked={!!p.requerida}
                       onChange={(e) => setPregunta(i, "requerida", e.target.checked)} />
                     Obligatoria
                   </label>
                 </div>
                 {p.tipo === "seleccion" && (
-                  <input className="admin-input" type="text"
+                  <input className="cfg-input" type="text"
                     placeholder="Opciones separadas por coma (ej: Interior, Exterior)"
                     key={p.id}
                     defaultValue={p.opciones?.filter(Boolean).join(", ") ?? ""}
                     onBlur={(e) => setPregunta(i, "opciones", e.target.value.split(",").map((o) => o.trim()).filter(Boolean))} />
                 )}
-                <div className="admin-pregunta-btns">
-                  <button type="button" className="admin-btn-add-fecha"
+                <div className="cfg-pregunta-btns">
+                  <button type="button" className="cfg-btn-add-fecha"
                     disabled={!p.label.trim()}
                     onClick={() => setPregunta(i, "guardado", true)}>
                     Guardar pregunta
                   </button>
-                  <button type="button" className="admin-btn-secondary-sm" onClick={() => removePregunta(i)}>
+                  <button type="button" className="cfg-btn-secondary-sm" onClick={() => removePregunta(i)}>
                     Cancelar
                   </button>
                 </div>
               </div>
             )
           ))}
-          <button type="button" className="admin-btn-add" onClick={addPregunta}>+ Añadir pregunta</button>
+          <button type="button" className="cfg-btn-add" onClick={addPregunta}>+ Añadir pregunta</button>
         </div>
 
       </div>

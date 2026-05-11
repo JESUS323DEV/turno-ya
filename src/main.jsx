@@ -13,7 +13,7 @@ document.addEventListener("touchstart", (e) => {
 }, { passive: true });
 
 document.addEventListener("touchmove", (e) => {
-  if (e.target.closest("input, textarea, select, .slots-grid, .res-tabs, .admin-tabs, .admin-turnos")) return;
+  if (e.target.closest("input, textarea, select, .slots-grid, .res-tabs, .cfg-turnos")) return;
   const dy = e.touches[0].clientY - touchStartY;
   if (document.scrollingElement.scrollTop === 0 && dy > 0) e.preventDefault();
 }, { passive: false });

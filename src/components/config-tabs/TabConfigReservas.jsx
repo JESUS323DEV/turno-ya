@@ -21,7 +21,7 @@ export default function TabConfigReservas({ draft, setField }) {
               <h5 className="cfg-rsv-label">Duración de cada reserva (Min)</h5>
               <p className="cfg-rsv-hint">Franja horaria disponible.</p>
             </div>
-            <select className="admin-input cfg-rsv-input" value={draft.slotInterval}
+            <select className="cfg-input cfg-rsv-input" value={draft.slotInterval}
               onChange={(e) => setField("slotInterval", Number(e.target.value))}>
               <option value={15}>15 min</option>
               <option value={20}>20 min</option>
@@ -37,7 +37,7 @@ export default function TabConfigReservas({ draft, setField }) {
               <h5 className="cfg-rsv-label">Antelación mínima (horas)</h5>
               <p className="cfg-rsv-hint">0 = reserva inmediata.</p>
             </div>
-            <input className="admin-input cfg-rsv-input" type="number" min="0" max="72"
+            <input className="cfg-input cfg-rsv-input" type="number" min="0" max="72"
               value={draft.antelacionMinHoras}
               onChange={(e) => setField("antelacionMinHoras", Number(e.target.value))} />
           </div>
@@ -46,7 +46,7 @@ export default function TabConfigReservas({ draft, setField }) {
               <h5 className="cfg-rsv-label">Antelación máxima (días)</h5>
               <p className="cfg-rsv-hint">Días máximos para reservar.</p>
             </div>
-            <input className="admin-input cfg-rsv-input" type="number" min="1" max="365"
+            <input className="cfg-input cfg-rsv-input" type="number" min="1" max="365"
               value={draft.antelacionMaxDias}
               onChange={(e) => setField("antelacionMaxDias", Number(e.target.value))} />
           </div>
@@ -63,7 +63,7 @@ export default function TabConfigReservas({ draft, setField }) {
               <h5 className="cfg-rsv-label">Mínimo de personas</h5>
               <p className="cfg-rsv-hint">Por reserva.</p>
             </div>
-            <input className="admin-input cfg-rsv-input" type="number" min="1" max="99"
+            <input className="cfg-input cfg-rsv-input" type="number" min="1" max="99"
               value={draft.minPersonas}
               onChange={(e) => setField("minPersonas", Number(e.target.value))} />
           </div>
@@ -72,7 +72,7 @@ export default function TabConfigReservas({ draft, setField }) {
               <h5 className="cfg-rsv-label">Máximo de personas</h5>
               <p className="cfg-rsv-hint">Por reserva.</p>
             </div>
-            <input className="admin-input cfg-rsv-input" type="number" min="1" max="100"
+            <input className="cfg-input cfg-rsv-input" type="number" min="1" max="100"
               value={draft.maxPersonas}
               onChange={(e) => setField("maxPersonas", Number(e.target.value))} />
           </div>
@@ -89,7 +89,7 @@ export default function TabConfigReservas({ draft, setField }) {
               <h5 className="cfg-rsv-label">Aforo máximo por horario</h5>
               <p className="cfg-rsv-hint">0 = sin límite. Requiere panel de reservas.</p>
             </div>
-            <input className="admin-input cfg-rsv-input" type="number" min="0" max="999"
+            <input className="cfg-input cfg-rsv-input" type="number" min="0" max="999"
               value={draft.aforoPorSlot}
               onChange={(e) => setField("aforoPorSlot", Number(e.target.value))} />
           </div>
