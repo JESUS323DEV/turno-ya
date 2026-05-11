@@ -1,0 +1,295 @@
+/* ── Tab Apariencia ───────────────────────────────────────────────────────── */
+
+/* Selector de temas - categorías */
+.cfg-tema-cats {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.cfg-tema-cat-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+
+.cfg-tema-cat-btn--active {
+  background: var(--accent);
+  color: var(--btn-text, #fff);
+  border-color: var(--accent);
+}
+
+/* Grid de cards de tema */
+.cfg-tema-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 10px;
+}
+
+.cfg-tema-card {
+  position: relative;
+  height: 78px;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  padding: 0;
+}
+
+.cfg-tema-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+}
+
+.cfg-tema-card--active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-bg);
+}
+
+.cfg-tema-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.65) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.cfg-tema-card-nombre {
+  position: absolute;
+  bottom: 8px;
+  left: 10px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+}
+
+.cfg-tema-card-check {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--btn-text, #fff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.cfg-tema-custom-btn {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1.5px dashed var(--border);
+  background: transparent;
+  color: var(--text);
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.cfg-tema-custom-btn:hover {
+  background: var(--accent-bg);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.cfg-tema-custom-btn--active {
+  border-color: var(--accent);
+  color: var(--accent);
+  border-style: solid;
+}
+
+.cfg-tema-card--claro:not(.cfg-tema-card--active) {
+  border-color: rgba(0, 0, 0, 0.14);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+}
+
+.cfg-tema-card--oscuro:not(.cfg-tema-card--active) {
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 12px rgba(255, 255, 255, 0.05);
+}
+
+.cfg-tema-grupo-label {
+  display: block;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: var(--text);
+  opacity: 0.5;
+  margin: 10px 0 6px;
+}
+
+.cfg-tema-grupo-label:first-child {
+  margin-top: 0;
+}
+
+.cfg-tema-vermás-btn {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 11px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.cfg-tema-vermás-btn:hover {
+  background: var(--accent-bg);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* Modal tema personalizado */
+.admin-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 16px;
+}
+
+.admin-modal {
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 360px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+}
+
+.admin-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.admin-modal-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+.admin-modal-close {
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: var(--text);
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+}
+
+.admin-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.admin-color-hex {
+  font-size: 13px;
+  font-family: var(--mono);
+  color: var(--text);
+  text-transform: uppercase;
+}
+
+.admin-modal-sep {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 2px 0;
+}
+
+/* Favoritos */
+.admin-favoritos {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.admin-favoritos-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text);
+}
+
+.admin-favorito-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.admin-favorito-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  cursor: pointer;
+  transition: border-color 0.15s;
+  text-align: left;
+}
+
+.admin-favorito-btn:hover {
+  border-color: var(--accent);
+}
+
+.admin-favorito-dots {
+  display: flex;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.admin-favorito-dots span {
+  display: block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+}
+
+.admin-favorito-nombre {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-h);
+}
+
+.admin-favorito-save {
+  display: flex;
+  gap: 8px;
+}

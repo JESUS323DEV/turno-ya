@@ -1,0 +1,71 @@
+/* ── Tab Horarios ─────────────────────────────────────────────────────────── */
+
+.cfg-card--dia {
+  padding: 0.85rem 1rem;
+  border-left: 3px solid transparent;
+  border-radius: 0.5rem;
+}
+
+.cfg-card--dia-open {
+  border-left-color: rgba(34, 197, 94, 0.5);
+}
+
+.cfg-card--dia-closed {
+  border-left-color: rgba(239, 68, 68, 0.3);
+}
+
+.cfg-card--dia .admin-turnos {
+  margin-top: 0.75rem;
+}
+
+.cfg-dia-info {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.cfg-dia-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.cfg-dia-icon--open {
+  color: #22c55e;
+  background: rgba(34, 197, 94, 0.12);
+}
+
+.cfg-dia-icon--closed {
+  color: var(--text);
+  background: var(--accent-bg);
+  opacity: 0.55;
+}
+
+.cfg-dia-icon--neutral {
+  color: var(--text);
+  background: var(--accent-bg);
+}
+
+.cfg-dia-nombre {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+.cfg-dia-status {
+  font-size: 12px;
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.cfg-dia-status--open {
+  color: #22c55e;
+}
+
+.cfg-dia-status--closed {
+  color: #ef4444;
+}
