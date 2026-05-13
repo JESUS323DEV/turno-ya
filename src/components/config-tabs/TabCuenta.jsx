@@ -31,7 +31,7 @@ export default function TabCuenta({ draft, setField, guardar, guardado, errorGua
   };
 
   return (
-    <section className="cfg-section cfg-cuenta-page" data-tema-panel={temaPanel}>
+    <section className="cfg-cuenta-page" data-tema-panel={temaPanel}>
       <div className="cfg-cuenta-inner">
 
         <div className="cfg-cuenta-topbar">
@@ -75,12 +75,22 @@ export default function TabCuenta({ draft, setField, guardar, guardado, errorGua
               </div>
             </label>
             {draft.modoEnvio === "email" ? (
-              <label className="cfg-label">
-                <span>Email donde recibes las reservas</span>
-                <input className="cfg-input" type="email" placeholder="tu@email.com"
-                  value={draft.emailNegocio ?? ""}
-                  onChange={(e) => setField("emailNegocio", e.target.value)} />
-              </label>
+              <>
+                <label className="cfg-label">
+                  <span>Email donde recibes las reservas</span>
+                  <input className="cfg-input" type="email" placeholder="tu@email.com"
+                    value={draft.emailNegocio ?? ""}
+                    onChange={(e) => setField("emailNegocio", e.target.value)} />
+                </label>
+                <div className="cfg-toggle-row">
+                  <span className="cfg-toggle-label1">Enviar confirmación al cliente</span>
+                  <label className="cfg-toggle">
+                    <input type="checkbox" checked={draft.emailConfirmacion ?? false}
+                      onChange={(e) => setField("emailConfirmacion", e.target.checked)} />
+                    <span className="cfg-toggle-track" />
+                  </label>
+                </div>
+              </>
             ) : (
               <label className="cfg-label">
                 <span>Número de WhatsApp (sin + ni espacios)</span>

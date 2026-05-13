@@ -3,14 +3,15 @@
 .login-section {
   min-height: 100dvh;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
   padding: 24px 16px;
+  background: var(--bg);
+  overscroll-behavior-y: none;
+  width: 100%;
 }
 
 .login-card {
-  width: 100%;
-  max-width: 360px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -19,6 +20,21 @@
   border: 1.5px solid var(--border);
   border-radius: 20px;
   padding: 36px 28px 32px;
+
+}
+
+.login-wrap {
+padding-top: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+}
+
+.login-hero-img {
+  width: 180px;
+  pointer-events: none;
+
 }
 
 .login-logo {
@@ -49,15 +65,53 @@
 }
 
 .login-input {
+  width: 100%;
   text-align: center;
   font-size: 18px;
   letter-spacing: 4px;
   padding: 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-family: inherit;
+  color: var(--text-h);
+  background: var(--bg);
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.login-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-bg);
+}
+
+.login-input.input-bad {
+  border-color: #ef4444;
+}
+
+.login-error {
+  color: #ef4444;
+  font-size: 13px;
+  margin-top: -10px;
 }
 
 .login-btn {
   width: 100%;
   margin-top: 4px;
+  padding: 13px;
+  background: var(--accent);
+  color: var(--btn-text, #fff);
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.login-btn:hover {
+  filter: brightness(1.1);
 }
 
 .login-selector-btns {

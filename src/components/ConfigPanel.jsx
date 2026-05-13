@@ -9,11 +9,11 @@ import TabPreguntas from "./config-tabs/TabPreguntas";
 import TabApariencia from "./config-tabs/TabApariencia";
 import TabCuenta from "./config-tabs/TabCuenta";
 
-function MenuContent({ onCuenta, draft, temaPanel, aplicarTemaPanel }) {
+function MenuContent({ onCuenta, draft, temaPanel, aplicarTemaPanel, onBack }) {
   return (
     <>
       <div className="cfg-menu-header">
-        <span className="cfg-menu-nombre">{draft.nombre || "TurnoYa"}</span>
+        <span className="cfg-menu-nombre">{draft.nombre || "Reservaq"}</span>
         <span className="cfg-menu-email">{draft.emailNegocio || "—"}</span>
       </div>
       <hr className="cfg-menu-sep" />
@@ -41,6 +41,12 @@ function MenuContent({ onCuenta, draft, temaPanel, aplicarTemaPanel }) {
             </button>
           ))}
         </div>
+      </div>
+      <hr className="cfg-menu-sep" />
+      <div className="cfg-menu-items">
+        <button type="button" className="cfg-menu-item" onClick={onBack}>
+          <ArrowLeft size={15} />Volver
+        </button>
       </div>
     </>
   );
@@ -130,7 +136,7 @@ export default function ConfigPanel({ config, onBack }) {
           <div className="cfg-mobile-menu cfg-portal-menu"
             data-tema-panel={temaPanel}
             style={{ top: menuPos.top, left: menuPos.left }}>
-            <MenuContent onCuenta={() => setCuentaOpen(true)} draft={draft} temaPanel={temaPanel} aplicarTemaPanel={aplicarTemaPanel} />
+            <MenuContent onCuenta={() => setCuentaOpen(true)} draft={draft} temaPanel={temaPanel} aplicarTemaPanel={aplicarTemaPanel} onBack={onBack} />
           </div>
         </>,
         document.body
@@ -150,7 +156,7 @@ export default function ConfigPanel({ config, onBack }) {
                   }
                 </button>
               </div>
-              <span className="cfg-sidebar-nombre">{draft.nombre || "TurnoYa"}</span>
+              <span className="cfg-sidebar-nombre">{draft.nombre || "Reservaq"}</span>
             </div>
             <nav className="cfg-sidebar-nav">
               {TABS.map(({ key, icon, label }) => (
@@ -177,25 +183,18 @@ export default function ConfigPanel({ config, onBack }) {
             {/* ── Header móvil + Tabnav (sticky) ── */}
             <div className="cfg-mobile-header-sticky" ref={stickyRef}>
               <div className="cfg-header">
-                <button type="button" className="cfg-mobile-back-btn" onClick={onBack}>
-                  <ArrowLeft size={18} />
-                  Volver
-                </button>
-                <div className="cfg-header-mid">
-                  <div className="cfg-mobile-profile">
-                    <button type="button" className="cfg-mobile-avatar-btn" onClick={() => setMobileMenuOpen(p => !p)}>
-                      {draft.logoUrl
-                        ? <img src={draft.logoUrl} alt="" className="cfg-mobile-avatar-img" />
-                        : <User size={16} />
-                      }
-                    </button>
-                    <span className="cfg-mobile-negocio">{draft.nombre || "TurnoYa"}</span>
-                  </div>
+                <div className="cfg-mobile-profile">
+                  <button type="button" className="cfg-mobile-avatar-btn" onClick={() => setMobileMenuOpen(p => !p)}>
+                    {draft.logoUrl
+                      ? <img src={draft.logoUrl} alt="" className="cfg-mobile-avatar-img" />
+                      : <User size={16} />
+                    }
+                  </button>
                   {mobileMenuOpen && (
                     <>
                       <div className="cfg-menu-overlay" onClick={() => setMobileMenuOpen(false)} />
                       <div className="cfg-mobile-menu">
-                        <MenuContent onCuenta={() => { setCuentaOpen(true); setMobileMenuOpen(false); }} draft={draft} temaPanel={temaPanel} aplicarTemaPanel={aplicarTemaPanel} />
+                        <MenuContent onCuenta={() => { setCuentaOpen(true); setMobileMenuOpen(false); }} draft={draft} temaPanel={temaPanel} aplicarTemaPanel={aplicarTemaPanel} onBack={() => { setMobileMenuOpen(false); onBack(); }} />
                         <hr className="cfg-menu-sep" />
                         <button type="button" className="cfg-menu-logout" disabled>
                           <LogOut size={15} />Cerrar sesión
@@ -205,7 +204,7 @@ export default function ConfigPanel({ config, onBack }) {
                   )}
                 </div>
                 <button type="submit" className="cfg-btn-primary cfg-header-save-btn">
-                  {guardado ? "✓ Guardado" : "Guardar"}
+                  {guardado ? "✓ Guardado" : "Guardar cambios"}
                 </button>
               </div>
 
@@ -227,6 +226,7 @@ export default function ConfigPanel({ config, onBack }) {
                   <ChevronRight size={14} />
                 </button>
               </div>
+              
             </div>
             <div className="cfg-header-spacer" style={{ height: headerH }} />
 

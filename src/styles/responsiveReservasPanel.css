@@ -1,16 +1,79 @@
 /* ── Responsive ReservasPanel ────────────────────────────────────────────────── */
 
+/* Tablet (768px+) — panel ocupa toda la pantalla y scrollea internamente */
 @media (min-width: 768px) {
-    .res-section {
-        padding: 0;
-        height: 100dvh;
-        align-items: stretch;
-        overflow: hidden;
-    }
+  .res-section {
+    height: 100dvh;
+    overflow: hidden;
+    align-items: stretch;
+    padding-bottom: 0;
+  }
+
+  .res-form {
+    max-width: 640px;
+    overflow-y: auto;
+    padding-bottom: 2rem;
+  }
+
+  .res-header {
+    padding: 1.2rem 1.5rem;
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 10;
+  }
+
+  .res-tabs {
+    padding: 0 1.5rem;
+  }
+
+  .panel-v2,
+  .panel-reservas {
+    padding: 0 1.5rem;
+  }
+
+  .notif-nueva {
+    margin: 0 1.5rem;
+  }
 }
 
+/* Desktop (1100px+) — ancho mayor, cards en 2 columnas */
+@media (min-width: 1100px) {
+  .res-form {
+    max-width: 860px;
+  }
+
+  .panel-v2-lista {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .panel-v2-grupos .panel-v2-lista {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* XXL (1400px+) — 3 columnas */
 @media (min-width: 1400px) {
-    .panel-stats {
-        grid-template-columns: repeat(5, 1fr);
-    }
+  .res-form {
+    max-width: 1100px;
+  }
+
+  .panel-v2-lista {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .panel-v2-grupos .panel-v2-lista {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .panel-v2-filters-row {
+    flex-wrap: nowrap;
+  }
+
+  .res-title {
+    font-size: 1.5rem;
+  }
 }

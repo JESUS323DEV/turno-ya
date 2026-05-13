@@ -69,6 +69,7 @@ export function useAdminConfig() {
     googleCalendarLink: config.googleCalendarLink ?? false,
     modoEnvio: config.modoEnvio ?? "whatsapp",
     emailNegocio: config.emailNegocio ?? "",
+    emailConfirmacion: config.emailConfirmacion ?? false,
     encabezadoMensaje: config.encabezadoMensaje ?? "🍽️ *Nueva Reserva*",
     textoPie: config.textoPie ?? "✅ ¡Gracias! Reserva hecha.",
     camposActivos: config.camposActivos ?? { nombre: true, telefono: true, personas: true, fecha: true, hora: true, mensaje: true },

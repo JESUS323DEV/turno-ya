@@ -1,15 +1,18 @@
-/* â”€â”€ Tab Cuenta â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
-
 .cfg-cuenta-page {
-  min-height: 100dvh;
-  background: var(--bg);
+  display: flex;
   justify-content: flex-start;
+  overscroll-behavior-y: none;
+  background: var(--bg);
+  min-height: 100dvh;
+
 }
+
 
 .cfg-cuenta-inner {
   width: 100%;
   max-width: 560px;
   padding: 0 1rem 3rem;
+
 }
 
 .cfg-cuenta-topbar {
@@ -119,4 +122,20 @@
 
 .cfg-btn-export:hover {
   background: var(--accent-bg);
+}
+
+
+@media (min-width: 768px) {
+  .cfg-cuenta-page {
+    height: 100%;
+
+  }
+
+  .cfg-cuenta-inner {
+   
+    max-width: 760px;
+    margin: auto;
+
+
+  }
 }

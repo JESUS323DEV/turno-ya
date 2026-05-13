@@ -32,7 +32,6 @@
 .cfg-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   padding: 1.8rem 1.5rem;
   border-bottom: 1px solid var(--border);
   position: relative;
@@ -77,11 +76,12 @@
 .cfg-mobile-spacer {
   flex: 0 0 2.5rem;
   width: 2.5rem;
+
 }
 
 .cfg-mobile-avatar-btn {
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 3.5rem;
+  height: 3.5rem;
   border-radius: 50%;
   background: var(--accent-bg);
   border: 1.5px solid var(--border);
@@ -94,6 +94,7 @@
   padding: 4px;
   overflow: hidden;
   transition: border-color 0.15s;
+
 }
 
 .cfg-mobile-avatar-btn:hover {
@@ -127,6 +128,8 @@
 .cfg-mobile-menu {
   position: absolute;
   top: calc(100% + 0.4rem);
+  left: 0;
+  right: 100%;
   background: var(--bg);
   border: 1.5px solid var(--border);
   border-radius: 12px;
@@ -854,11 +857,9 @@
 }
 
 .cfg-tabnav-item--active {
-  /*quitar el hardcode y pasar al tema de panel */
-
   border-color: var(--accent);
   background: var(--accent-bg);
-  color: var(--btn-text, #fff);
+  color: var(--text-h);
   font-weight: 600;
 }
 
@@ -1352,12 +1353,8 @@
   pointer-events: auto;
 }
 
-/* Botón guardar: siempre visible a la derecha */
+/* Botón guardar en header: solo layout */
 .cfg-header-save-btn {
-  flex-shrink: 0;
-  white-space: nowrap;
-  width: auto !important;
-  margin: 0 !important;
-  padding: 6px 14px !important;
-  font-size: 12px !important;
+  flex: 1;
+  margin-left: 5rem;
 }
