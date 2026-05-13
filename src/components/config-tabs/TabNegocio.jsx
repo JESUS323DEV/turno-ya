@@ -97,6 +97,7 @@ export default function TabNegocio({ draft, setField }) {
             <input className="cfg-input" type="url" placeholder="https://... (jpg, png, webp)"
               value={draft.logoUrl}
               onChange={(e) => setField("logoUrl", e.target.value)} />
+            <span className="cfg-hint">Recomendado: imagen cuadrada sin márgenes, mínimo 200×200px.</span>
             {draft.logoUrl && <img src={draft.logoUrl} alt="Logo preview" className="cfg-logo-preview" />}
           </label>
         </div>
