@@ -78,55 +78,45 @@ TurnoYa permite crear formularios de reserva personalizados con branding dinámi
 ---
 # Capturas
 
-# Perfiles y branding dinámico
+## Perfiles y branding dinámico
 
-## Vanessa Psicopedagogía
+### Vanessa Psicopedagogía
 
 ![Formulario Vanessa](./src/assets/screenshots/form-vanessa.png)
 
-## Estrella Creator
+### Estrella Creator
 
 ![Formulario Estrella](./src/assets/screenshots/form-estrella.png)
 
-## JesúsDev
+### JesúsDev
 
 ![Formulario JesúsDev](./src/assets/screenshots/form-jesusdev.png)
 
-## Olla Perú
+### Olla Perú
 
 ![Formulario OllaPerú](./src/assets/screenshots/form-ollaperu1.png)
 
 ![Formulario OllaPerú2](./src/assets/screenshots/form-ollaperu2.png)
 
+---
 
-
-## Panel de configuración
+# Panel de configuración
 
 ## Configuración y personalización del negocio
 
-![Formulario Configuración del negocio](./src/assets/screenshots/tab-negocios.png)
-
+![Configuración del negocio](./src/assets/screenshots/tab-negocios.png)
 
 ## Configuración de horarios
 
-![Formulario Configuración de horarios](./src/assets/screenshots/tab-horario.png)
+![Configuración de horarios](./src/assets/screenshots/tab-horario.png)
 
 ## Gestión de reservas
 
-![Formulario Gestión de reservas](./src/assets/screenshots/tab-config.png)
-
+![Gestión de reservas](./src/assets/screenshots/tab-config.png)
 
 ## Sistema de temas
 
-![Formulario Sistema de temas](./src/assets/screenshots/tab-apariencia.png)
-
-
-
-
-
-
-
-
+![Sistema de temas](./src/assets/screenshots/tab-apariencia.png)
 
 ---
 
