@@ -313,7 +313,7 @@ export default function FormFinal({ configOverride = null } = {}) {
                 </div>
 
                 {(campos.fecha || campos.hora) && <div className="form-fields-grid2">
-                  <h4 className="form-section-title col-span-2">Cuándo deseas venir:</h4>
+                  <h4 className="form-section-title col-span-2">Fecha:</h4>
                   {campos.fecha && (
                     <div className="reserva-label">
                       <span className="reserva-label-row">Día* {fieldIcon("dia", diaOk)}</span>

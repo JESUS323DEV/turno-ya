@@ -31,7 +31,7 @@
 
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 4rem;
 }
 
 
@@ -292,7 +292,7 @@
 .reserva-btn-secondary {
   padding: 11px 20px;
   background: transparent;
-  color: var(--text);
+  color: var(--text-h);
   border: 1.5px solid var(--border);
   border-radius: 10px;
   font-size: 15px;
@@ -660,7 +660,7 @@
 .form-fields-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.5rem;
+  gap: 1rem;
 }
 
 .form-fields-grid2 {

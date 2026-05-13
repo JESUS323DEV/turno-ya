@@ -82,11 +82,11 @@ function applyTema({ tema, colorFondo, colorAcento, colorBorde } = {}) {
     if (preset.textDesc) formEl.style.setProperty("--text-desc", preset.textDesc);
     if (preset.bgImage) {
       document.body.style.backgroundImage = `url("${preset.bgImage}")`;
-      document.body.style.backgroundSize = "100% 100%";
+      document.body.style.backgroundSize = " auto 100% ";
       document.body.style.backgroundPosition = "center top";
       document.body.style.backgroundRepeat = "no-repeat";
       document.body.style.backgroundImage = `
-  linear-gradient(rgba(0,0,0,0.10), rgba(0,0,0,0.10)),
+  linear-gradient(rgba(0,0,0,0.10), rgba(0, 0, 0, 0.1)),
   url("${preset.bgImage}")
 `;
       formEl.style.setProperty("background-color", "transparent");
