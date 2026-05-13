@@ -52,7 +52,8 @@ export const TEMAS = [
     categoria: "claro",
     accent: "#0e0c00",
     bg: "#fdf6ec",
-    border: "#494438", textDesc: "#7c6f64",
+    border: "#494438",
+    textDesc: "#7c6f64",
     gradient: `
   radial-gradient(circle at top left, rgba(125, 113, 30, 0.10), transparent 35%),
   radial-gradient(circle at bottom right, rgba(180, 138, 60, 0.08), transparent 40%),
@@ -67,7 +68,9 @@ export const TEMAS = [
     categoria: "oscuro",
     accent: "#f59f0bc4",
     bg: "#1a1a1a",
-    border: "#2e2e2e", textDesc: "#a1a1aa", gradient: `
+    border: "#2e2e2e",
+    textDesc: "#a1a1aa", 
+    gradient: `
   radial-gradient(circle at top left, rgba(245, 159, 11, 0.12), transparent 35%),
   radial-gradient(circle at bottom right, rgba(255, 180, 60, 0.10), transparent 40%),
   linear-gradient(180deg, #0a0a0a 0%, rgb(23, 23, 23) 45%, #111111 100%)
@@ -83,6 +86,7 @@ export const TEMAS = [
     accent: "#58a6ff",
     bg: "#0d1117",
     border: "#646565",
+    textDesc: "#f4f9ff",
     gradient: "radial-gradient(circle at top left, rgba(88,166,255,.25), transparent 40%), radial-gradient(circle at bottom right, rgba(13, 139, 249, 0.18), transparent 40%), linear-gradient(180deg, #0d1117, #111827)"
   },
 
@@ -208,20 +212,20 @@ export const TEMAS = [
   // TEMAS CON IMAGEN DE FONDO
 
   //TEMAS CLAROS CON FONDO
-  { id: "bg1", label: "Fondo 1", base: "claro", categoria: "fondo", accent: "#725000", bg: "rgba(255,255,255,0.75)", border: "#00000081", textDesc: "#3f2c00", bgImage: bg1 },
-  { id: "bg2", label: "Fondo 2", base: "claro", categoria: "fondo", accent: "#1e3200", bg: "rgba(255,255,255,0.75)", border: "#00000080", textDesc: "#001c07", bgImage: bg2 },
-  { id: "bg3", label: "Fondo 3", base: "claro", categoria: "fondo", accent: "#003836", bg: "rgba(255,255,255,0.75)", border: "#00000080", textDesc: "#000b1b", bgImage: bg3 },
-  { id: "bg4", label: "Fondo 4", base: "claro", categoria: "fondo", accent: "#660041", bg: "rgba(255,255,255,0.75)", border: "#00000080", textDesc: "#1e0020", bgImage: bg4 },
-  { id: "bg5", label: "Fondo 5", base: "claro", categoria: "fondo", accent: "#3b003a", bg: "rgba(255,255,255,0.75)", border: "#00000080", textDesc: "#4f004a", bgImage: bg5 },
-  { id: "bg6", label: "Fondo 6", base: "claro", categoria: "fondo", accent: "#2c2100", bg: "rgba(255,255,255,0.75)", border: "#00000080", textDesc: "#232300", bgImage: bg6 },
+  { id: "bg1", label: "Fondo 1", base: "claro", categoria: "fondo", accent: "#725000", bg: "rgba(255,255,255,0.75)", bgSolid: "#ffffff", border: "#00000081", textDesc: "#3f2c00", bgImage: bg1 },
+  { id: "bg2", label: "Fondo 2", base: "claro", categoria: "fondo", accent: "#1e3200", bg: "rgba(255,255,255,0.75)", bgSolid: "#ffffff", border: "#00000080", textDesc: "#001c07", bgImage: bg2 },
+  { id: "bg3", label: "Fondo 3", base: "claro", categoria: "fondo", accent: "#003836", bg: "rgba(255,255,255,0.75)", bgSolid: "#ffffff", border: "#00000080", textDesc: "#000b1b", bgImage: bg3 },
+  { id: "bg4", label: "Fondo 4", base: "claro", categoria: "fondo", accent: "#660041", bg: "rgba(255,255,255,0.75)", bgSolid: "#ffffff", border: "#00000080", textDesc: "#1e0020", bgImage: bg4 },
+  { id: "bg5", label: "Fondo 5", base: "claro", categoria: "fondo", accent: "#3b003a", bg: "rgba(255,255,255,0.75)", bgSolid: "#ffffff", border: "#00000080", textDesc: "#4f004a", bgImage: bg5 },
+  { id: "bg6", label: "Fondo 6", base: "claro", categoria: "fondo", accent: "#2c2100", bg: "rgba(255,255,255,0.75)", bgSolid: "#ffffff", border: "#00000080", textDesc: "#232300", bgImage: bg6 },
 
   //TEMAS OSCUROS CON FONDO
-  { id: "bgd1", label: "Fondo 7", base: "oscuro", categoria: "fondo", accent: "#cadbff", bg: "rgba(10,15,25,0.65)", border: "#ffffff30", textDesc: "#eefefd", bgImage: bgd1 },
-  { id: "bgd2", label: "Fondo 8", base: "oscuro", categoria: "fondo", accent: "#ffffff", bg: "rgba(10,15,25,0.65)", border: "#ffffff30", textDesc: "#bbbbbb", bgImage: bgd2 },
-  { id: "bgd3", label: "Fondo 9", base: "oscuro", categoria: "fondo", accent: "#e2fff0", bg: "rgba(10,15,25,0.65)", border: "#ffffff30", textDesc: "#f5fff3", bgImage: bgd3 },
-  { id: "bgd4", label: "Fondo 10", base: "oscuro", categoria: "fondo", accent: "#ffffff", bg: "rgba(10,15,25,0.65)", border: "#ffffff30", textDesc: "#ffecf4", bgImage: bgd4 },
-  { id: "bgd5", label: "Fondo 11", base: "oscuro", categoria: "fondo", accent: "#e8d6ff", bg: "rgba(10,15,25,0.65)", border: "#ffffff30", textDesc: "#feecff", bgImage: bgd5 },
-  { id: "bgd6", label: "Fondo 12", base: "oscuro", categoria: "fondo", accent: "#ffffff", bg: "rgba(10,15,25,0.65)", border: "#ffffff30", textDesc: "#ffffff", bgImage: bgd6 },
+  { id: "bgd1", label: "Fondo 7", base: "oscuro", categoria: "fondo", accent: "#cadbff", bg: "rgba(10,15,25,0.65)", bgSolid: "#0a0f19", border: "#ffffff30", textDesc: "#eefefd", bgImage: bgd1 },
+  { id: "bgd2", label: "Fondo 8", base: "oscuro", categoria: "fondo", accent: "#ffffff", bg: "rgba(10,15,25,0.65)", bgSolid: "#0a0f19", border: "#ffffff30", textDesc: "#bbbbbb", bgImage: bgd2 },
+  { id: "bgd3", label: "Fondo 9", base: "oscuro", categoria: "fondo", accent: "#e2fff0", bg: "rgba(10,15,25,0.65)", bgSolid: "#0a0f19", border: "#ffffff30", textDesc: "#f5fff3", bgImage: bgd3 },
+  { id: "bgd4", label: "Fondo 10", base: "oscuro", categoria: "fondo", accent: "#ffffff", bg: "rgba(10,15,25,0.65)", bgSolid: "#0a0f19", border: "#ffffff30", textDesc: "#ffecf4", bgImage: bgd4 },
+  { id: "bgd5", label: "Fondo 11", base: "oscuro", categoria: "fondo", accent: "#e8d6ff", bg: "rgba(10,15,25,0.65)", bgSolid: "#0a0f19", border: "#ffffff30", textDesc: "#feecff", bgImage: bgd5 },
+  { id: "bgd6", label: "Fondo 12", base: "oscuro", categoria: "fondo", accent: "#ffffff", bg: "rgba(10,15,25,0.65)", bgSolid: "#0a0f19", border: "#ffffff30", textDesc: "#ffffff", bgImage: bgd6 },
 
   // PERSONALIZADO (usa el fondo claro por defecto, pero con acento y fondo personalizados)
   { id: "personalizado", label: "Custom", base: "claro", accent: null, bg: null },

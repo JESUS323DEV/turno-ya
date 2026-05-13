@@ -62,6 +62,7 @@ export function useAdminConfig() {
     cierreTemporalFecha: config.cierreTemporalFecha ?? "",
     servicios: config.servicios ?? [],
     preguntasExtra: config.preguntasExtra ?? [],
+    tituloPreguntasExtra: config.tituloPreguntasExtra ?? "",
     pinAdmin: config.pinAdmin,
     horarios: horariosToForm(config.horarios),
     fechasBloqueadas: config.fechasBloqueadas ?? [],

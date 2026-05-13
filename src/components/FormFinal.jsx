@@ -390,7 +390,10 @@ export default function FormFinal({ configOverride = null } = {}) {
                 </div>}
               </div>
 
-              <div className="reserva-label">
+              <div className="cont-reserva-extra">
+                {negocio.tituloPreguntasExtra && negocio.preguntasExtra?.some(p => p.guardado) && (
+                  <h4 className="form-section-title">{negocio.tituloPreguntasExtra}</h4>
+                )}
                 {negocio.preguntasExtra?.filter((p) => p.guardado && p.label.trim()).map((p) => (
                   <label key={p.id} className="reserva-label-extra">
                     <span className="reserva-label2">
@@ -433,6 +436,7 @@ export default function FormFinal({ configOverride = null } = {}) {
 
                     Mensaje (opcional)
                   </span>
+
                   <textarea
                     className="reserva-textarea"
                     name="mensaje"

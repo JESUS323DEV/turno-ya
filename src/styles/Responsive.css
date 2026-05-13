@@ -63,6 +63,7 @@
     }
 }
 
+
 /* XL (1280px – 1399px) */
 @media (min-width: 1280px) and (max-width: 1399px) {
     body::before {

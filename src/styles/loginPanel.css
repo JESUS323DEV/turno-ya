@@ -8,7 +8,6 @@
   padding: 24px 16px;
   background: var(--bg);
   overscroll-behavior-y: none;
-  width: 100%;
 }
 
 .login-card {

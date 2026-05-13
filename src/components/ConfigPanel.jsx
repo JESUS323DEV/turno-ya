@@ -246,7 +246,7 @@ export default function ConfigPanel({ config, onBack }) {
                     key === "negocio" ? <TabNegocio draft={draft} setField={setField} /> :
                     key === "horarios" ? <TabHorarios draft={draft} setField={setField} setDia={setDia} setTurno={setTurno} addTurno={addTurno} removeTurno={removeTurno} nuevaFecha={nuevaFecha} setNuevaFecha={setNuevaFecha} addFechaBloqueada={addFechaBloqueada} removeFechaBloqueada={removeFechaBloqueada} /> :
                     key === "reservas" ? <TabConfigReservas draft={draft} setField={setField} /> :
-                    key === "preguntas" ? <TabPreguntas draft={draft} addPregunta={addPregunta} removePregunta={removePregunta} setPregunta={setPregunta} /> :
+                    key === "preguntas" ? <TabPreguntas draft={draft} setField={setField} addPregunta={addPregunta} removePregunta={removePregunta} setPregunta={setPregunta} /> :
                     <TabApariencia draft={draft} setField={setField} addTemaGuardado={addTemaGuardado} removeTemaGuardado={removeTemaGuardado} getConfigFinal={getConfigFinal} />
                   )}
                 </div>

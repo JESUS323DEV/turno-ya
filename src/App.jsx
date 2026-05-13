@@ -78,6 +78,8 @@ function applyTema({ tema, colorFondo, colorAcento, colorBorde } = {}) {
     }
     const bg = preset.bg || (preset.base === "oscuro" ? "#16171d" : "#ffffff");
     formEl.style.setProperty("--bg", bg);
+    if (preset.bgSolid) formEl.style.setProperty("--bg-solid", preset.bgSolid);
+    else formEl.style.removeProperty("--bg-solid");
     if (preset.border) formEl.style.setProperty("--border", preset.border);
     if (preset.textDesc) formEl.style.setProperty("--text-desc", preset.textDesc);
     if (preset.bgImage) {
@@ -92,8 +94,7 @@ function applyTema({ tema, colorFondo, colorAcento, colorBorde } = {}) {
       formEl.style.setProperty("background-color", "transparent");
     }
     if (preset.gradient) {
-      formEl.style.setProperty("--bg-gradient", preset.gradient);
-      document.body.style.removeProperty("background");
+      document.body.style.backgroundImage = preset.gradient;
     }
     document.body.style.backgroundColor = bg;
   } else {

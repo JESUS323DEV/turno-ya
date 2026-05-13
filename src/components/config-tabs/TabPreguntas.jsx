@@ -2,7 +2,7 @@ import { useState } from "react";
 import { FileText, Pencil, Trash2 } from "lucide-react";
 import "../../styles/config-tabs/tabPreguntas.css";
 
-export default function TabPreguntas({ draft, addPregunta, removePregunta, setPregunta }) {
+export default function TabPreguntas({ draft, setField, addPregunta, removePregunta, setPregunta }) {
   const [confirmarEliminar, setConfirmarEliminar] = useState(null);
 
   return (
@@ -13,6 +13,13 @@ export default function TabPreguntas({ draft, addPregunta, removePregunta, setPr
           <h2 className="cfg-card-label">Preguntas personalizadas</h2>
           <p className="cfg-card-subtitle">Campos extra que verá el cliente al reservar.</p>
         </div>
+
+        <label className="cfg-label">
+          <span>Título de la sección</span>
+          <input className="cfg-input" type="text" placeholder="Ej: Información adicional"
+            value={draft.tituloPreguntasExtra ?? ""}
+            onChange={(e) => setField("tituloPreguntasExtra", e.target.value)} />
+        </label>
 
         <div className="cfg-preguntas-list">
           {draft.preguntasExtra.map((p, i) => (

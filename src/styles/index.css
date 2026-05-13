@@ -87,8 +87,7 @@ body {
 
 #turno-ya-form {
   flex: 1;
-  background-color: var(--bg);
-  background-image: var(--bg-gradient, none);
+  background-color: transparent;
   background-size: cover;
   background-position: center;
   min-height: 100svh;
