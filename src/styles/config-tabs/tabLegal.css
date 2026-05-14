@@ -1,0 +1,26 @@
+.cfg-legal-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem;
+}
+
+.cfg-textarea {
+  width: 100%;
+  resize: vertical;
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border-input, var(--border));
+  border-radius: 8px;
+  padding: 0.75rem;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.cfg-textarea:focus {
+  border-color: var(--accent);
+}

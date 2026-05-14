@@ -63,6 +63,8 @@ export function useAdminConfig() {
     servicios: config.servicios ?? [],
     preguntasExtra: config.preguntasExtra ?? [],
     tituloPreguntasExtra: config.tituloPreguntasExtra ?? "",
+    textoPoliticaPrivacidad: config.textoPoliticaPrivacidad ?? "",
+    textoAvisoLegal: config.textoAvisoLegal ?? "",
     pinAdmin: config.pinAdmin,
     horarios: horariosToForm(config.horarios),
     fechasBloqueadas: config.fechasBloqueadas ?? [],

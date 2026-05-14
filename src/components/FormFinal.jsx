@@ -400,7 +400,7 @@ export default function FormFinal({ configOverride = null } = {}) {
                 {negocio.preguntasExtra?.filter((p) => p.guardado && p.label.trim()).map((p) => (
                   <label key={p.id} className="reserva-label-extra">
                     <span className="reserva-label2">
-                      {p.label}
+                      <span>{p.label}{p.requerida && "*"}</span>
                       {!p.requerida && " (opcional)"}
                     </span>
 

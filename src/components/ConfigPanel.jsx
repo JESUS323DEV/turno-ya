@@ -1,12 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { ChevronDown, ChevronLeft, ChevronRight, ArrowLeft, LogOut, Settings, FlaskConical, ScrollText, User, Store, Clock, Settings2, HelpCircle, Eye } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight, ArrowLeft, LogOut, Settings, FlaskConical, ScrollText, User, Store, Clock, Settings2, HelpCircle, Eye, Scale } from "lucide-react";
 import { TEMAS_PANEL, getPanelVars } from "../config/temasPanel";
 import TabNegocio from "./config-tabs/TabNegocio";
 import TabHorarios from "./config-tabs/TabHorarios";
 import TabConfigReservas from "./config-tabs/TabConfigReservas";
 import TabPreguntas from "./config-tabs/TabPreguntas";
 import TabApariencia from "./config-tabs/TabApariencia";
+import TabLegal from "./config-tabs/TabLegal";
 import TabCuenta from "./config-tabs/TabCuenta";
 
 function MenuContent({ onCuenta, draft, temaPanel, aplicarTemaPanel, onBack }) {
@@ -108,6 +109,7 @@ export default function ConfigPanel({ config, onBack }) {
     { key: "horarios", icon: <Clock size={17} />, label: "Horarios" },
     { key: "reservas", icon: <Settings2 size={17} />, label: "Configuración" },
     { key: "preguntas", icon: <HelpCircle size={17} />, label: "Preguntas" },
+    { key: "legal", icon: <Scale size={17} />, label: "Legal" },
     { key: "preview", icon: <Eye size={17} />, label: "Apariencia" },
   ];
 
@@ -247,6 +249,7 @@ export default function ConfigPanel({ config, onBack }) {
                     key === "horarios" ? <TabHorarios draft={draft} setField={setField} setDia={setDia} setTurno={setTurno} addTurno={addTurno} removeTurno={removeTurno} nuevaFecha={nuevaFecha} setNuevaFecha={setNuevaFecha} addFechaBloqueada={addFechaBloqueada} removeFechaBloqueada={removeFechaBloqueada} /> :
                     key === "reservas" ? <TabConfigReservas draft={draft} setField={setField} /> :
                     key === "preguntas" ? <TabPreguntas draft={draft} setField={setField} addPregunta={addPregunta} removePregunta={removePregunta} setPregunta={setPregunta} /> :
+                    key === "legal" ? <TabLegal draft={draft} setField={setField} /> :
                     <TabApariencia draft={draft} setField={setField} addTemaGuardado={addTemaGuardado} removeTemaGuardado={removeTemaGuardado} getConfigFinal={getConfigFinal} />
                   )}
                 </div>
