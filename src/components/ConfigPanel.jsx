@@ -98,7 +98,7 @@ export default function ConfigPanel({ config, onBack }) {
     const ro = new ResizeObserver(update);
     ro.observe(el);
     return () => ro.disconnect();
-  }, []);
+  }, [cuentaOpen]);
 
   const scrollTabnav = (dir) => tabnavRef.current?.scrollBy({ left: dir * 120, behavior: "smooth" });
   const toggle = (key) => setAbierto((prev) => (prev === key ? null : key));
@@ -122,7 +122,7 @@ export default function ConfigPanel({ config, onBack }) {
         errorGuardado={errorGuardado}
         exportarWidget={exportarWidget}
         temaPanel={temaPanel}
-        onClose={() => setCuentaOpen(false)}
+        onClose={() => { setCuentaOpen(false); window.scrollTo(0, 0); }}
       />
     );
   }
