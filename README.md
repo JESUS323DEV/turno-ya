@@ -51,6 +51,17 @@ TurnoYa permite crear formularios de reserva personalizados con branding dinámi
 | Sistema PIN admin | ✅ |
 | Optimización UX/UI móvil | ✅ |
 | Arquitectura escalable | ✅ |
+| Tab de consultas (reservas sin fecha) | ✅ |
+| Badges de notificación en tabs de reservas | ✅ |
+| Toggle confirmación por email al cliente | ✅ |
+| Título personalizable para preguntas extra | ✅ |
+| Gradientes full-screen en desktop | ✅ |
+| Calendario con fondo opaco en temas con imagen | ✅ |
+| Páginas de política de privacidad y aviso legal | ✅ |
+| Checkbox de aceptación de privacidad | ✅ |
+| Footer legal con powered by Reservaq | ✅ |
+| Textos legales editables desde el panel | ✅ |
+| Asterisco en preguntas obligatorias | ✅ |
 
 ---
 
@@ -74,6 +85,15 @@ TurnoYa permite crear formularios de reserva personalizados con branding dinámi
 | Cache/config refresh automático | 🟡 |
 | Mejor deliverability emails | 🟡 |
 | Prevención slugs duplicados | 🟡 |
+| Landing page Reservaq | 🟡 |
+| Conexión dominio reservaq.com | 🟡 |
+| Enlace Powered by Reservaq al dominio | 🟡 |
+| Dashboard de estadísticas | 🟡 |
+| Notificaciones push al dueño | 🟡 |
+| Exportación de reservas a CSV | 🟡 |
+| QR code del formulario | 🟡 |
+| Soporte multi-idioma | 🟡 |
+| Integración Google Calendar real | 🟡 |
 
 ---
 # Capturas

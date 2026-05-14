@@ -401,7 +401,6 @@ export default function FormFinal({ configOverride = null } = {}) {
                   <label key={p.id} className="reserva-label-extra">
                     <span className="reserva-label2">
                       <span>{p.label}{p.requerida && "*"}</span>
-                      {!p.requerida && " (opcional)"}
                     </span>
 
 
