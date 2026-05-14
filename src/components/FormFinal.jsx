@@ -6,6 +6,7 @@ import { es } from "date-fns/locale/es";
 import "react-day-picker/style.css";
 import icon1 from "../assets/icon-whatsapp.png";
 import { useReservaForm } from "../hooks/useReservaForm";
+import { SLUG } from "../lib/supabase";
 import { descargarIcs } from "../utils/ics";
 import "../styles/formFinal.css";
 
@@ -101,6 +102,7 @@ export default function FormFinal({ configOverride = null } = {}) {
   const [calOpen, setCalOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
   const [step, setStep] = useState(1);
+  const [aceptaPrivacidad, setAceptaPrivacidad] = useState(false);
 
   // ─── Helper: icono de validación por campo ─────────────────────────────────
   const fieldIcon = (field, isOk) => {
@@ -149,6 +151,7 @@ export default function FormFinal({ configOverride = null } = {}) {
 
   // ─── Formulario principal ──────────────────────────────────────────────────
   return (
+    <>
     <section className="reserva-section">
       <div className="reserva-layout">
         <form className="reserva-form" onSubmit={onSubmit}>
@@ -448,13 +451,18 @@ export default function FormFinal({ configOverride = null } = {}) {
                 </label>
               )}
 
+              <label className="reserva-privacidad-check">
+                <input type="checkbox" checked={aceptaPrivacidad} onChange={e => setAceptaPrivacidad(e.target.checked)} />
+                <span>He leído y acepto la <a href={`/${SLUG}/privacidad`} target="_blank" rel="noopener noreferrer">Política de privacidad</a></span>
+              </label>
+
               <div className="reserva-actions">
                 <button
                   type="button"
                   className="reserva-btn"
                   onClick={() => {
                     ["nombre", "email", "telefono", "personas", "servicio", "dia", "hora"].forEach(f => touch(f));
-                    if (canSend) setStep(2);
+                    if (canSend && aceptaPrivacidad) setStep(2);
                   }}
                 >
                   Continuar →
@@ -511,7 +519,6 @@ export default function FormFinal({ configOverride = null } = {}) {
 
         </form>
 
-
       </div>
 
       {(negocio.mostrarPanelAyuda ?? true) && (
@@ -532,5 +539,15 @@ export default function FormFinal({ configOverride = null } = {}) {
         </>
       )}
     </section>
+
+    <footer className="reserva-footer">
+      <span className="reserva-footer-brand">Powered by <strong>Reservaq</strong></span>
+      <nav className="reserva-footer-links">
+        <a href={`/${SLUG}/privacidad`} target="_blank" rel="noopener noreferrer">Política de privacidad</a>
+        <span className="reserva-footer-sep">·</span>
+        <a href={`/${SLUG}/legal`} target="_blank" rel="noopener noreferrer">Aviso legal</a>
+      </nav>
+    </footer>
+    </>
   );
 }

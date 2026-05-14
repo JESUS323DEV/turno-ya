@@ -76,6 +76,31 @@ export const NEGOCIO_DEFAULT = {
   // Fechas bloqueadas puntualmente (formato YYYY-MM-DD)
   fechasBloqueadas: [],
 
+  textoPoliticaPrivacidad: `Política de Privacidad
+
+Responsable del tratamiento: [Nombre o razón social], con NIF [NIF], y dirección en [Dirección].
+
+Finalidad: Los datos personales recogidos a través de este formulario (nombre, teléfono, email) se utilizan exclusivamente para gestionar su reserva y contactar con usted al respecto.
+
+Legitimación: Ejecución de un contrato o solicitud precontractual (art. 6.1.b RGPD).
+
+Conservación: Los datos se conservarán durante el tiempo necesario para gestionar la reserva y el período legal exigible.
+
+Destinatarios: No se cederán datos a terceros salvo obligación legal.
+
+Derechos: Puede ejercer sus derechos de acceso, rectificación, supresión, limitación y portabilidad enviando un correo a [email de contacto].`,
+
+  textoAvisoLegal: `Aviso Legal
+
+Titular del sitio web: [Nombre o razón social]
+NIF: [NIF]
+Domicilio: [Dirección completa]
+Email de contacto: [email]
+
+El acceso y uso de este sitio web implica la aceptación de las presentes condiciones. El titular se reserva el derecho de modificar los contenidos sin previo aviso.
+
+Este sitio web ha sido desarrollado con la plataforma Reservaq (www.reservaq.com).`,
+
   // Horarios por día (0=dom ... 6=sáb). Array vacío = cerrado.
   horarios: {
     0: [{ start: "12:00", end: "22:00" }],

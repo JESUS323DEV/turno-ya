@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import FormFinal from "./components/FormFinal";
 import LoginPanel from "./components/LoginPanel";
+import PrivacidadPage from "./components/PrivacidadPage";
+import LegalPage from "./components/LegalPage";
 import { getConfig } from "./config/negocio";
 import { TEMAS } from "./config/temas";
+import { getSubpage } from "./lib/supabase";
 
 function getVista() {
   return window.location.hash === "#admin" ? "admin" : "reserva";
@@ -104,6 +107,7 @@ function applyTema({ tema, colorFondo, colorAcento, colorBorde } = {}) {
 }
 
 function App() {
+  const subpage = getSubpage();
   const [vista, setVista] = useState(getVista);
 
   useEffect(() => {
@@ -123,6 +127,8 @@ function App() {
     return () => window.removeEventListener("hashchange", onHash);
   }, []);
 
+  if (subpage === "privacidad") return <PrivacidadPage />;
+  if (subpage === "legal") return <LegalPage />;
   if (vista === "admin") return <LoginPanel />;
   return <div id="turno-ya-form"><FormFinal /></div>;
 }

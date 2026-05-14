@@ -46,19 +46,23 @@ export const TEMAS = [
   // TEMAS CON GRADIENTES
   //CREMA====
   {
-    id: "crema",
-    label: "Crema",
-    base: "claro",
-    categoria: "claro",
-    accent: "#0e0c00",
-    bg: "#fdf6ec",
-    border: "#494438",
-    textDesc: "#7c6f64",
-    gradient: `
-  radial-gradient(circle at top left, rgba(125, 113, 30, 0.10), transparent 35%),
-  radial-gradient(circle at bottom right, rgba(180, 138, 60, 0.08), transparent 40%),
-  linear-gradient(180deg, #fffdf8 0%, #fdf6ec 45%, #f6ecdc 100%)
-`  },
+  id: "crema",
+  label: "Crema",
+  base: "claro",
+  categoria: "claro",
+
+  accent: "#8a6a3c",
+  bg: "#f4ede3",
+  border: "#b08d57",
+  textDesc: "#5e5a55",
+
+  gradient: `
+  radial-gradient(circle at top left, rgb(255, 255, 255), transparent 35%),
+  radial-gradient(circle at bottom right, rgb(255, 222, 172), transparent 40%),
+  linear-gradient(180deg, #faf6ef 0%, #f4ede3 45%, #ece1d2 100%)
+` },
+
+
 
   //CARBÓN====
   {
@@ -188,6 +192,7 @@ export const TEMAS = [
   linear-gradient(145deg, #0d0d0d 0%, #171717 45%, #101010 100%)
 `
   },
+
 
   // LAVANDA ====
   {
