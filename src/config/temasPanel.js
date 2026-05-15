@@ -1,15 +1,15 @@
 export const TEMAS_PANEL = [
   { id: "claro", label: "Claro", vars: {
-    "--bg": "#ffffff", "--text": "#6f6f6f", "--text-h": "#111827",
+    "--bg": "#ffffff", "--text": "#252525", "--text-h": "#111827",
     "--border": "#e5e7eb", "--accent": "#2e2e2e",
     "--accent-bg": "rgba(130, 129, 129, 0.22)", "--btn-text": "#ffffff",
+    "--accent-label": "#fbfbfb", "--card-bg": "#f3f4f6", "--color-scheme": "light",
   }},
-
-  
   { id: "oscuro", label: "Oscuro", vars: {
     "--bg": "#1a1a1a", "--text": "#9ca3af", "--text-h": "#f3f4f6",
     "--border": "#2e2e2e", "--accent": "#f59e0b",
     "--accent-bg": "rgba(245, 158, 11, 0.1)", "--btn-text": "#1a1a1a",
+    "--accent-label": "#0e0e0e53", "--card-bg": "#1e1e1e", "--color-scheme": "dark",
   }},
   { id: "sistema", label: "Sistema", vars: null },
 ];

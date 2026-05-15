@@ -64,7 +64,9 @@ export const NEGOCIO_DEFAULT = {
   colorAcento: "#aa3bff",   // solo para tema personalizado
   colorBorde: "#e5e4e7",    // solo para tema personalizado
   temasGuardados: [],       // [{ id, nombre, colorFondo, colorAcento, colorBorde }]
+  temasFavoritos: [],       // [id, ...]
   colorNegocio: "#7c3aed",   // color del nombre del negocio en el formulario
+  nombreSize: "md",          // tamaño del nombre: "xs" | "sm" | "md"
 
   encabezadoMensaje: "🍽️ *Nueva Reserva*",
   textoPie: "✅ ¡Gracias! Reserva hecha.",

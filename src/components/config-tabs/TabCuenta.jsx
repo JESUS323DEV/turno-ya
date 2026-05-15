@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { getPanelVars } from "../../config/temasPanel";
 import { ArrowLeft, Settings, FlaskConical, ScrollText, User } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import "../../styles/config-tabs/tabCuenta.css";
@@ -31,7 +32,7 @@ export default function TabCuenta({ draft, setField, guardar, guardado, errorGua
   };
 
   return (
-    <section className="cfg-cuenta-page" data-tema-panel={temaPanel}>
+    <section className="cfg-cuenta-page" style={getPanelVars(temaPanel)}>
       <div className="cfg-cuenta-inner">
 
         <div className="cfg-cuenta-topbar">

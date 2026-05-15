@@ -27,13 +27,71 @@ function getFormVars(tema, colorFondo, colorAcento, colorBorde) {
   return { dataTema: preset.base, vars, gradient: preset.gradient || null, bgImage: preset.bgImage || null };
 }
 
-export default function TabApariencia({ draft, setField, addTemaGuardado, removeTemaGuardado, getConfigFinal }) {
+function shuffled(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+export default function TabApariencia({ draft, setField, addTemaGuardado, removeTemaGuardado, toggleFavorito, getConfigFinal, previewOnly = false }) {
   const [modalCustom, setModalCustom] = useState(false);
   const [nombreTema, setNombreTema] = useState("");
-  const [categoriaTema, setCategoriaTema] = useState("todos");
+  const [categoriaTema, setCategoriaTema] = useState(() => {
+    const tema = TEMAS.find(t => t.id === draft.tema);
+    if (!tema || tema.id === "personalizado") return "todos";
+    if (tema.bgImage) return "fondo";
+    if (tema.base === "claro") return "claro";
+    if (tema.base === "oscuro") return "oscuro";
+    return "todos";
+  });
   const [verMasTemas, setVerMasTemas] = useState(false);
+  const [temasOrden, setTemasOrden] = useState(() => shuffled(TEMAS.filter(t => t.id !== "personalizado")));
+  const [ordenClaro, setOrdenClaro] = useState(() => shuffled(TEMAS.filter(t => t.base === "claro" && t.id !== "personalizado")));
+  const [ordenOscuro, setOrdenOscuro] = useState(() => shuffled(TEMAS.filter(t => t.base === "oscuro" && t.id !== "personalizado")));
+  const [ordenFondo, setOrdenFondo] = useState(() => shuffled(TEMAS.filter(t => t.bgImage)));
 
   const { dataTema, vars, gradient, bgImage } = getFormVars(draft.tema, draft.colorFondo, draft.colorAcento, draft.colorBorde);
+
+  const selectTema = (id) => {
+    const ordenMap = {
+      todos: [temasOrden, setTemasOrden],
+      claro: [ordenClaro, setOrdenClaro],
+      oscuro: [ordenOscuro, setOrdenOscuro],
+      fondo: [ordenFondo, setOrdenFondo],
+    };
+    const [orden, setOrden] = ordenMap[categoriaTema] ?? [null, null];
+    if (orden) {
+      const isInGrid = orden.slice(0, 6).some(t => t.id === id);
+      if (!isInGrid) {
+        const oldIdx = orden.findIndex(t => t.id === draft.tema);
+        const targetIdx = (oldIdx >= 0 && oldIdx < 6) ? oldIdx : 0;
+        setOrden(prev => {
+          const next = [...prev];
+          const incomingIdx = next.findIndex(t => t.id === id);
+          if (incomingIdx === -1) return next;
+          [next[targetIdx], next[incomingIdx]] = [next[incomingIdx], next[targetIdx]];
+          return next;
+        });
+      }
+    }
+    setField("tema", id);
+    window.dispatchEvent(new CustomEvent("turno-ya:tema", { detail: { tema: id, colorFondo: draft.colorFondo, colorAcento: draft.colorAcento, colorBorde: draft.colorBorde } }));
+  };
+
+  if (previewOnly) {
+    return (
+      <div className="cfg-tema-preview-wrap cfg-tema-preview-wrap--fullscreen"
+        data-tema={dataTema}
+        style={bgImage
+          ? { ...vars, backgroundImage: `url("${bgImage}")`, backgroundSize: "cover", backgroundPosition: "center" }
+          : { ...vars, background: gradient || "var(--bg)" }}>
+        <FormFinal configOverride={getConfigFinal()} />
+      </div>
+    );
+  }
 
   const renderCard = (tema) => {
     const cardBg = tema.bgImage
@@ -45,13 +103,18 @@ export default function TabApariencia({ draft, setField, addTemaGuardado, remove
       <button key={tema.id} type="button"
         className={`cfg-tema-card cfg-tema-card--${tema.base} ${draft.tema === tema.id ? "cfg-tema-card--active" : ""}`}
         style={cardBg}
-        onClick={() => {
-          setField("tema", tema.id);
-          window.dispatchEvent(new CustomEvent("turno-ya:tema", { detail: { tema: tema.id, colorFondo: draft.colorFondo, colorAcento: draft.colorAcento, colorBorde: draft.colorBorde } }));
-        }}>
+        onClick={() => selectTema(tema.id)}>
         <div className="cfg-tema-card-overlay" />
         <span className="cfg-tema-card-nombre">{tema.label}</span>
         {draft.tema === tema.id && <span className="cfg-tema-card-check"><Check size={11} /></span>}
+        <span
+          role="button"
+          tabIndex={0}
+          className={`cfg-tema-card-star ${(draft.temasFavoritos ?? []).includes(tema.id) ? "cfg-tema-card-star--active" : ""}`}
+          onClick={(e) => { e.stopPropagation(); toggleFavorito(tema.id); }}
+          onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.stopPropagation(); toggleFavorito(tema.id); } }}>
+          <Star size={11} strokeWidth={2} fill={(draft.temasFavoritos ?? []).includes(tema.id) ? "currentColor" : "none"} />
+        </span>
       </button>
     );
   };
@@ -60,14 +123,12 @@ export default function TabApariencia({ draft, setField, addTemaGuardado, remove
     const todos = TEMAS.filter(t => t.id !== "personalizado");
 
     if (categoriaTema === "todos") {
-      const selected = todos.find(t => t.id === draft.tema);
-      const rest = todos.filter(t => t.id !== draft.tema);
-      const visible = verMasTemas ? todos : [selected, ...rest.slice(0, 3)].filter(Boolean);
-      const remaining = todos.length - visible.length;
+      const remaining = temasOrden.length - 6;
       return (
         <>
-          <div className="cfg-tema-grid">{visible.map(renderCard)}</div>
-          {(verMasTemas || todos.length > 4) && (
+          <div className="cfg-tema-grid">{temasOrden.slice(0, 6).map(renderCard)}</div>
+          {verMasTemas && <div className="cfg-tema-grid">{temasOrden.slice(6).map(renderCard)}</div>}
+          {temasOrden.length > 6 && (
             <button type="button" className="cfg-tema-vermás-btn"
               onClick={() => setVerMasTemas(p => !p)}>
               {verMasTemas ? "Ver menos ↑" : `Ver todos · ${remaining} más ↓`}
@@ -78,50 +139,40 @@ export default function TabApariencia({ draft, setField, addTemaGuardado, remove
     }
 
     if (categoriaTema === "fondo") {
-      const fondosClaros = todos.filter(t => t.bgImage && t.base === "claro");
-      const fondosOscuros = todos.filter(t => t.bgImage && t.base === "oscuro");
+      const remaining = ordenFondo.length - 6;
       return (
         <>
-          {fondosClaros.length > 0 && (
-            <>
-              <span className="cfg-tema-grupo-label">Fondos claros</span>
-              <div className="cfg-tema-grid">{fondosClaros.map(renderCard)}</div>
-            </>
-          )}
-          {fondosOscuros.length > 0 && (
-            <>
-              <span className="cfg-tema-grupo-label">Fondos oscuros</span>
-              <div className="cfg-tema-grid">{fondosOscuros.map(renderCard)}</div>
-            </>
+          <div className="cfg-tema-grid">{ordenFondo.slice(0, 6).map(renderCard)}</div>
+          {verMasTemas && <div className="cfg-tema-grid">{ordenFondo.slice(6).map(renderCard)}</div>}
+          {ordenFondo.length > 6 && (
+            <button type="button" className="cfg-tema-vermás-btn"
+              onClick={() => setVerMasTemas(p => !p)}>
+              {verMasTemas ? "Ver menos ↑" : `Ver todos · ${remaining} más ↓`}
+            </button>
           )}
         </>
       );
     }
 
     if (categoriaTema === "favoritos") {
-      const favIds = new Set(draft.temasGuardados.map(t => t.id));
+      const favIds = new Set(draft.temasFavoritos ?? []);
       const favs = todos.filter(t => favIds.has(t.id));
       return favs.length > 0
         ? <div className="cfg-tema-grid">{favs.map(renderCard)}</div>
-        : <p className="cfg-rsv-hint">Aún no tienes favoritos guardados.</p>;
+        : <p className="cfg-rsv-hint">Pulsa ★ en cualquier tema para guardarlo aquí.</p>;
     }
 
-    const temasFiltrados = todos.filter(t => t.base === categoriaTema);
-    const solidos = temasFiltrados.filter(t => !t.bgImage);
-    const artisticos = temasFiltrados.filter(t => t.bgImage);
+    const orden = categoriaTema === "claro" ? ordenClaro : ordenOscuro;
+    const remaining = orden.length - 6;
     return (
       <>
-        {solidos.length > 0 && (
-          <>
-            <span className="cfg-tema-grupo-label">Colores sólidos</span>
-            <div className="cfg-tema-grid">{solidos.map(renderCard)}</div>
-          </>
-        )}
-        {artisticos.length > 0 && (
-          <>
-            <span className="cfg-tema-grupo-label">Fondos artísticos</span>
-            <div className="cfg-tema-grid">{artisticos.map(renderCard)}</div>
-          </>
+        <div className="cfg-tema-grid">{orden.slice(0, 6).map(renderCard)}</div>
+        {verMasTemas && <div className="cfg-tema-grid">{orden.slice(6).map(renderCard)}</div>}
+        {orden.length > 6 && (
+          <button type="button" className="cfg-tema-vermás-btn"
+            onClick={() => setVerMasTemas(p => !p)}>
+            {verMasTemas ? "Ver menos ↑" : `Ver todos · ${remaining} más ↓`}
+          </button>
         )}
       </>
     );

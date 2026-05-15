@@ -1,0 +1,82 @@
+/* ── FAB Vista Previa ────────────────────────────────────────────────────────── */
+
+.cfg-fab {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .cfg-fab {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    bottom: 24px;
+    right: 20px;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    z-index: 900;
+    transition: opacity 0.15s, transform 0.15s;
+  }
+
+  .cfg-fab:hover {
+    opacity: 0.88;
+    transform: scale(1.06);
+  }
+}
+
+/* ── Drawer fullscreen ───────────────────────────────────────────────────────── */
+
+.cfg-drawer {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .cfg-drawer {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 1001;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    animation: cfg-drawer-slide-up 0.28s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+}
+
+/* ── Botón cerrar flotante ───────────────────────────────────────────────────── */
+
+.cfg-drawer-close-btn {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .cfg-drawer-close-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0, 0, 0, 0.38);
+    color: #fff;
+    cursor: pointer;
+    z-index: 1002;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    font-family: inherit;
+  }
+}
+
+/* ── Animación ───────────────────────────────────────────────────────────────── */
+
+@keyframes cfg-drawer-slide-up {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}

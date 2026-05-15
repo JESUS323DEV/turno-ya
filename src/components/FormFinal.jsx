@@ -166,7 +166,7 @@ export default function FormFinal({ configOverride = null } = {}) {
 
               {(negocio.mostrarNombre ?? true) && (
                 <div className="reserva-tittle-negocio">
-                  <h1 style={{ color: negocio.colorNegocio }}>{negocio.nombre}</h1>
+                  <h1 className={`reserva-negocio-nombre reserva-negocio-nombre--${negocio.nombreSize ?? "md"}`} style={{ color: negocio.colorNegocio }}>{negocio.nombre}</h1>
                 </div>
               )}
 
@@ -221,7 +221,7 @@ export default function FormFinal({ configOverride = null } = {}) {
                 <div className="form-fields-grid">
                   <h4 className="form-section-title col-span-2">Tus datos:</h4>
                   {campos.nombre && (
-                    <label className="reserva-label">
+                    <label className={`reserva-label${!campos.apellidos ? " col-span-2" : ""}`}>
                       <span className="reserva-label-row">Nombre* {fieldIcon("nombre", nombreOk)}</span>
                       <input
                         className="reserva-input"
@@ -267,7 +267,7 @@ export default function FormFinal({ configOverride = null } = {}) {
                   )}
 
                   {campos.telefono && (
-                    <label className="reserva-label">
+                    <label className={`reserva-label${!campos.personas ? " col-span-2" : ""}`}>
                       <span className="reserva-label-row">Teléfono* {fieldIcon("telefono", telefonoOk)}</span>
                       <input
                         className="reserva-input"
@@ -283,7 +283,7 @@ export default function FormFinal({ configOverride = null } = {}) {
                     </label>
                   )}
                   {campos.personas && (
-                    <label className="reserva-label">
+                    <label className={`reserva-label${!campos.telefono ? " col-span-2" : ""}`}>
                       <span className="reserva-label-row">Personas* {fieldIcon("personas", personasOk)}</span>
                       <select
                         className="reserva-input"

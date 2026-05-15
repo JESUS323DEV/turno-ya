@@ -92,10 +92,6 @@ TurnoYa permite crear formularios de reserva personalizados con branding dinámi
 |---|---|
 | Landing page Reservaq | ✅ |
 
-
-
-
-
 ---
 
 # Posibles mejoras futuras
@@ -122,6 +118,7 @@ TurnoYa permite crear formularios de reserva personalizados con branding dinámi
 | Exportación de reservas a CSV | 🟡 |
 | Soporte multi-idioma | 🟡 |
 | Integración Google Calendar real | 🟡 |
+| Editor visual inline | 🟡 |
 
 ---
 # Capturas

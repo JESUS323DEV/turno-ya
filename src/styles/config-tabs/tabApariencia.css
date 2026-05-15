@@ -55,8 +55,8 @@
 }
 
 .cfg-tema-card--active {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-bg);
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  box-shadow: 0 0 0 2px var(--accent-bg);
 }
 
 .cfg-tema-card-overlay {
@@ -90,6 +90,43 @@
   align-items: center;
   justify-content: center;
   pointer-events: none;
+}
+
+.cfg-tema-card-star {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  color: rgba(255, 255, 255, 0.65);
+  cursor: pointer;
+  transition: color 0.15s, transform 0.15s;
+  padding: 0;
+}
+
+.cfg-tema-card-star svg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.cfg-tema-card-star:hover {
+  color: #fff;
+  transform: scale(1.1);
+}
+
+.cfg-tema-card-star--active {
+  color: #f59e0b;
+}
+
+.cfg-tema-card-star--active:hover {
+  color: #fbbf24;
 }
 
 .cfg-tema-custom-btn {

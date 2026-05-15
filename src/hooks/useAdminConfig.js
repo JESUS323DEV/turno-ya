@@ -45,12 +45,14 @@ export function useAdminConfig() {
     textoTelefono: config.textoTelefono ?? "También puedes reservar por teléfono",
     mostrarTelefono: config.mostrarTelefono ?? true,
     temasGuardados: config.temasGuardados ?? [],
+    temasFavoritos: config.temasFavoritos ?? [],
     descripcion: config.descripcion ?? "",
     links: config.links ?? ["", ""],
     logoUrl: config.logoUrl ?? "",
     mostrarNombre: config.mostrarNombre ?? true,
     mostrarPanelAyuda: config.mostrarPanelAyuda ?? true,
     colorNegocio: config.colorNegocio ?? "#7c3aed",
+    nombreSize: config.nombreSize ?? "md",
     whatsapp: config.whatsapp,
     telefono: config.telefono,
     minPersonas: config.minPersonas ?? 1,
@@ -215,6 +217,18 @@ export function useAdminConfig() {
     }));
   };
 
+  const toggleFavorito = (id) => {
+    setDraft((prev) => {
+      const favs = prev.temasFavoritos ?? [];
+      return {
+        ...prev,
+        temasFavoritos: favs.includes(id)
+          ? favs.filter((fid) => fid !== id)
+          : [...favs, id],
+      };
+    });
+  };
+
   const getConfigFinal = () => ({
     ...draft,
     horarios: formToHorarios(draft.horarios),
@@ -267,7 +281,7 @@ export function useAdminConfig() {
     exportarWidget,
     addServicio, removeServicio, setServicio,
     addPregunta, removePregunta, setPregunta,
-    addTemaGuardado, removeTemaGuardado,
+    addTemaGuardado, removeTemaGuardado, toggleFavorito,
     getConfigFinal,
   };
 }

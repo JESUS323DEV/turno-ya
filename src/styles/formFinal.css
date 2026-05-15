@@ -47,13 +47,15 @@
 
 .reserva-tittle-negocio h1 {
   text-align: center;
-  font-size: 2.5rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1px;
   color: var(--accent);
   margin: 0;
 }
+.reserva-negocio-nombre--xs { font-size: clamp(0.875rem, 2.5vw, 1.125rem); }
+.reserva-negocio-nombre--sm { font-size: clamp(1.25rem, 3.5vw, 1.625rem); }
+.reserva-negocio-nombre--md { font-size: clamp(1.75rem, 5vw, 2.25rem); }
 
 .reserva-title {
   text-align: center;

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { ChevronDown, ChevronLeft, ChevronRight, ArrowLeft, LogOut, Settings, FlaskConical, ScrollText, User, Store, Clock, Settings2, HelpCircle, Eye, Scale } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight, ArrowLeft, LogOut, Settings, FlaskConical, ScrollText, User, Store, Clock, Settings2, HelpCircle, Eye, Scale, X } from "lucide-react";
 import { TEMAS_PANEL, getPanelVars } from "../config/temasPanel";
 import TabNegocio from "./config-tabs/TabNegocio";
 import TabHorarios from "./config-tabs/TabHorarios";
@@ -9,6 +9,7 @@ import TabPreguntas from "./config-tabs/TabPreguntas";
 import TabApariencia from "./config-tabs/TabApariencia";
 import TabLegal from "./config-tabs/TabLegal";
 import TabCuenta from "./config-tabs/TabCuenta";
+import "../styles/configDrawer.css";
 
 function MenuContent({ onCuenta, draft, temaPanel, aplicarTemaPanel, onBack }) {
   return (
@@ -59,16 +60,17 @@ export default function ConfigPanel({ config, onBack }) {
     nuevaFecha, setNuevaFecha, addFechaBloqueada, removeFechaBloqueada,
     guardar, guardado, errorGuardado, exportarWidget,
     addPregunta, removePregunta, setPregunta,
-    addTemaGuardado, removeTemaGuardado, getConfigFinal,
+    addTemaGuardado, removeTemaGuardado, toggleFavorito, getConfigFinal,
   } = config;
 
   /* ── Estado local ── */
-  const [abierto, setAbierto] = useState("negocio");
+  const [abierto, setAbierto] = useState("preview");
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [menuPos, setMenuPos] = useState({ top: 0, left: 0 });
   const [temaPanel, setTemaPanel] = useState(() => localStorage.getItem("turno-ya-tema-panel") || "claro");
   const [cuentaOpen, setCuentaOpen] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [headerH, setHeaderH] = useState(0);
   const avatarBtnRef = useRef(null);
   const stickyRef = useRef(null);
@@ -105,12 +107,12 @@ export default function ConfigPanel({ config, onBack }) {
   const toggle = (key) => setAbierto((prev) => (prev === key ? null : key));
 
   const TABS = [
+    { key: "preview", icon: <Eye size={17} />, label: "Apariencia" },
     { key: "negocio", icon: <Store size={17} />, label: "Negocio" },
     { key: "horarios", icon: <Clock size={17} />, label: "Horarios" },
     { key: "reservas", icon: <Settings2 size={17} />, label: "Configuración" },
     { key: "preguntas", icon: <HelpCircle size={17} />, label: "Preguntas" },
     { key: "legal", icon: <Scale size={17} />, label: "Legal" },
-    { key: "preview", icon: <Eye size={17} />, label: "Apariencia" },
   ];
 
   /* ── Sub-vista Cuenta ── */
@@ -136,15 +138,14 @@ export default function ConfigPanel({ config, onBack }) {
         <>
           <div className="cfg-menu-overlay" onClick={closeMenu} />
           <div className="cfg-mobile-menu cfg-portal-menu"
-            data-tema-panel={temaPanel}
-            style={{ top: menuPos.top, left: menuPos.left }}>
+            style={{ ...getPanelVars(temaPanel), top: menuPos.top, left: menuPos.left }}>
             <MenuContent onCuenta={() => setCuentaOpen(true)} draft={draft} temaPanel={temaPanel} aplicarTemaPanel={aplicarTemaPanel} onBack={onBack} />
           </div>
         </>,
         document.body
       )}
 
-      <section className="cfg-section" data-tema-panel={temaPanel}>
+      <section className="cfg-section" style={getPanelVars(temaPanel)}>
         <div className="cfg-wrapper">
 
           {/* ── Sidebar desktop ── */}
@@ -164,7 +165,7 @@ export default function ConfigPanel({ config, onBack }) {
               {TABS.map(({ key, icon, label }) => (
                 <button key={key} type="button"
                   className={`cfg-sidebar-item ${abierto === key ? "cfg-sidebar-item--active" : ""}`}
-                  onClick={() => setAbierto(key)}>
+                  onClick={() => { setAbierto(key); window.scrollTo({ top: 0 }); }}>
                   {icon}
                   <span>{label}</span>
                 </button>
@@ -172,12 +173,12 @@ export default function ConfigPanel({ config, onBack }) {
             </nav>
           </aside>
 
-          <form className="cfg-form cfg-main" onSubmit={guardar}>
+          <div className="cfg-form cfg-main">
 
             {/* ── Topbar desktop ── */}
             <div className="cfg-topbar">
               <button type="button" className="cfg-seccion-back" onClick={onBack}>← Volver</button>
-              <button className="cfg-btn-primary" type="submit">
+              <button className="cfg-btn-primary" type="button" onClick={guardar}>
                 {guardado ? "✓ Guardado" : "Guardar cambios"}
               </button>
             </div>
@@ -205,7 +206,7 @@ export default function ConfigPanel({ config, onBack }) {
                     </>
                   )}
                 </div>
-                <button type="submit" className="cfg-btn-primary cfg-header-save-btn">
+                <button type="button" className="cfg-btn-primary cfg-header-save-btn" onClick={guardar}>
                   {guardado ? "✓ Guardado" : "Guardar cambios"}
                 </button>
               </div>
@@ -219,7 +220,7 @@ export default function ConfigPanel({ config, onBack }) {
                   {TABS.map(({ key, label }) => (
                     <button key={key} type="button"
                       className={`cfg-tabnav-item ${abierto === key ? "cfg-tabnav-item--active" : ""}`}
-                      onClick={() => setAbierto(key)}>
+                      onClick={() => { setAbierto(key); window.scrollTo({ top: 0 }); }}>
                       {label}
                     </button>
                   ))}
@@ -250,15 +251,32 @@ export default function ConfigPanel({ config, onBack }) {
                     key === "reservas" ? <TabConfigReservas draft={draft} setField={setField} /> :
                     key === "preguntas" ? <TabPreguntas draft={draft} setField={setField} addPregunta={addPregunta} removePregunta={removePregunta} setPregunta={setPregunta} /> :
                     key === "legal" ? <TabLegal draft={draft} setField={setField} /> :
-                    <TabApariencia draft={draft} setField={setField} addTemaGuardado={addTemaGuardado} removeTemaGuardado={removeTemaGuardado} getConfigFinal={getConfigFinal} />
+                    <TabApariencia draft={draft} setField={setField} addTemaGuardado={addTemaGuardado} removeTemaGuardado={removeTemaGuardado} toggleFavorito={toggleFavorito} getConfigFinal={getConfigFinal} />
                   )}
                 </div>
               ))}
 
             </div>
-          </form>
+          </div>
         </div>
       </section>
+
+      {/* ── FAB Apariencia (solo móvil) ── */}
+      <button type="button" className="cfg-fab" onClick={() => setDrawerOpen(true)}
+        style={{ background: getPanelVars(temaPanel)["--accent"], color: getPanelVars(temaPanel)["--btn-text"] }}>
+        <Eye size={20} />
+      </button>
+
+      {/* ── Drawer Vista Previa (fullscreen, solo móvil) ── */}
+      {drawerOpen && createPortal(
+        <div className="cfg-drawer">
+          <button type="button" className="cfg-drawer-close-btn" onClick={() => setDrawerOpen(false)}>
+            <X size={18} />
+          </button>
+          <TabApariencia previewOnly draft={draft} setField={setField} addTemaGuardado={addTemaGuardado} removeTemaGuardado={removeTemaGuardado} getConfigFinal={getConfigFinal} />
+        </div>,
+        document.body
+      )}
     </>
   );
 }
