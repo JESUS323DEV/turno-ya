@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Calendar, ClipboardList, Settings } from "lucide-react";
 import { useAdminConfig } from "../hooks/useAdminConfig";
 import { getPanelVars } from "../config/temasPanel";
@@ -18,6 +18,16 @@ export default function LoginPanel() {
 
   const temaPanel = localStorage.getItem("turno-ya-tema-panel") || "claro";
   const panelVars = getPanelVars(temaPanel);
+
+  useEffect(() => {
+    const bg = getPanelVars(temaPanel)["--bg"] || "";
+    document.body.style.backgroundColor = bg;
+    document.body.style.removeProperty("background-image");
+    document.body.style.removeProperty("background-size");
+    document.body.style.removeProperty("background-repeat");
+    document.body.style.removeProperty("background-position");
+    return () => { document.body.style.removeProperty("background-color"); };
+  }, [temaPanel]);
 
   // ── 1. PIN (siempre primero) ───────────────────────────────────────────────
   if (!autenticado) {
@@ -56,7 +66,7 @@ export default function LoginPanel() {
       <section className="login-section" style={panelVars}>
         <div className="login-wrap">
           <img src={loginImg} alt="" className="login-hero-img" />
-          <div className="login-card">
+          <div className="login-card login-card2">
             <h2 className="login-title">Reservaq</h2>
             <p className="login-sub">¿A dónde quieres ir?</p>
             <div className="login-selector-btns">

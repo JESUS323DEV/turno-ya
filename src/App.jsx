@@ -118,7 +118,6 @@ function App() {
 
   useEffect(() => {
     if (vista === "reserva") applyTema(getConfig());
-    else document.body.style.removeProperty("background-color");
   }, [vista]);
 
   useEffect(() => {
