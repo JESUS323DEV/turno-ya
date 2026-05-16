@@ -64,11 +64,9 @@ export default function ReservasPanel({ pin, onBack, draft = {} }) {
   const [ultimaActualizacion, setUltimaActualizacion] = useState(null);
   const [paginaPanel, setPaginaPanel] = useState(1);
   const [tabFecha, setTabFecha] = useState("hoy");
-  const [nuevasReservas, setNuevasReservas] = useState([]);
   const [temaPanel, setTemaPanel] = useState(() => localStorage.getItem("turno-ya-tema-panel") || "claro");
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuPos, setMenuPos] = useState({ top: 0, left: 0 });
-  const knownIdsRef = useRef(null);
   const avatarBtnRef = useRef(null);
 
   const panelVars = getPanelVars(temaPanel);
@@ -103,22 +101,7 @@ export default function ReservasPanel({ pin, onBack, draft = {} }) {
   useEffect(() => {
     const cargar = () => {
       fetchReservas(SLUG).then((data) => {
-        const mapped = data.map((r) => ({ ...r, fecha: r.dia }));
-        if (knownIdsRef.current === null) {
-          knownIdsRef.current = new Set(mapped.map(r => r.id));
-        } else {
-          const nuevas = mapped.filter(r =>
-            r.estado === "pendiente" && !knownIdsRef.current.has(r.id)
-          );
-          mapped.forEach(r => knownIdsRef.current.add(r.id));
-          if (nuevas.length > 0) {
-            setNuevasReservas(prev => {
-              const yaEstan = new Set(prev.map(n => n.id));
-              return [...prev, ...nuevas.filter(n => !yaEstan.has(n.id))];
-            });
-          }
-        }
-        setReservasMock(mapped);
+        setReservasMock(data.map((r) => ({ ...r, fecha: r.dia })));
         setUltimaActualizacion(new Date());
       });
     };
@@ -131,7 +114,8 @@ export default function ReservasPanel({ pin, onBack, draft = {} }) {
   const reservasHoy = reservasMock.filter(r => r.fecha >= hoyStr);
   const reservasHistorial = reservasMock.filter(r => r.fecha && r.fecha < hoyStr && (r.estado === "confirmada" || r.estado === "cancelada"));
   const consultas = reservasMock.filter(r => !r.fecha || r.fecha === "");
-  const pendientesReservas = reservasMock.filter(r => r.fecha && r.fecha >= hoyStr && r.estado === "pendiente").length;
+  const pendientes = reservasMock.filter(r => r.fecha && r.estado === "pendiente").sort((a, b) => a.fecha.localeCompare(b.fecha));
+  const pendientesReservas = pendientes.length;
   const pendientesConsultas = consultas.filter(r => r.estado === "pendiente").length;
   const historialPorFecha = reservasHistorial.reduce((acc, r) => {
     if (!acc[r.fecha]) acc[r.fecha] = [];
@@ -186,7 +170,6 @@ export default function ReservasPanel({ pin, onBack, draft = {} }) {
   // ── Acciones ─────────────────────────────────────────────────────────────────
   const cambiarEstado = async (id, estado) => {
     setReservasMock((prev) => prev.map((r) => r.id === id ? { ...r, estado } : r));
-    setNuevasReservas((prev) => prev.filter(r => r.id !== id));
     try {
       await accionReserva(id, estado === "confirmada" ? "confirmar" : "cancelar", pin, SLUG);
     } catch {
@@ -309,43 +292,34 @@ export default function ReservasPanel({ pin, onBack, draft = {} }) {
 
           </div>
 
-          {/* ── Notificaciones de nuevas reservas ── */}
-          {nuevasReservas.length === 1 && (
+          {/* ── Pendientes ── */}
+          {pendientes.length > 0 && (
             <div className="notif-nueva">
               <div className="notif-nueva-header">
-                <span className="notif-nueva-titulo">🔔 Nueva reserva</span>
-                <button type="button" className="res-modal-close" onClick={() => setNuevasReservas([])}>✕</button>
+                <span className="notif-nueva-titulo">🔔 {pendientes.length === 1 ? "1 reserva pendiente" : `${pendientes.length} reservas pendientes`}</span>
               </div>
-              {(() => {
-                const r = nuevasReservas[0]; return (
-                  <div className="notif-nueva-card">
-                    <div className="notif-nueva-fila">
-                      <span className="pv2-nombre">{r.nombre}</span>
-                      <span className="pv2-hora">{r.hora}</span>
-                    </div>
-                    <div className="notif-nueva-fila">
-                      <span className="panel-v2-card-meta"><Users size={11} className="pv2-icon" />{r.personas}{r.servicio ? ` · ${r.servicio}` : ""}</span>
-                      <span className="panel-v2-card-meta">📅 {r.fecha?.split("-").reverse().join("/")}</span>
-                    </div>
-                    <div className="panel-card-tel">
-                      <a href={`tel:${r.telefono}`} className="panel-v2-tel">{r.telefono}</a>
-                      <a href={`https://wa.me/${(r.telefono || "").replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer">
-                        <img src={iconWa} alt="WA" className="panel-wa-icon" />
-                      </a>
-                    </div>
-                    <div className="panel-card-actions">
-                      <button type="button" className="panel-btn-confirmar" onClick={() => cambiarEstado(r.id, "confirmada")}>Confirmar</button>
-                      <button type="button" className="panel-btn-cancelar" onClick={() => cambiarEstado(r.id, "cancelada")}>Cancelar</button>
-                    </div>
+              {pendientes.map(r => (
+                <div key={r.id} className="notif-nueva-card">
+                  <div className="notif-nueva-fila">
+                    <span className="pv2-nombre">{r.nombre}</span>
+                    <span className="pv2-hora">{r.hora}</span>
                   </div>
-                );
-              })()}
-            </div>
-          )}
-          {nuevasReservas.length > 1 && (
-            <div className="notif-nueva notif-nueva--multiple">
-              <span className="notif-nueva-titulo">🔔 {nuevasReservas.length} nuevas reservas pendientes</span>
-              <button type="button" className="res-modal-close" onClick={() => setNuevasReservas([])}>✕</button>
+                  <div className="notif-nueva-fila">
+                    <span className="panel-v2-card-meta"><Users size={11} className="pv2-icon" />{r.personas}{r.servicio ? ` · ${r.servicio}` : ""}</span>
+                    <span className="panel-v2-card-meta">📅 {r.fecha?.split("-").reverse().join("/")}</span>
+                  </div>
+                  <div className="panel-card-tel">
+                    <a href={`tel:${r.telefono}`} className="panel-v2-tel">{r.telefono}</a>
+                    <a href={`https://wa.me/${(r.telefono || "").replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer">
+                      <img src={iconWa} alt="WA" className="panel-wa-icon" />
+                    </a>
+                  </div>
+                  <div className="panel-card-actions">
+                    <button type="button" className="panel-btn-confirmar" onClick={() => cambiarEstado(r.id, "confirmada")}>Confirmar</button>
+                    <button type="button" className="panel-btn-cancelar" onClick={() => cambiarEstado(r.id, "cancelada")}>Cancelar</button>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
 
