@@ -88,7 +88,7 @@ export function generarLinkGoogleCalendar(form, negocio) {
     .map((p) => `${p.label}: ${form.extras[p.id]}`);
   const details = [
     form.telefono && `Tel: ${form.telefono}`,
-    form.personas && `Personas: ${form.personas}`,
+    (negocio.camposActivos?.personas !== false) && form.personas && `Personas: ${form.personas}`,
     form.servicio && `Servicio: ${form.servicio}`,
     ...extrasLines,
   ].filter(Boolean).join("\n");
@@ -120,14 +120,14 @@ export function generarComprobante(form, negocio) {
     "",
     `📅 Día: ${form.dia}`,
     `🕐 Hora: ${form.hora}`,
-    `👥 Personas: ${form.personas}`,
+    (negocio.camposActivos?.personas !== false) && `👥 Personas: ${form.personas}`,
     "",
     `📞 Contacto: ${negocio.telefono}`,
     "",
     `_Guarda este mensaje como comprobante._`,
     `_La reserva queda confirmada cuando el negocio te responda._`,
   ];
-  return lineas.join("\n");
+  return lineas.filter(Boolean).join("\n");
 }
 
 export function generarLinkComprobante(form, negocio) {

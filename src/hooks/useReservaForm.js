@@ -7,7 +7,7 @@ import { enviarReserva, fetchReservasByFecha, SLUG } from "../lib/supabase";
 const FORM_INICIAL = {
   nombre: "",
   apellidos: "",
-  telefono: "",
+  telefono: "+34 ",
   email: "",
   hora: "",
   dia: "",
@@ -79,7 +79,10 @@ export function useReservaForm(configOverride = null) {
   useEffect(() => {
     try {
       const saved = localStorage.getItem(negocio.storageKey);
-      if (saved) setForm((prev) => ({ ...prev, ...JSON.parse(saved) }));
+      if (saved) {
+        const savedData = JSON.parse(saved);
+        setForm((prev) => ({ ...prev, ...savedData, telefono: savedData.telefono || FORM_INICIAL.telefono }));
+      }
     } catch {
       // ignorar
     }
@@ -140,7 +143,7 @@ export function useReservaForm(configOverride = null) {
 
   // Validaciones
   const nombreOk = form.nombre.trim().length >= 2;
-  const telefonoOk = /^\d{9,15}$/.test(form.telefono);
+  const telefonoOk = /^\+[1-9]\d{6,14}$/.test(form.telefono.replace(/[\s\-().]/g, ""));
   const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email);
   const diaOk = form.dia !== "" && !isDiaCerrado(form.dia, negocio.horarios, negocio.fechasBloqueadas ?? []);
   const horaOk = slots.includes(form.hora) && !horasOcupadas.has(form.hora);
@@ -177,7 +180,7 @@ export function useReservaForm(configOverride = null) {
     if (field === "nombre" || field === "apellidos") {
       value = rawValue.replace(/[^A-Za-záéíóúüñÁÉÍÓÚÜÑ\s]/g, "").replace(/\s{2,}/g, " ");
     } else if (field === "telefono") {
-      value = rawValue.replace(/[^\d]/g, "");
+      value = rawValue.replace(/[^\d\s+\-().]/g, "");
     }
 
     setForm((prev) => {

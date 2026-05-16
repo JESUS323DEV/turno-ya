@@ -56,29 +56,21 @@ export default function TabApariencia({ draft, setField, addTemaGuardado, remove
   const { dataTema, vars, gradient, bgImage } = getFormVars(draft.tema, draft.colorFondo, draft.colorAcento, draft.colorBorde);
 
   const selectTema = (id) => {
-    const ordenMap = {
-      todos: [temasOrden, setTemasOrden],
-      claro: [ordenClaro, setOrdenClaro],
-      oscuro: [ordenOscuro, setOrdenOscuro],
-      fondo: [ordenFondo, setOrdenFondo],
-    };
-    const [orden, setOrden] = ordenMap[categoriaTema] ?? [null, null];
-    if (orden) {
-      const isInGrid = orden.slice(0, 6).some(t => t.id === id);
-      if (!isInGrid) {
-        const oldIdx = orden.findIndex(t => t.id === draft.tema);
-        const targetIdx = (oldIdx >= 0 && oldIdx < 6) ? oldIdx : 0;
-        setOrden(prev => {
-          const next = [...prev];
-          const incomingIdx = next.findIndex(t => t.id === id);
-          if (incomingIdx === -1) return next;
-          [next[targetIdx], next[incomingIdx]] = [next[incomingIdx], next[targetIdx]];
-          return next;
-        });
-      }
-    }
     setField("tema", id);
     window.dispatchEvent(new CustomEvent("turno-ya:tema", { detail: { tema: id, colorFondo: draft.colorFondo, colorAcento: draft.colorAcento, colorBorde: draft.colorBorde } }));
+  };
+
+  const swapIntoGrid = (cat) => {
+    const setter = { todos: setTemasOrden, claro: setOrdenClaro, oscuro: setOrdenOscuro, fondo: setOrdenFondo }[cat];
+    if (!setter) return;
+    setter(prev => {
+      const next = [...prev];
+      if (next.slice(0, 6).some(t => t.id === draft.tema)) return next;
+      const idx = next.findIndex(t => t.id === draft.tema);
+      if (idx === -1) return next;
+      [next[0], next[idx]] = [next[idx], next[0]];
+      return next;
+    });
   };
 
   if (previewOnly) {
@@ -130,7 +122,7 @@ export default function TabApariencia({ draft, setField, addTemaGuardado, remove
           {verMasTemas && <div className="cfg-tema-grid">{temasOrden.slice(6).map(renderCard)}</div>}
           {temasOrden.length > 6 && (
             <button type="button" className="cfg-tema-vermás-btn"
-              onClick={() => setVerMasTemas(p => !p)}>
+              onClick={() => { if (verMasTemas) swapIntoGrid(categoriaTema); setVerMasTemas(p => !p); }}>
               {verMasTemas ? "Ver menos ↑" : `Ver todos · ${remaining} más ↓`}
             </button>
           )}
@@ -146,7 +138,7 @@ export default function TabApariencia({ draft, setField, addTemaGuardado, remove
           {verMasTemas && <div className="cfg-tema-grid">{ordenFondo.slice(6).map(renderCard)}</div>}
           {ordenFondo.length > 6 && (
             <button type="button" className="cfg-tema-vermás-btn"
-              onClick={() => setVerMasTemas(p => !p)}>
+              onClick={() => { if (verMasTemas) swapIntoGrid(categoriaTema); setVerMasTemas(p => !p); }}>
               {verMasTemas ? "Ver menos ↑" : `Ver todos · ${remaining} más ↓`}
             </button>
           )}
@@ -199,7 +191,7 @@ export default function TabApariencia({ draft, setField, addTemaGuardado, remove
                 ].map(({ id, label, icon }) => (
                   <button key={id} type="button"
                     className={`cfg-tema-cat-btn ${categoriaTema === id ? "cfg-tema-cat-btn--active" : ""}`}
-                    onClick={() => { setCategoriaTema(id); setVerMasTemas(false); }}>
+                    onClick={() => { swapIntoGrid(categoriaTema); setCategoriaTema(id); setVerMasTemas(false); }}>
                     {icon}{label}
                   </button>
                 ))}

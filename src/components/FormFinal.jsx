@@ -274,7 +274,7 @@ export default function FormFinal({ configOverride = null } = {}) {
                         type="tel"
                         name="telefono"
                         value={form.telefono}
-                        placeholder="688888888"
+                        placeholder="+34 688 888 888"
                         maxLength={15}
                         autoComplete="tel"
                         onChange={(e) => handleChange("telefono", e.target.value)}
