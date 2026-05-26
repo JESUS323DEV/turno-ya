@@ -5,6 +5,13 @@ const key = import.meta.env.VITE_SUPABASE_ANON_KEY;
 export const supabase = (url && key) ? createClient(url, key) : null;
 
 function getSlug() {
+  try {
+    const widgetEl = document.getElementById("reservaq");
+    if (widgetEl) {
+      const cfg = JSON.parse(widgetEl.getAttribute("data-config") || "{}");
+      if (cfg.slug) return cfg.slug.toLowerCase();
+    }
+  } catch {}
   const segments = window.location.pathname.replace(/^\//, "").replace(/\/$/, "").toLowerCase().split("/");
   return segments[0] || import.meta.env.VITE_NEGOCIO_SLUG || "negocio";
 }

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { getConfig, CONFIG_KEY } from "../config/negocio";
-import { saveConfig } from "../lib/supabase";
+import { saveConfig, SLUG } from "../lib/supabase";
 
 const DIAS = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
 
@@ -256,9 +256,8 @@ export function useAdminConfig() {
 
   const exportarWidget = () => {
     const config = getConfigFinal();
-    // El PIN no debe ir en el widget (es público)
     const { pinAdmin: _, storageKey: __, ...configPublica } = config;
-    return JSON.stringify(configPublica);
+    return JSON.stringify({ ...configPublica, slug: SLUG });
   };
 
   return {
