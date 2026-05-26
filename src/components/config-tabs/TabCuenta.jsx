@@ -9,7 +9,7 @@ export default function TabCuenta({ draft, setField, guardar, guardado, errorGua
 
   const copiarWidget = () => {
     const json = exportarWidget();
-    const snippet = `<div id="turno-ya" data-config='${json}'></div>\n<link rel="stylesheet" href="https://turnoya-demo.netlify.app/turno-ya.css">\n<script src="https://turnoya-demo.netlify.app/turno-ya.js"></script>`;
+    const snippet = `<div id="reservaq" data-config='${json}'></div>\n<link rel="stylesheet" href="https://turnoya-demo.netlify.app/reservaq.css">\n<script src="https://turnoya-demo.netlify.app/reservaq.js"></script>`;
     navigator.clipboard.writeText(snippet).then(() => {
       setCopiado(true);
       setTimeout(() => setCopiado(false), 2500);
@@ -17,7 +17,7 @@ export default function TabCuenta({ draft, setField, guardar, guardado, errorGua
   };
 
   const descargarQR = () => {
-    const svg = document.getElementById("turno-ya-qr");
+    const svg = document.getElementById("reservaq-qr");
     const canvas = document.createElement("canvas");
     canvas.width = 160; canvas.height = 160;
     const img = new Image();
@@ -155,7 +155,7 @@ export default function TabCuenta({ draft, setField, guardar, guardado, errorGua
           <div className="cfg-card cfg-card-mobile">
             <p className="cfg-hint">Imprímelo o compártelo para que tus clientes accedan directamente.</p>
             <div className="cfg-qr-wrapper">
-              <QRCodeSVG id="turno-ya-qr"
+              <QRCodeSVG id="reservaq-qr"
                 value={window.location.href.replace("#admin", "").replace("#", "") || window.location.origin}
                 size={160} level="M" />
             </div>

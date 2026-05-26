@@ -57,7 +57,7 @@ export default function TabApariencia({ draft, setField, addTemaGuardado, remove
 
   const selectTema = (id) => {
     setField("tema", id);
-    window.dispatchEvent(new CustomEvent("turno-ya:tema", { detail: { tema: id, colorFondo: draft.colorFondo, colorAcento: draft.colorAcento, colorBorde: draft.colorBorde } }));
+    window.dispatchEvent(new CustomEvent("reservaq:tema", { detail: { tema: id, colorFondo: draft.colorFondo, colorAcento: draft.colorAcento, colorBorde: draft.colorBorde } }));
   };
 
   const swapIntoGrid = (cat) => {
@@ -234,7 +234,7 @@ export default function TabApariencia({ draft, setField, addTemaGuardado, remove
                         setField("colorAcento", t.colorAcento);
                         setField("colorBorde", t.colorBorde);
                         setField("tema", "personalizado");
-                        window.dispatchEvent(new CustomEvent("turno-ya:tema", { detail: { tema: "personalizado", colorFondo: t.colorFondo, colorAcento: t.colorAcento, colorBorde: t.colorBorde } }));
+                        window.dispatchEvent(new CustomEvent("reservaq:tema", { detail: { tema: "personalizado", colorFondo: t.colorFondo, colorAcento: t.colorAcento, colorBorde: t.colorBorde } }));
                       }}>
                         <span className="cfg-favorito-dots">
                           <span style={{ background: t.colorFondo, border: `2px solid ${t.colorBorde}` }} />
@@ -255,7 +255,7 @@ export default function TabApariencia({ draft, setField, addTemaGuardado, remove
                     onChange={(e) => {
                       setField("colorFondo", e.target.value);
                       setField("tema", "personalizado");
-                      window.dispatchEvent(new CustomEvent("turno-ya:tema", { detail: { tema: "personalizado", colorFondo: e.target.value, colorAcento: draft.colorAcento, colorBorde: draft.colorBorde } }));
+                      window.dispatchEvent(new CustomEvent("reservaq:tema", { detail: { tema: "personalizado", colorFondo: e.target.value, colorAcento: draft.colorAcento, colorBorde: draft.colorBorde } }));
                     }} />
                   <span className="cfg-color-hex">{draft.colorFondo}</span>
                 </div>
@@ -267,7 +267,7 @@ export default function TabApariencia({ draft, setField, addTemaGuardado, remove
                     onChange={(e) => {
                       setField("colorAcento", e.target.value);
                       setField("tema", "personalizado");
-                      window.dispatchEvent(new CustomEvent("turno-ya:tema", { detail: { tema: "personalizado", colorFondo: draft.colorFondo, colorAcento: e.target.value, colorBorde: draft.colorBorde } }));
+                      window.dispatchEvent(new CustomEvent("reservaq:tema", { detail: { tema: "personalizado", colorFondo: draft.colorFondo, colorAcento: e.target.value, colorBorde: draft.colorBorde } }));
                     }} />
                   <span className="cfg-color-hex">{draft.colorAcento}</span>
                 </div>
@@ -279,7 +279,7 @@ export default function TabApariencia({ draft, setField, addTemaGuardado, remove
                     onChange={(e) => {
                       setField("colorBorde", e.target.value);
                       setField("tema", "personalizado");
-                      window.dispatchEvent(new CustomEvent("turno-ya:tema", { detail: { tema: "personalizado", colorFondo: draft.colorFondo, colorAcento: draft.colorAcento, colorBorde: e.target.value } }));
+                      window.dispatchEvent(new CustomEvent("reservaq:tema", { detail: { tema: "personalizado", colorFondo: draft.colorFondo, colorAcento: draft.colorAcento, colorBorde: e.target.value } }));
                     }} />
                   <span className="cfg-color-hex">{draft.colorBorde}</span>
                 </div>

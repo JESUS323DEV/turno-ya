@@ -8,14 +8,14 @@ export default defineConfig({
     emptyOutDir: false,
     lib: {
       entry: "src/widget.jsx",
-      name: "TurnoYA",
-      fileName: "turno-ya",
+      name: "Reservaq",
+      fileName: "reservaq",
       formats: ["iife"],
     },
     rollupOptions: {
       output: {
-        entryFileNames: "turno-ya.js",
-        assetFileNames: "turno-ya.[ext]",
+        entryFileNames: "reservaq.js",
+        assetFileNames: "reservaq.[ext]",
       },
     },
   },

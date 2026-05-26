@@ -23,7 +23,7 @@ export const NEGOCIO_DEFAULT = {
   mostrarPanelAyuda: true,   // mostrar columna/btn de ayuda en el formulario
   whatsapp: "34695078648",   // sin espacios ni +
   telefono: "+34695078648",  // con prefijo para el enlace tel:
-  storageKey: "turno_ya_reserva",
+  storageKey: "reservaq_reserva",
   pinAdmin: "1234",
   minPersonas: 1,
   maxPersonas: 20,
@@ -115,15 +115,15 @@ Este sitio web ha sido desarrollado con la plataforma Reservaq (www.reservaq.com
   },
 };
 
-export const CONFIG_KEY = "turno_ya_config";
+export const CONFIG_KEY = "reservaq_config";
 
 /** Lee la config en este orden: widget > localStorage > defaults.
  *  La config de Supabase se carga al iniciar la app en main.jsx
  *  y se guarda en localStorage como caché. */
 export function getConfig() {
   // 1. Config inyectada por el widget (data-config attribute)
-  if (window.__TURNO_YA_CONFIG__) {
-    return { ...NEGOCIO_DEFAULT, ...window.__TURNO_YA_CONFIG__ };
+  if (window.__RESERVAQ_CONFIG__) {
+    return { ...NEGOCIO_DEFAULT, ...window.__RESERVAQ_CONFIG__ };
   }
   // 2. Config cacheada (viene de Supabase o del admin)
   try {

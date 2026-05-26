@@ -16,7 +16,7 @@ export default function LoginPanel() {
   const { pin, setPin, autenticado, pinError, verificarPin } = adminConfig;
   const [seccion, setSeccion] = useState(null);
 
-  const temaPanel = localStorage.getItem("turno-ya-tema-panel") || "claro";
+  const temaPanel = localStorage.getItem("reservaq-tema-panel") || "claro";
   const panelVars = getPanelVars(temaPanel);
 
   useEffect(() => {

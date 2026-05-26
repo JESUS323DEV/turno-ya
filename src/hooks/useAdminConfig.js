@@ -244,7 +244,7 @@ export function useAdminConfig() {
       await saveConfig(configFinal, pin);
       localStorage.setItem(CONFIG_KEY, JSON.stringify(configFinal));
       window.dispatchEvent(new StorageEvent("storage", { key: CONFIG_KEY }));
-      window.dispatchEvent(new CustomEvent("turno-ya:tema", { detail: configFinal }));
+      window.dispatchEvent(new CustomEvent("reservaq:tema", { detail: configFinal }));
       setPin(configFinal.pinAdmin);
       setErrorGuardado("");
       setGuardado(true);

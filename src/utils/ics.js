@@ -26,12 +26,12 @@ export function descargarIcs(form, negocio) {
   const duracion = negocio.slotInterval ?? 30;
   const dtStart = toIcsDate(form.dia, form.hora);
   const dtEnd = addMinutes(form.dia, form.hora, duracion);
-  const uid = `turno-ya-${Date.now()}@turno-ya`;
+  const uid = `reservaq-${Date.now()}@reservaq`;
 
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//TurnoYA//ES",
+    "PRODID:-//Reservaq//ES",
     "BEGIN:VEVENT",
     `UID:${uid}`,
     `DTSTART:${dtStart}`,

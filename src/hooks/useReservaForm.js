@@ -58,7 +58,7 @@ export function useReservaForm(configOverride = null) {
       if (e.key === CONFIG_KEY) {
         const newConfig = getConfig();
         setNegocio(newConfig);
-        window.dispatchEvent(new CustomEvent("turno-ya:tema", { detail: newConfig }));
+        window.dispatchEvent(new CustomEvent("reservaq:tema", { detail: newConfig }));
       }
     };
     window.addEventListener("storage", handler);

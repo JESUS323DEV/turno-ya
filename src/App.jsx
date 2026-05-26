@@ -35,7 +35,7 @@ function applyTema({ tema, colorFondo, colorAcento, colorBorde } = {}) {
   FORM_VARS.forEach(v => root.style.removeProperty(v));
   root.removeAttribute("data-tema");
 
-  const formEl = document.getElementById("turno-ya-form");
+  const formEl = document.getElementById("reservaq-form");
   if (!formEl) {
     document.body.style.removeProperty("background-color");
     return;
@@ -112,8 +112,8 @@ function App() {
 
   useEffect(() => {
     const onTema = (e) => { if (vista === "reserva") applyTema(e.detail); };
-    window.addEventListener("turno-ya:tema", onTema);
-    return () => window.removeEventListener("turno-ya:tema", onTema);
+    window.addEventListener("reservaq:tema", onTema);
+    return () => window.removeEventListener("reservaq:tema", onTema);
   }, [vista]);
 
   useEffect(() => {
@@ -129,7 +129,7 @@ function App() {
   if (subpage === "privacidad") return <PrivacidadPage />;
   if (subpage === "legal") return <LegalPage />;
   if (vista === "admin") return <LoginPanel />;
-  return <div id="turno-ya-form"><FormFinal /></div>;
+  return <div id="reservaq-form"><FormFinal /></div>;
 }
 
 export default App;

@@ -64,7 +64,7 @@ export default function ReservasPanel({ pin, onBack, draft = {} }) {
   const [ultimaActualizacion, setUltimaActualizacion] = useState(null);
   const [paginaPanel, setPaginaPanel] = useState(1);
   const [tabFecha, setTabFecha] = useState("hoy");
-  const [temaPanel, setTemaPanel] = useState(() => localStorage.getItem("turno-ya-tema-panel") || "claro");
+  const [temaPanel, setTemaPanel] = useState(() => localStorage.getItem("reservaq-tema-panel") || "claro");
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuPos, setMenuPos] = useState({ top: 0, left: 0 });
   const avatarBtnRef = useRef(null);
@@ -80,7 +80,7 @@ export default function ReservasPanel({ pin, onBack, draft = {} }) {
     setMenuOpen(p => !p);
   };
   const aplicarTemaPanel = (id) => {
-    localStorage.setItem("turno-ya-tema-panel", id);
+    localStorage.setItem("reservaq-tema-panel", id);
     setTemaPanel(id);
     closeMenu();
   };

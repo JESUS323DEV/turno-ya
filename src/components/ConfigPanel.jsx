@@ -68,7 +68,7 @@ export default function ConfigPanel({ config, onBack }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [menuPos, setMenuPos] = useState({ top: 0, left: 0 });
-  const [temaPanel, setTemaPanel] = useState(() => localStorage.getItem("turno-ya-tema-panel") || "claro");
+  const [temaPanel, setTemaPanel] = useState(() => localStorage.getItem("reservaq-tema-panel") || "claro");
   const [cuentaOpen, setCuentaOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [headerH, setHeaderH] = useState(0);
@@ -85,7 +85,7 @@ export default function ConfigPanel({ config, onBack }) {
     }
     setMenuOpen(p => !p);
   };
-  const aplicarTemaPanel = (id) => { setTemaPanel(id); localStorage.setItem("turno-ya-tema-panel", id); closeMenu(); };
+  const aplicarTemaPanel = (id) => { setTemaPanel(id); localStorage.setItem("reservaq-tema-panel", id); closeMenu(); };
 
   useEffect(() => {
     const bg = getPanelVars(temaPanel)["--bg"] || "";

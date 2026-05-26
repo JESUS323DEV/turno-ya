@@ -31,7 +31,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  #turno-ya-form:not([data-tema="claro"]) {
+  #reservaq-form:not([data-tema="claro"]) {
     --text: #9ca3af;
     --text-h: #f3f4f6;
     --bg: #16171d;
@@ -85,7 +85,7 @@ body {
   box-sizing: border-box;
 }
 
-#turno-ya-form {
+#reservaq-form {
   flex: 1;
   background-color: transparent;
   background-size: cover;

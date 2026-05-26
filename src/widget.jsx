@@ -6,11 +6,11 @@ import { TEMAS } from "./config/temas";
 
 /* ── CSS vars base inyectados en <head> (sin contaminar el host con body/root resets) ── */
 function injectWidgetStyles() {
-  if (document.getElementById("turno-ya-styles")) return;
+  if (document.getElementById("reservaq-styles")) return;
   const s = document.createElement("style");
-  s.id = "turno-ya-styles";
+  s.id = "reservaq-styles";
   s.textContent = `
-    #turno-ya-form {
+    #reservaq-form {
       --text: #6b6375; --text-h: #08060d; --bg: #fff; --border: #e5e4e7;
       --code-bg: #f4f3ec; --accent: #aa3bff; --accent-bg: rgba(170,59,255,.1);
       --accent-border: rgba(170,59,255,.5); --btn-text: #fff;
@@ -21,7 +21,7 @@ function injectWidgetStyles() {
       color: var(--text); -webkit-font-smoothing: antialiased;
     }
     @media (prefers-color-scheme: dark) {
-      #turno-ya-form:not([data-tema="claro"]) {
+      #reservaq-form:not([data-tema="claro"]) {
         --text: #9ca3af; --text-h: #f3f4f6; --bg: #16171d; --border: #2e303a;
         --code-bg: #1f2028; --accent: #c084fc;
         --accent-bg: rgba(192,132,252,.15); --accent-border: rgba(192,132,252,.5);
@@ -46,10 +46,10 @@ function _rgba(hex, a) {
   return `rgba(${r},${g},${b},${a})`;
 }
 
-/* ── Aplica el tema de la config al elemento #turno-ya-form ── */
+/* ── Aplica el tema de la config al elemento #reservaq-form ── */
 function applyTema({ tema, colorFondo, colorAcento, colorBorde } = {}) {
   const VARS = ["--bg","--accent","--accent-bg","--accent-border","--border","--border-input","--text","--text-h","--btn-text"];
-  const el = document.getElementById("turno-ya-form");
+  const el = document.getElementById("reservaq-form");
   if (!el) return;
   VARS.forEach(v => el.style.removeProperty(v));
   el.removeAttribute("data-tema");
@@ -87,12 +87,12 @@ function applyTema({ tema, colorFondo, colorAcento, colorBorde } = {}) {
 /* ── Componente raíz del widget ── */
 function WidgetRoot() {
   useEffect(() => { applyTema(getConfig()); }, []);
-  return <div id="turno-ya-form"><FormFinal /></div>;
+  return <div id="reservaq-form"><FormFinal /></div>;
 }
 
-/* ── Auto-init al encontrar <div id="turno-ya" data-config='...'> ── */
+/* ── Auto-init al encontrar <div id="reservaq" data-config='...'> ── */
 (function () {
-  const el = document.getElementById("turno-ya");
+  const el = document.getElementById("reservaq");
   if (!el) return;
 
   injectWidgetStyles();
@@ -100,9 +100,9 @@ function WidgetRoot() {
   const raw = el.getAttribute("data-config");
   if (raw) {
     try {
-      window.__TURNO_YA_CONFIG__ = JSON.parse(raw);
+      window.__RESERVAQ_CONFIG__ = JSON.parse(raw);
     } catch {
-      console.warn("[TurnoYA] data-config inválido, usando config por defecto.");
+      console.warn("[Reservaq] data-config inválido, usando config por defecto.");
     }
   }
 

@@ -3,13 +3,13 @@
   
 </p>
 
-<h1 align="center">TurnoYa</h1>
+<h1 align="center">Reservaq</h1>
 
 <p align="center">
   Sistema de reservas configurable para negocios reales
 </p>
 
-TurnoYa permite crear formularios de reserva personalizados con branding dinámico, panel de configuración, gestión de reservas y soporte multi-negocio usando rutas por slug.
+Reservaq permite crear formularios de reserva personalizados con branding dinámico, panel de configuración, gestión de reservas y soporte multi-negocio usando rutas por slug.
 
 ---
 
@@ -75,7 +75,7 @@ TurnoYa permite crear formularios de reserva personalizados con branding dinámi
 | Integración WhatsApp | ✅ |
 | Emails automáticos | ✅ |
 | Toggle confirmación por email al cliente | ✅ |
-| Polling en tiempo real | ✅ |
+| Notificaciones de reservas pendientes en tiempo real | ✅ |
 
 ### Legal y compliance
 
@@ -167,7 +167,7 @@ TurnoYa permite crear formularios de reserva personalizados con branding dinámi
 
 # Concepto del proyecto
 
-La idea principal de TurnoYa es ofrecer un sistema de reservas flexible y visualmente configurable para pequeños negocios.
+La idea principal de Reservaq es ofrecer un sistema de reservas flexible y visualmente configurable para pequeños negocios.
 
 Cada negocio puede:
 
@@ -191,7 +191,7 @@ La app está dividida en 3 sistemas principales:
 
 ## 1. Formulario público
 
-`ReservaWhatsApp.jsx`
+`FormFinal.jsx`
 
 Sistema principal de reservas.
 
@@ -251,7 +251,7 @@ Gestión operativa de reservas.
 ### Características
 
 - reservas en vivo
-- polling automático
+- reservas pendientes persistentes
 - confirmación/cancelación
 - estados
 - filtros
@@ -291,7 +291,7 @@ Todo usando la misma app.
 
 ## Prioridad de config
 
-1. `window.__TURNO_YA_CONFIG__`
+1. `window.__RESERVAQ_CONFIG__`
 2. `localStorage`
 3. `NEGOCIO_DEFAULT`
 
@@ -301,7 +301,7 @@ La config siempre hace merge con defaults para evitar campos undefined en config
 
 # Sistema de temas
 
-TurnoYa incluye:
+Reservaq incluye:
 
 - temas claros
 - temas oscuros
@@ -332,18 +332,6 @@ backgroundImage = `
   url(...)
 `
 ```
-
-Y:
-
-```js
-backgroundSize = "100% 100%"
-backgroundRepeat = "no-repeat"
-backgroundPosition = "center top"
-```
-
-para mantener fondos completos responsive sin mosaicos ni cortes visibles.
-
-`
 
 Y:
 
@@ -495,7 +483,7 @@ created_at
 
 # Widget embebido
 
-Sistema pensado para incrustar TurnoYa en webs externas.
+Sistema pensado para incrustar Reservaq en webs externas.
 
 ## Características
 
@@ -514,7 +502,8 @@ Arquitectura completamente mobile-first.
 ## Archivos
 
 - `Responsive.css`
-- `ResponsivePanel.css`
+- `responsiveConfigPanel.css`
+- `responsiveReservasPanel.css`
 
 El formulario y panel funcionan tanto en móvil como desktop.
 
@@ -522,7 +511,7 @@ El formulario y panel funcionan tanto en móvil como desktop.
 
 # Estado actual del proyecto
 
-Actualmente TurnoYa ya incluye:
+Actualmente Reservaq ya incluye:
 
 - sistema de reservas funcional
 - confirmación/cancelación real
