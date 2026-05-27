@@ -97,7 +97,7 @@ export async function accionReserva(id, accion, pin, slug) {
 }
 
 /** Envía la reserva por email via Edge Function. */
-export async function enviarReserva(form, slug) {
+export async function enviarReserva(form, slug, perfil = "reserva") {
   if (!url || !key) throw new Error("Supabase no configurado");
   const res = await fetch(
     `${url}/functions/v1/enviar-reserva`,
@@ -108,7 +108,7 @@ export async function enviarReserva(form, slug) {
         "apikey": key,
         "Authorization": `Bearer ${key}`,
       },
-      body: JSON.stringify({ form, slug }),
+      body: JSON.stringify({ form, slug, perfil }),
     }
   );
   const json = await res.json();

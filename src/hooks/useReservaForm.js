@@ -228,7 +228,7 @@ export function useReservaForm(configOverride = null) {
       setEnviando(true);
       setErrorEnvio("");
       try {
-        await enviarReserva(form, SLUG);
+        await enviarReserva(form, SLUG, negocio.perfil ?? "reserva");
         try { localStorage.setItem(negocio.storageKey, JSON.stringify(form)); } catch { /* ignorar */ }
         setEnviado(true);
       } catch {
