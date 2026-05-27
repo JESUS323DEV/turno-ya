@@ -60,6 +60,9 @@ export default function ReservasPanel({ pin, onBack, draft = {} }) {
   const [busqueda, setBusqueda] = useState("");
   const [filtroServicio, setFiltroServicio] = useState("todos");
   const [filtroPersonas, setFiltroPersonas] = useState("todos");
+  const [busquedaConsultas, setBusquedaConsultas] = useState("");
+  const [filtroEstadoConsultas, setFiltroEstadoConsultas] = useState("todas");
+  const [filtroServicioConsultas, setFiltroServicioConsultas] = useState("todos");
   const [modalDetalle, setModalDetalle] = useState(null);
   const [ultimaActualizacion, setUltimaActualizacion] = useState(null);
   const [paginaPanel, setPaginaPanel] = useState(1);
@@ -117,6 +120,18 @@ export default function ReservasPanel({ pin, onBack, draft = {} }) {
   const pendientes = reservasMock.filter(r => r.fecha && r.estado === "pendiente").sort((a, b) => a.fecha.localeCompare(b.fecha));
   const pendientesReservas = pendientes.length;
   const pendientesConsultas = consultas.filter(r => r.estado === "pendiente").length;
+  const serviciosEnConsultas = [...new Set(consultas.map(r => r.servicio).filter(Boolean))];
+  const consultasFiltradas = consultas.filter(r => {
+    if (filtroEstadoConsultas !== "todas" && r.estado !== filtroEstadoConsultas) return false;
+    if (filtroServicioConsultas !== "todos" && r.servicio !== filtroServicioConsultas) return false;
+    if (busquedaConsultas) {
+      const q = busquedaConsultas.toLowerCase();
+      if (!r.nombre?.toLowerCase().includes(q) && !r.telefono?.includes(busquedaConsultas)) return false;
+    }
+    return true;
+  });
+  const hayFiltrosConsultas = busquedaConsultas !== "" || filtroEstadoConsultas !== "todas" || filtroServicioConsultas !== "todos";
+  const limpiarFiltrosConsultas = () => { setBusquedaConsultas(""); setFiltroEstadoConsultas("todas"); setFiltroServicioConsultas("todos"); };
   const historialPorFecha = reservasHistorial.reduce((acc, r) => {
     if (!acc[r.fecha]) acc[r.fecha] = [];
     acc[r.fecha].push(r);
@@ -434,10 +449,36 @@ export default function ReservasPanel({ pin, onBack, draft = {} }) {
             {/* ── TAB: CONSULTAS ── */}
             {tab === "consultas" && (
               <div className="panel-v2">
-                {consultas.length === 0 ? (
-                  <p className="res-hint res-hint--center">Sin consultas.</p>
+                <div className="panel-v2-toolbar">
+                  <div className="panel-v2-search-wrap">
+                    <Search size={14} className="panel-v2-search-icon" />
+                    <input type="text" className="panel-v2-search" placeholder="Buscar por nombre o teléfono..."
+                      value={busquedaConsultas} onChange={(e) => setBusquedaConsultas(e.target.value)} />
+                  </div>
+                  <div className="panel-v2-filters-row">
+                    <select className="panel-v2-select" value={filtroEstadoConsultas} onChange={(e) => setFiltroEstadoConsultas(e.target.value)}>
+                      <option value="todas">Estado: Todos</option>
+                      <option value="pendiente">Pendiente</option>
+                      <option value="confirmada">Confirmada</option>
+                      <option value="cancelada">Cancelada</option>
+                    </select>
+                    <select className="panel-v2-select" value={filtroServicioConsultas} onChange={(e) => setFiltroServicioConsultas(e.target.value)}>
+                      <option value="todos">Servicio: Todos</option>
+                      {serviciosEnConsultas.map(s => <option key={s} value={s}>{s}</option>)}
+                    </select>
+                    {hayFiltrosConsultas && (
+                      <button type="button" className="panel-v2-clear" onClick={limpiarFiltrosConsultas}>
+                        Limpiar filtros
+                      </button>
+                    )}
+                  </div>
+                </div>
+                {consultasFiltradas.length === 0 ? (
+                  <p className="res-hint res-hint--center">
+                    {hayFiltrosConsultas ? "No hay consultas con esos filtros." : "Sin consultas."}
+                  </p>
                 ) : (
-                  <div className="panel-v2-lista">{consultas.map(renderConsultaCard)}</div>
+                  <div className="panel-v2-lista">{consultasFiltradas.map(renderConsultaCard)}</div>
                 )}
               </div>
             )}
