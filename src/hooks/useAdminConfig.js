@@ -73,6 +73,7 @@ export function useAdminConfig() {
     perfil: config.perfil ?? "reserva",
     googleCalendarLink: config.googleCalendarLink ?? false,
     modoEnvio: config.modoEnvio ?? "whatsapp",
+    perfilEmail: config.perfilEmail ?? "reserva",
     emailNegocio: config.emailNegocio ?? "",
     emailConfirmacion: config.emailConfirmacion ?? false,
     encabezadoMensaje: config.encabezadoMensaje ?? "🍽️ *Nueva Reserva*",

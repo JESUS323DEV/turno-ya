@@ -91,6 +91,21 @@ export default function TabCuenta({ draft, setField, guardar, guardado, errorGua
                     <span className="cfg-toggle-track" />
                   </label>
                 </div>
+                <label className="cfg-label">
+                  <span>Tipo de formulario</span>
+                  <div className="cfg-tema-selector">
+                    <button type="button"
+                      className={`cfg-tema-btn ${(draft.perfilEmail ?? "reserva") === "reserva" ? "cfg-tema-btn--active" : ""}`}
+                      onClick={() => setField("perfilEmail", "reserva")}>
+                      Reserva
+                    </button>
+                    <button type="button"
+                      className={`cfg-tema-btn ${(draft.perfilEmail ?? "reserva") === "consulta" ? "cfg-tema-btn--active" : ""}`}
+                      onClick={() => setField("perfilEmail", "consulta")}>
+                      Consulta
+                    </button>
+                  </div>
+                </label>
               </>
             ) : (
               <label className="cfg-label">
