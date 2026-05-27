@@ -113,7 +113,7 @@ export default function ReservasPanel({ pin, onBack, draft = {} }) {
   // ── Historial ────────────────────────────────────────────────────────────────
   const reservasHoy = reservasMock.filter(r => r.fecha >= hoyStr);
   const reservasHistorial = reservasMock.filter(r => r.fecha && r.fecha < hoyStr && (r.estado === "confirmada" || r.estado === "cancelada"));
-  const consultas = reservasMock.filter(r => (r.perfil ?? "reserva") === "consulta");
+  const consultas = reservasMock.filter(r => !r.fecha || r.fecha === "");
   const pendientes = reservasMock.filter(r => r.fecha && r.estado === "pendiente").sort((a, b) => a.fecha.localeCompare(b.fecha));
   const pendientesReservas = pendientes.length;
   const pendientesConsultas = consultas.filter(r => r.estado === "pendiente").length;
