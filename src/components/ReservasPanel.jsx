@@ -63,6 +63,7 @@ export default function ReservasPanel({ pin, onBack, draft = {} }) {
   const [busquedaConsultas, setBusquedaConsultas] = useState("");
   const [filtroEstadoConsultas, setFiltroEstadoConsultas] = useState("todas");
   const [filtroServicioConsultas, setFiltroServicioConsultas] = useState("todos");
+  const [tabConsultas, setTabConsultas] = useState("sin-fecha");
   const [modalDetalle, setModalDetalle] = useState(null);
   const [ultimaActualizacion, setUltimaActualizacion] = useState(null);
   const [paginaPanel, setPaginaPanel] = useState(1);
@@ -114,12 +115,14 @@ export default function ReservasPanel({ pin, onBack, draft = {} }) {
   }, []);
 
   // ── Historial ────────────────────────────────────────────────────────────────
-  const reservasHoy = reservasMock.filter(r => r.fecha >= hoyStr);
-  const reservasHistorial = reservasMock.filter(r => r.fecha && r.fecha < hoyStr && (r.estado === "confirmada" || r.estado === "cancelada"));
-  const consultas = reservasMock.filter(r => !r.fecha || r.fecha === "");
-  const pendientes = reservasMock.filter(r => r.fecha && r.estado === "pendiente").sort((a, b) => a.fecha.localeCompare(b.fecha));
+  const esConsulta = (r) => (r.perfil ?? "") === "consulta" || (!r.fecha || r.fecha === "");
+  const reservasHoy = reservasMock.filter(r => !esConsulta(r) && r.fecha >= hoyStr);
+  const reservasHistorial = reservasMock.filter(r => !esConsulta(r) && r.fecha && r.fecha < hoyStr && (r.estado === "confirmada" || r.estado === "cancelada"));
+  const consultas = reservasMock.filter(esConsulta);
+  const pendientes = reservasMock.filter(r => !esConsulta(r) && r.fecha && r.estado === "pendiente").sort((a, b) => a.fecha.localeCompare(b.fecha));
   const pendientesReservas = pendientes.length;
-  const pendientesConsultas = consultas.filter(r => r.estado === "pendiente").length;
+  const pendientesConsultasList = consultas.filter(r => r.estado === "pendiente");
+  const pendientesConsultas = pendientesConsultasList.length;
   const serviciosEnConsultas = [...new Set(consultas.map(r => r.servicio).filter(Boolean))];
   const consultasFiltradas = consultas.filter(r => {
     if (filtroEstadoConsultas !== "todas" && r.estado !== filtroEstadoConsultas) return false;
@@ -130,6 +133,11 @@ export default function ReservasPanel({ pin, onBack, draft = {} }) {
     }
     return true;
   });
+  const consultasSinFecha = consultasFiltradas.filter(r => !r.fecha || r.fecha === "");
+  const consultasConFecha = consultasFiltradas.filter(r => r.fecha && r.fecha !== "");
+  const countConsultasHoy = consultasConFecha.filter(r => r.fecha === hoyStr).length;
+  const countConsultasManana = consultasConFecha.filter(r => r.fecha === mananaStr).length;
+  const countConsultasProximos = consultasConFecha.filter(r => r.fecha >= pasadoMananaStr).length;
   const hayFiltrosConsultas = busquedaConsultas !== "" || filtroEstadoConsultas !== "todas" || filtroServicioConsultas !== "todos";
   const limpiarFiltrosConsultas = () => { setBusquedaConsultas(""); setFiltroEstadoConsultas("todas"); setFiltroServicioConsultas("todos"); };
   const historialPorFecha = reservasHistorial.reduce((acc, r) => {
@@ -140,11 +148,12 @@ export default function ReservasPanel({ pin, onBack, draft = {} }) {
   const fechasHistorial = Object.keys(historialPorFecha).sort((a, b) => b.localeCompare(a));
 
   // ── Panel filtros ────────────────────────────────────────────────────────────
-  const serviciosEnReservas = [...new Set(reservasMock.map(r => r.servicio).filter(Boolean))];
+  const serviciosEnReservas = [...new Set(reservasMock.filter(r => !esConsulta(r)).map(r => r.servicio).filter(Boolean))];
   const hayFiltros = busqueda !== "" || filtroPanel !== "todas" || filtroServicio !== "todos" || filtroPersonas !== "todos";
   const limpiarFiltros = () => { setBusqueda(""); setFiltroPanel("todas"); setFiltroServicio("todos"); setFiltroPersonas("todos"); };
 
   const reservasPanelV2 = reservasMock.filter(r => {
+    if (esConsulta(r)) return false;
     if (!r.fecha || r.fecha < hoyStr) return false;
     if (filtroPanel !== "todas" && r.estado !== filtroPanel) return false;
     if (busqueda) {
@@ -449,6 +458,37 @@ export default function ReservasPanel({ pin, onBack, draft = {} }) {
             {/* ── TAB: CONSULTAS ── */}
             {tab === "consultas" && (
               <div className="panel-v2">
+                {pendientesConsultasList.length > 0 && (
+                  <div className="notif-nueva">
+                    <div className="notif-nueva-header">
+                      <span className="notif-nueva-titulo">🔔 {pendientesConsultasList.length === 1 ? "1 consulta pendiente" : `${pendientesConsultasList.length} consultas pendientes`}</span>
+                    </div>
+                    {pendientesConsultasList.map(r => (
+                      <div key={r.id} className="notif-nueva-card">
+                        <div className="notif-nueva-fila">
+                          <span className="pv2-nombre">{r.nombre}</span>
+                          {r.hora && <span className="pv2-hora">{r.hora}</span>}
+                        </div>
+                        {(r.fecha || r.servicio) && (
+                          <div className="notif-nueva-fila">
+                            {r.servicio && <span className="panel-v2-card-meta">{r.servicio}</span>}
+                            {r.fecha && <span className="panel-v2-card-meta">📅 {r.fecha.split("-").reverse().join("/")}</span>}
+                          </div>
+                        )}
+                        <div className="panel-card-tel">
+                          <a href={`tel:${r.telefono}`} className="panel-v2-tel">{r.telefono}</a>
+                          <a href={`https://wa.me/${(r.telefono || "").replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer">
+                            <img src={iconWa} alt="WA" className="panel-wa-icon" />
+                          </a>
+                        </div>
+                        <div className="panel-card-actions">
+                          <button type="button" className="panel-btn-confirmar" onClick={() => cambiarEstado(r.id, "confirmada")}>Confirmar</button>
+                          <button type="button" className="panel-btn-cancelar" onClick={() => cambiarEstado(r.id, "cancelada")}>Cancelar</button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
                 <div className="panel-v2-toolbar">
                   <div className="panel-v2-search-wrap">
                     <Search size={14} className="panel-v2-search-icon" />
@@ -473,13 +513,31 @@ export default function ReservasPanel({ pin, onBack, draft = {} }) {
                     )}
                   </div>
                 </div>
-                {consultasFiltradas.length === 0 ? (
-                  <p className="res-hint res-hint--center">
-                    {hayFiltrosConsultas ? "No hay consultas con esos filtros." : "Sin consultas."}
-                  </p>
-                ) : (
-                  <div className="panel-v2-lista">{consultasFiltradas.map(renderConsultaCard)}</div>
-                )}
+                <div className="panel-v2-tabs-fecha">
+                  {[
+                    { key: "sin-fecha", label: "Sin fecha", count: consultasSinFecha.filter(r => r.estado === "pendiente").length },
+                    { key: "hoy", label: "Hoy", count: countConsultasHoy },
+                    { key: "manana", label: "Mañana", count: countConsultasManana },
+                    { key: "proximos", label: "Próximos días", count: countConsultasProximos },
+                  ].map(({ key, label, count }) => (
+                    <button key={key} type="button"
+                      className={`panel-v2-tab-fecha ${tabConsultas === key ? "panel-v2-tab-fecha--active" : ""}`}
+                      onClick={() => setTabConsultas(key)}>
+                      {label}
+                      {count > 0 && <span className="panel-v2-tab-badge">{count}</span>}
+                    </button>
+                  ))}
+                </div>
+                {(() => {
+                  let lista;
+                  if (tabConsultas === "sin-fecha") lista = consultasSinFecha;
+                  else if (tabConsultas === "hoy") lista = consultasConFecha.filter(r => r.fecha === hoyStr);
+                  else if (tabConsultas === "manana") lista = consultasConFecha.filter(r => r.fecha === mananaStr);
+                  else lista = consultasConFecha.filter(r => r.fecha >= pasadoMananaStr);
+                  return lista.length === 0
+                    ? <p className="res-hint res-hint--center">{hayFiltrosConsultas ? "No hay consultas con esos filtros." : "Sin consultas."}</p>
+                    : <div className="panel-v2-lista">{lista.map(renderConsultaCard)}</div>;
+                })()}
               </div>
             )}
 
