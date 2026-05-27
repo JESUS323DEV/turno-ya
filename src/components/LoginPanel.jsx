@@ -93,7 +93,11 @@ export default function LoginPanel() {
 
   // ── 3. Paneles (autenticado + sección elegida) ─────────────────────────────
   if (seccion === "reservas") {
-    return <ReservasPanel pin={pin} onBack={() => setSeccion(null)} draft={adminConfig.draft} />;
+    return <ReservasPanel pin={pin} onBack={() => setSeccion(null)} onCuenta={() => setSeccion("cuenta")} draft={adminConfig.draft} />;
+  }
+
+  if (seccion === "cuenta") {
+    return <ConfigPanel config={adminConfig} onBack={() => setSeccion("reservas")} openCuenta={true} onCuentaClose={() => setSeccion("reservas")} />;
   }
 
   return <ConfigPanel config={adminConfig} onBack={() => setSeccion(null)} />;

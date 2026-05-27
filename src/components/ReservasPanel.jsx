@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { Search, Users, User, Settings, FlaskConical, ScrollText, ArrowLeft } from "lucide-react";
+import { Search, Users, User, Settings, FlaskConical, ScrollText, ArrowLeft, Bell, CalendarDays, Mail, Eye, Trash2, Check, X, Clock, Phone, MoreVertical, MessageSquare } from "lucide-react";
 import iconWa from "../assets/icon-whatsapp.png";
 import { fetchReservas, accionReserva, SLUG } from "../lib/supabase";
 import { getPanelVars, TEMAS_PANEL } from "../config/temasPanel";
@@ -51,7 +51,7 @@ function MenuContent({ draft, temaPanel, aplicarTemaPanel, onCuenta, onBack }) {
 const TABS = { panel: "Reservas", consultas: "Consultas", historial: "Historial" };
 const POR_PAGINA = 10;
 
-export default function ReservasPanel({ pin, onBack, draft = {} }) {
+export default function ReservasPanel({ pin, onBack, onCuenta, draft = {} }) {
   const [tab, setTab] = useState("panel");
   const [reservasMock, setReservasMock] = useState([]);
   const [filtroPanel, setFiltroPanel] = useState("todas");
@@ -68,9 +68,14 @@ export default function ReservasPanel({ pin, onBack, draft = {} }) {
   const [ultimaActualizacion, setUltimaActualizacion] = useState(null);
   const [paginaPanel, setPaginaPanel] = useState(1);
   const [tabFecha, setTabFecha] = useState("hoy");
+  const [tabHistorial, setTabHistorial] = useState("reservas");
+  const [filtroHistorialReservas, setFiltroHistorialReservas] = useState("todas");
+  const [filtroHistorialConsultas, setFiltroHistorialConsultas] = useState("todas");
   const [temaPanel, setTemaPanel] = useState(() => localStorage.getItem("reservaq-tema-panel") || "claro");
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuPos, setMenuPos] = useState({ top: 0, left: 0 });
+  const [menuCardId, setMenuCardId] = useState(null);
+  const [expandedMsgId, setExpandedMsgId] = useState(null);
   const avatarBtnRef = useRef(null);
 
   const panelVars = getPanelVars(temaPanel);
@@ -116,9 +121,26 @@ export default function ReservasPanel({ pin, onBack, draft = {} }) {
 
   // ── Historial ────────────────────────────────────────────────────────────────
   const esConsulta = (r) => (r.perfil ?? "") === "consulta" || (!r.fecha || r.fecha === "");
-  const reservasHoy = reservasMock.filter(r => !esConsulta(r) && r.fecha >= hoyStr);
-  const reservasHistorial = reservasMock.filter(r => !esConsulta(r) && r.fecha && r.fecha < hoyStr && (r.estado === "confirmada" || r.estado === "cancelada"));
-  const consultas = reservasMock.filter(esConsulta);
+  const minutosParaHistorial = draft.minutosParaHistorial ?? 120;
+  const estaEnHistorial = (r) => {
+    if (r.estado === "eliminada") return true;
+    if (r.estado === "pendiente") return false;
+    const umbralMs = minutosParaHistorial * 60 * 1000;
+    const ahoraMs = ultimaActualizacion ? ultimaActualizacion.getTime() : 0;
+    if (!esConsulta(r)) {
+      if (!r.fecha || !r.hora) return false;
+      return (ahoraMs - new Date(`${r.fecha}T${r.hora}`).getTime()) >= umbralMs;
+    }
+    if (r.fecha && r.fecha !== "") {
+      const hora = r.hora || "00:00";
+      return (ahoraMs - new Date(`${r.fecha}T${hora}`).getTime()) >= umbralMs;
+    }
+    if (!r.created_at) return false;
+    return (ahoraMs - new Date(r.created_at).getTime()) >= umbralMs;
+  };
+  const reservasHistorial = reservasMock.filter(r => !esConsulta(r) && estaEnHistorial(r));
+  const consultasHistorial = reservasMock.filter(r => esConsulta(r) && estaEnHistorial(r)).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  const consultas = reservasMock.filter(r => esConsulta(r) && !estaEnHistorial(r));
   const pendientes = reservasMock.filter(r => !esConsulta(r) && r.fecha && r.estado === "pendiente").sort((a, b) => a.fecha.localeCompare(b.fecha));
   const pendientesReservas = pendientes.length;
   const pendientesConsultasList = consultas.filter(r => r.estado === "pendiente");
@@ -140,12 +162,18 @@ export default function ReservasPanel({ pin, onBack, draft = {} }) {
   const countConsultasProximos = consultasConFecha.filter(r => r.fecha >= pasadoMananaStr).length;
   const hayFiltrosConsultas = busquedaConsultas !== "" || filtroEstadoConsultas !== "todas" || filtroServicioConsultas !== "todos";
   const limpiarFiltrosConsultas = () => { setBusquedaConsultas(""); setFiltroEstadoConsultas("todas"); setFiltroServicioConsultas("todos"); };
-  const historialPorFecha = reservasHistorial.reduce((acc, r) => {
+  const reservasHistorialFiltradas = reservasHistorial.filter(r =>
+    filtroHistorialReservas === "todas" || r.estado === filtroHistorialReservas
+  );
+  const consultasHistorialFiltradas = consultasHistorial.filter(r =>
+    filtroHistorialConsultas === "todas" || r.estado === filtroHistorialConsultas
+  );
+  const historialPorFechaFiltrado = reservasHistorialFiltradas.reduce((acc, r) => {
     if (!acc[r.fecha]) acc[r.fecha] = [];
     acc[r.fecha].push(r);
     return acc;
   }, {});
-  const fechasHistorial = Object.keys(historialPorFecha).sort((a, b) => b.localeCompare(a));
+  const fechasHistorialFiltradas = Object.keys(historialPorFechaFiltrado).sort((a, b) => b.localeCompare(a));
 
   // ── Panel filtros ────────────────────────────────────────────────────────────
   const serviciosEnReservas = [...new Set(reservasMock.filter(r => !esConsulta(r)).map(r => r.servicio).filter(Boolean))];
@@ -153,7 +181,7 @@ export default function ReservasPanel({ pin, onBack, draft = {} }) {
   const limpiarFiltros = () => { setBusqueda(""); setFiltroPanel("todas"); setFiltroServicio("todos"); setFiltroPersonas("todos"); };
 
   const reservasPanelV2 = reservasMock.filter(r => {
-    if (esConsulta(r)) return false;
+    if (esConsulta(r) || estaEnHistorial(r)) return false;
     if (!r.fecha || r.fecha < hoyStr) return false;
     if (filtroPanel !== "todas" && r.estado !== filtroPanel) return false;
     if (busqueda) {
@@ -202,7 +230,7 @@ export default function ReservasPanel({ pin, onBack, draft = {} }) {
   };
 
   const eliminarReserva = async (id) => {
-    setReservasMock((prev) => prev.filter((r) => r.id !== id));
+    setReservasMock((prev) => prev.map((r) => r.id === id ? { ...r, estado: "eliminada" } : r));
     setConfirmarEliminar(null);
     try {
       await accionReserva(id, "eliminar", pin, SLUG);
@@ -211,67 +239,214 @@ export default function ReservasPanel({ pin, onBack, draft = {} }) {
     }
   };
 
-  // ── Card consulta ────────────────────────────────────────────────────────────
-  const renderConsultaCard = (r) => (
-    <div key={r.id} className={`panel-v2-card panel-v2-card--${r.estado}`}>
-      <div className="panel-v2-card-top">
-        <span className={`panel-badge panel-badge--${r.estado}`}>
-          {r.estado === "pendiente" ? "Pendiente" : r.estado === "confirmada" ? "Confirmada" : "Cancelada"}
-        </span>
-      </div>
-      <div className="panel-v2-card-mid">
+  const formatTel = (tel) => {
+    if (!tel) return tel;
+    const cleaned = String(tel).replace(/\s/g, "");
+    if (cleaned.startsWith("+")) {
+      const prefix = cleaned.slice(0, 3);
+      const rest = cleaned.slice(3).replace(/(\d{3})(?=\d)/g, "$1 ");
+      return `${prefix} ${rest}`;
+    }
+    return cleaned.replace(/(\d{3})(?=\d)/g, "$1 ");
+  };
+
+  const renderPendienteCard = (r) => {
+    const extrasRellenos = (() => {
+      const extras = r.extras;
+      const preguntas = draft.preguntasExtra;
+      if (!extras || !preguntas?.length) return [];
+      return preguntas.filter(p => p.guardado && extras[p.id] != null && extras[p.id] !== "");
+    })();
+    return (
+      <div key={r.id} className="notif-nueva-card">
         <span className="pv2-nombre">{r.nombre}</span>
-        {r.servicio && <span className="panel-v2-card-meta">{r.servicio}</span>}
+        {r.telefono && (
+          <div className="panel-card-tel">
+            <a href={`tel:${r.telefono}`} className="panel-v2-tel">{formatTel(r.telefono)}</a>
+            <a href={`https://wa.me/${(r.telefono || "").replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer">
+              <img src={iconWa} alt="WA" className="panel-wa-icon" />
+            </a>
+          </div>
+        )}
+        {r.email && <span className="panel-v2-card-meta"><Mail size={11} className="pv2-icon" />{r.email}</span>}
+        {(r.fecha || r.hora || Number(r.personas) > 0 || r.servicio) && (
+          <div className="notif-nueva-fila">
+            {r.fecha && <span className="panel-v2-card-meta"><CalendarDays size={11} className="pv2-icon" />{r.fecha.split("-").reverse().join("/")}</span>}
+            {r.hora && <span className="panel-v2-card-meta"><Clock size={11} className="pv2-icon" />{r.hora}</span>}
+            {Number(r.personas) > 0 && <span className="panel-v2-card-meta"><Users size={11} className="pv2-icon" />{r.personas}p</span>}
+            {r.servicio && <span className="panel-v2-card-meta">{r.servicio}</span>}
+          </div>
+        )}
+        {r.mensaje && <p className="panel-v2-consulta-msg">{r.mensaje}</p>}
+        {extrasRellenos.map(p => (
+          <p key={p.id} className="panel-v2-consulta-msg"><strong>{p.label}:</strong> {r.extras[p.id]}</p>
+        ))}
+        <div className="panel-card-actions">
+          <button type="button" className="panel-btn-confirmar" onClick={() => cambiarEstado(r.id, "confirmada")}><Check size={13} />Confirmar</button>
+          <button type="button" className="panel-btn-cancelar" onClick={() => cambiarEstado(r.id, "cancelada")}><X size={13} />Cancelar</button>
+        </div>
       </div>
-      {r.mensaje && <p className="panel-v2-consulta-msg">{r.mensaje}</p>}
-      <div className="panel-card-tel">
-        <a href={`tel:${r.telefono}`} className="panel-v2-tel">{r.telefono}</a>
-        <a href={`https://wa.me/${(r.telefono || "").replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer">
-          <img src={iconWa} alt="WA" className="panel-wa-icon" />
-        </a>
+    );
+  };
+
+  // ── Card consulta ────────────────────────────────────────────────────────────
+  const renderConsultaCard = (r, readOnly = false) => {
+    const tieneStats = r.fecha || r.hora;
+    return (
+      <div key={r.id} className={`panel-v2-card panel-v2-card--${r.estado}`}>
+        <div className="pv2c-header">
+          <span className={`panel-badge panel-badge--${r.estado}`}>
+            {r.estado === "confirmada" ? <Check size={10} /> : r.estado === "cancelada" ? <X size={10} /> : r.estado === "eliminada" ? <Trash2 size={10} /> : <Clock size={10} />}
+            {r.estado === "pendiente" ? "Pendiente" : r.estado === "confirmada" ? "Confirmada" : r.estado === "eliminada" ? "Eliminada" : "Cancelada"}
+          </span>
+          <div className="pv2c-menu-wrap">
+            <button type="button" className="pv2c-menu-btn" onClick={() => setMenuCardId(menuCardId === r.id ? null : r.id)}>
+              <MoreVertical size={16} />
+            </button>
+            {menuCardId === r.id && (
+              <>
+                <div className="pv2c-dropdown-overlay" onClick={() => setMenuCardId(null)} />
+                <div className="pv2c-dropdown">
+                  <button type="button" className="pv2c-dropdown-item" onClick={() => { setModalDetalle(r); setMenuCardId(null); }}><Eye size={13} />Ver detalles</button>
+                  {!readOnly && r.estado !== "eliminada" && (
+                    <button type="button" className="pv2c-dropdown-item pv2c-dropdown-item--danger" onClick={() => { setConfirmarEliminar(r); setMenuCardId(null); }}><Trash2 size={13} />Eliminar</button>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+        <span className="pv2c-nombre">{r.nombre}</span>
+        <div className="pv2c-body">
+          <div className="pv2c-contact">
+            <a href={`tel:${r.telefono}`} className="panel-v2-tel pv2c-tel">{formatTel(r.telefono)}</a>
+            <div className="pv2c-contact-icons">
+              <a href={`tel:${r.telefono}`} className="pv2c-icon-btn"><Phone size={15} /></a>
+              <a href={`https://wa.me/${(r.telefono || "").replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer" className="pv2c-icon-btn">
+                <img src={iconWa} alt="WA" className="panel-wa-icon" />
+              </a>
+            </div>
+          </div>
+          {tieneStats && (<>
+            <div className="pv2c-vsep" />
+            <div className="pv2c-stats">
+              {r.fecha && (
+                <div className="pv2c-stat">
+                  <CalendarDays size={16} />
+                  <span className="pv2c-stat-val">{r.fecha.split("-").slice(1).reverse().join("/")}</span>
+                  <span className="pv2c-stat-label">Fecha</span>
+                </div>
+              )}
+              {r.fecha && r.hora && <div className="pv2c-stat-sep" />}
+              {r.hora && (
+                <div className="pv2c-stat">
+                  <Clock size={16} />
+                  <span className="pv2c-stat-val">{r.hora}</span>
+                  <span className="pv2c-stat-label">Hora</span>
+                </div>
+              )}
+            </div>
+          </>)}
+        </div>
+        {r.estado === "pendiente" && !readOnly ? (
+          <>
+            {r.mensaje && (
+              <div className="pv2c-msg">
+                <div className="pv2c-msg-header"><MessageSquare size={12} />Mensaje</div>
+                <p className="pv2c-msg-text">{r.mensaje}</p>
+              </div>
+            )}
+            <hr className="pv2c-divider" />
+            <div className="panel-card-actions">
+              <button type="button" className="panel-btn-confirmar" onClick={() => cambiarEstado(r.id, "confirmada")}><Check size={13} />Confirmar</button>
+              <button type="button" className="panel-btn-cancelar" onClick={() => cambiarEstado(r.id, "cancelada")}><X size={13} />Cancelar</button>
+            </div>
+          </>
+        ) : r.mensaje ? (
+          <>
+            <hr className="pv2c-divider" />
+            <div className="pv2c-msg-expand">
+              <p className={`pv2c-msg-expand-text${expandedMsgId === r.id ? " pv2c-msg-expand-text--open" : ""}`}>{r.mensaje}</p>
+              <button type="button" className="pv2c-msg-more" onClick={() => setExpandedMsgId(expandedMsgId === r.id ? null : r.id)}>
+                {expandedMsgId === r.id ? "Leer menos" : "Leer más"}
+              </button>
+            </div>
+          </>
+        ) : null}
       </div>
-      <div className="panel-card-actions">
-        {r.estado === "pendiente" ? (<>
-          <button type="button" className="panel-btn-confirmar" onClick={() => cambiarEstado(r.id, "confirmada")}>Confirmar</button>
-          <button type="button" className="panel-btn-cancelar" onClick={() => cambiarEstado(r.id, "cancelada")}>Cancelar</button>
-        </>) : (<>
-          <button type="button" className="panel-v2-btn-detalle" onClick={() => setModalDetalle(r)}>Ver detalles</button>
-          <button type="button" className="panel-btn-eliminar" onClick={() => setConfirmarEliminar(r)}>Eliminar</button>
-        </>)}
-      </div>
-    </div>
-  );
+    );
+  };
 
   // ── Card reutilizable ────────────────────────────────────────────────────────
-  const renderCard = (r) => (
+  const renderCard = (r, readOnly = false) => (
     <div key={r.id} className={`panel-v2-card panel-v2-card--${r.estado}`}>
-      <div className="panel-v2-card-top">
+      <div className="pv2c-header">
         <span className={`panel-badge panel-badge--${r.estado}`}>
-          {r.estado === "pendiente" ? "Pendiente" : r.estado === "confirmada" ? "Confirmada" : "Cancelada"}
+          {r.estado === "confirmada" ? <Check size={10} /> : r.estado === "cancelada" ? <X size={10} /> : r.estado === "eliminada" ? <Trash2 size={10} /> : <Clock size={10} />}
+          {r.estado === "pendiente" ? "Pendiente" : r.estado === "confirmada" ? "Confirmada" : r.estado === "eliminada" ? "Eliminada" : "Cancelada"}
         </span>
-        <span className="pv2-hora">{r.hora}</span>
+        <div className="pv2c-menu-wrap">
+          <button type="button" className="pv2c-menu-btn" onClick={() => setMenuCardId(menuCardId === r.id ? null : r.id)}>
+            <MoreVertical size={16} />
+          </button>
+          {menuCardId === r.id && (
+            <>
+              <div className="pv2c-dropdown-overlay" onClick={() => setMenuCardId(null)} />
+              <div className="pv2c-dropdown">
+                <button type="button" className="pv2c-dropdown-item" onClick={() => { setModalDetalle(r); setMenuCardId(null); }}><Eye size={13} />Ver detalles</button>
+                {!readOnly && r.estado !== "eliminada" && (
+                  <button type="button" className="pv2c-dropdown-item pv2c-dropdown-item--danger" onClick={() => { setConfirmarEliminar(r); setMenuCardId(null); }}><Trash2 size={13} />Eliminar</button>
+                )}
+              </div>
+            </>
+          )}
+        </div>
       </div>
-      <div className="panel-v2-card-mid">
-        <span className="pv2-nombre">{r.nombre}</span>
-        <span className="panel-v2-card-meta">
-          <Users size={11} className="pv2-icon" />{r.personas}{r.servicio ? ` · ${r.servicio}` : ""}
-        </span>
+      <span className="pv2c-nombre">{r.nombre}</span>
+      <div className="pv2c-body">
+        <div className="pv2c-contact">
+          <a href={`tel:${r.telefono}`} className="panel-v2-tel pv2c-tel">{formatTel(r.telefono)}</a>
+          <div className="pv2c-contact-icons">
+            <a href={`tel:${r.telefono}`} className="pv2c-icon-btn"><Phone size={15} /></a>
+            <a href={`https://wa.me/${(r.telefono || "").replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer" className="pv2c-icon-btn">
+              <img src={iconWa} alt="WA" className="panel-wa-icon" />
+            </a>
+          </div>
+        </div>
+        <div className="pv2c-vsep" />
+        <div className="pv2c-stats">
+          {r.fecha && (<div className="pv2c-stat"><CalendarDays size={16} /><span className="pv2c-stat-val">{r.fecha.split("-").slice(1).reverse().join("/")}</span><span className="pv2c-stat-label">Fecha</span></div>)}
+          {r.fecha && r.hora && <div className="pv2c-stat-sep" />}
+          {r.hora && (<div className="pv2c-stat"><Clock size={16} /><span className="pv2c-stat-val">{r.hora}</span><span className="pv2c-stat-label">Hora</span></div>)}
+          {(r.fecha || r.hora) && r.personas && <div className="pv2c-stat-sep" />}
+          {r.personas && (<div className="pv2c-stat"><User size={16} /><span className="pv2c-stat-val">{r.personas}</span><span className="pv2c-stat-label">Pers.</span></div>)}
+        </div>
       </div>
-      <div className="panel-card-tel">
-        <a href={`tel:${r.telefono}`} className="panel-v2-tel">{r.telefono}</a>
-        <a href={`https://wa.me/${(r.telefono || "").replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer">
-          <img src={iconWa} alt="WA" className="panel-wa-icon" />
-        </a>
-      </div>
-      <div className="panel-card-actions">
-        {r.estado === "pendiente" ? (<>
-          <button type="button" className="panel-btn-confirmar" onClick={() => cambiarEstado(r.id, "confirmada")}>Confirmar</button>
-          <button type="button" className="panel-btn-cancelar" onClick={() => cambiarEstado(r.id, "cancelada")}>Cancelar</button>
-        </>) : (<>
-          <button type="button" className="panel-v2-btn-detalle" onClick={() => setModalDetalle(r)}>Ver detalles</button>
-          <button type="button" className="panel-btn-eliminar" onClick={() => setConfirmarEliminar(r)}>Eliminar</button>
-        </>)}
-      </div>
+      {r.estado === "pendiente" && !readOnly ? (
+        <>
+          {r.mensaje && (
+            <div className="pv2c-msg">
+              <div className="pv2c-msg-header"><MessageSquare size={12} />Mensaje</div>
+              <p className="pv2c-msg-text">{r.mensaje}</p>
+            </div>
+          )}
+          <hr className="pv2c-divider" />
+          <div className="panel-card-actions">
+            <button type="button" className="panel-btn-confirmar" onClick={() => cambiarEstado(r.id, "confirmada")}><Check size={13} />Confirmar</button>
+            <button type="button" className="panel-btn-cancelar" onClick={() => cambiarEstado(r.id, "cancelada")}><X size={13} />Cancelar</button>
+          </div>
+        </>
+      ) : r.mensaje ? (
+        <>
+          <hr className="pv2c-divider" />
+          <div className="pv2c-msg-expand">
+            <p className={`pv2c-msg-expand-text${expandedMsgId === r.id ? " pv2c-msg-expand-text--open" : ""}`}>{r.mensaje}</p>
+            <button type="button" className="pv2c-msg-more" onClick={() => setExpandedMsgId(expandedMsgId === r.id ? null : r.id)}>
+              {expandedMsgId === r.id ? "Leer menos" : "Leer más"}
+            </button>
+          </div>
+        </>
+      ) : null}
     </div>
   );
 
@@ -282,7 +457,7 @@ export default function ReservasPanel({ pin, onBack, draft = {} }) {
           <div className="res-menu-overlay" onClick={closeMenu} />
           <div className="res-menu-portal"
             style={{ ...panelVars, top: menuPos.top, left: menuPos.left }}>
-            <MenuContent draft={draft} temaPanel={temaPanel} aplicarTemaPanel={aplicarTemaPanel} onCuenta={onBack} onBack={onBack} />
+            <MenuContent draft={draft} temaPanel={temaPanel} aplicarTemaPanel={aplicarTemaPanel} onCuenta={onCuenta ?? onBack} onBack={onBack} />
           </div>
         </>,
         document.body
@@ -320,30 +495,9 @@ export default function ReservasPanel({ pin, onBack, draft = {} }) {
           {pendientes.length > 0 && (
             <div className="notif-nueva">
               <div className="notif-nueva-header">
-                <span className="notif-nueva-titulo">🔔 {pendientes.length === 1 ? "1 reserva pendiente" : `${pendientes.length} reservas pendientes`}</span>
+                <span className="notif-nueva-titulo"><Bell size={13} /> {pendientes.length === 1 ? "1 reserva pendiente" : `${pendientes.length} reservas pendientes`}</span>
               </div>
-              {pendientes.map(r => (
-                <div key={r.id} className="notif-nueva-card">
-                  <div className="notif-nueva-fila">
-                    <span className="pv2-nombre">{r.nombre}</span>
-                    <span className="pv2-hora">{r.hora}</span>
-                  </div>
-                  <div className="notif-nueva-fila">
-                    <span className="panel-v2-card-meta"><Users size={11} className="pv2-icon" />{r.personas}{r.servicio ? ` · ${r.servicio}` : ""}</span>
-                    <span className="panel-v2-card-meta">📅 {r.fecha?.split("-").reverse().join("/")}</span>
-                  </div>
-                  <div className="panel-card-tel">
-                    <a href={`tel:${r.telefono}`} className="panel-v2-tel">{r.telefono}</a>
-                    <a href={`https://wa.me/${(r.telefono || "").replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer">
-                      <img src={iconWa} alt="WA" className="panel-wa-icon" />
-                    </a>
-                  </div>
-                  <div className="panel-card-actions">
-                    <button type="button" className="panel-btn-confirmar" onClick={() => cambiarEstado(r.id, "confirmada")}>Confirmar</button>
-                    <button type="button" className="panel-btn-cancelar" onClick={() => cambiarEstado(r.id, "cancelada")}>Cancelar</button>
-                  </div>
-                </div>
-              ))}
+              {pendientes.map(r => renderPendienteCard(r))}
             </div>
           )}
 
@@ -426,16 +580,22 @@ export default function ReservasPanel({ pin, onBack, draft = {} }) {
                         return (
                           <div key={fecha} className="panel-v2-grupo">
                             <div className="panel-v2-grupo-header">
-                              <span className="panel-v2-grupo-label">📅 {fechaLarga(fecha)}</span>
+                              <span className="panel-v2-grupo-label"><CalendarDays size={13} />{fechaLarga(fecha)}</span>
                               <span className="panel-v2-grupo-badge">{rf.length} reserva{rf.length !== 1 ? "s" : ""}</span>
                             </div>
-                            <div className="panel-v2-lista">{rf.map(renderCard)}</div>
+                            <div className="panel-v2-lista">{rf.map(r => renderCard(r))}</div>
                           </div>
                         );
                       })}
                     </div>
                   ) : (
-                    <div className="panel-v2-lista">{reservasPaginadas.map(renderCard)}</div>
+                    <>
+                      <div className="panel-v2-grupo-header">
+                        <span className="panel-v2-grupo-label"><CalendarDays size={13} />{fechaLarga(tabFecha === "hoy" ? hoyStr : mananaStr)}</span>
+                        <span className="panel-v2-grupo-badge">{reservasPorTab.length} reserva{reservasPorTab.length !== 1 ? "s" : ""}</span>
+                      </div>
+                      <div className="panel-v2-lista">{reservasPaginadas.map(r => renderCard(r))}</div>
+                    </>
                   )}
 
                   {totalPaginasPanel > 1 && (
@@ -461,32 +621,9 @@ export default function ReservasPanel({ pin, onBack, draft = {} }) {
                 {pendientesConsultasList.length > 0 && (
                   <div className="notif-nueva">
                     <div className="notif-nueva-header">
-                      <span className="notif-nueva-titulo">🔔 {pendientesConsultasList.length === 1 ? "1 consulta pendiente" : `${pendientesConsultasList.length} consultas pendientes`}</span>
+                      <span className="notif-nueva-titulo"><Bell size={13} /> {pendientesConsultasList.length === 1 ? "1 consulta pendiente" : `${pendientesConsultasList.length} consultas pendientes`}</span>
                     </div>
-                    {pendientesConsultasList.map(r => (
-                      <div key={r.id} className="notif-nueva-card">
-                        <div className="notif-nueva-fila">
-                          <span className="pv2-nombre">{r.nombre}</span>
-                          {r.hora && <span className="pv2-hora">{r.hora}</span>}
-                        </div>
-                        {(r.fecha || r.servicio) && (
-                          <div className="notif-nueva-fila">
-                            {r.servicio && <span className="panel-v2-card-meta">{r.servicio}</span>}
-                            {r.fecha && <span className="panel-v2-card-meta">📅 {r.fecha.split("-").reverse().join("/")}</span>}
-                          </div>
-                        )}
-                        <div className="panel-card-tel">
-                          <a href={`tel:${r.telefono}`} className="panel-v2-tel">{r.telefono}</a>
-                          <a href={`https://wa.me/${(r.telefono || "").replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer">
-                            <img src={iconWa} alt="WA" className="panel-wa-icon" />
-                          </a>
-                        </div>
-                        <div className="panel-card-actions">
-                          <button type="button" className="panel-btn-confirmar" onClick={() => cambiarEstado(r.id, "confirmada")}>Confirmar</button>
-                          <button type="button" className="panel-btn-cancelar" onClick={() => cambiarEstado(r.id, "cancelada")}>Cancelar</button>
-                        </div>
-                      </div>
-                    ))}
+                    {pendientesConsultasList.map(r => renderPendienteCard(r))}
                   </div>
                 )}
                 <div className="panel-v2-toolbar">
@@ -515,7 +652,7 @@ export default function ReservasPanel({ pin, onBack, draft = {} }) {
                 </div>
                 <div className="panel-v2-tabs-fecha">
                   {[
-                    { key: "sin-fecha", label: "Sin fecha", count: consultasSinFecha.filter(r => r.estado === "pendiente").length },
+                    { key: "sin-fecha", label: "Consultas varias", count: consultasSinFecha.filter(r => r.estado === "pendiente").length },
                     { key: "hoy", label: "Hoy", count: countConsultasHoy },
                     { key: "manana", label: "Mañana", count: countConsultasManana },
                     { key: "proximos", label: "Próximos días", count: countConsultasProximos },
@@ -536,77 +673,73 @@ export default function ReservasPanel({ pin, onBack, draft = {} }) {
                   else lista = consultasConFecha.filter(r => r.fecha >= pasadoMananaStr);
                   return lista.length === 0
                     ? <p className="res-hint res-hint--center">{hayFiltrosConsultas ? "No hay consultas con esos filtros." : "Sin consultas."}</p>
-                    : <div className="panel-v2-lista">{lista.map(renderConsultaCard)}</div>;
+                    : <div className="panel-v2-lista">{lista.map(r => renderConsultaCard(r))}</div>;
                 })()}
               </div>
             )}
 
             {/* ── TAB: HISTORIAL ── */}
             {tab === "historial" && (
-              <div className="panel-reservas">
-                <p className="panel-seccion-titulo">Hoy · {hoyFormateado}</p>
-                {reservasHoy.length === 0 ? (
-                  <p className="res-hint res-hint--center">Sin reservas hoy.</p>
-                ) : (
-                  <div className="panel-lista">
-                    {reservasHoy.map((r) => (
-                      <div key={r.id} className={`panel-card panel-card--${r.estado}`}>
-                        <div className="panel-card-info">
-                          <div className="panel-card-nombre-row">
-                            <span className="panel-card-nombre">{r.nombre}</span>
-                            <span className={`panel-badge panel-badge--${r.estado}`}>
-                              {r.estado.charAt(0).toUpperCase() + r.estado.slice(1)}
-                            </span>
-                          </div>
-                          <span className="panel-card-meta">
-                            {r.hora} · {r.personas} {r.personas === 1 ? "persona" : "personas"}
-                            {r.servicio ? ` · ${r.servicio}` : ""}
-                          </span>
-                          <div className="panel-card-tel">
-                            <a href={`tel:${r.telefono}`}>{r.telefono}</a>
-                            <a href={`https://wa.me/${r.telefono.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer">
-                              <img src={iconWa} alt="WhatsApp" className="panel-wa-icon" />
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
+              <div className="panel-v2">
+                <div className="panel-v2-tabs-fecha">
+                  <button type="button"
+                    className={`panel-v2-tab-fecha ${tabHistorial === "reservas" ? "panel-v2-tab-fecha--active" : ""}`}
+                    onClick={() => setTabHistorial("reservas")}>
+                    Reservas
+                    {reservasHistorial.length > 0 && <span className="panel-v2-tab-badge">{reservasHistorial.length}</span>}
+                  </button>
+                  <button type="button"
+                    className={`panel-v2-tab-fecha ${tabHistorial === "consultas" ? "panel-v2-tab-fecha--active" : ""}`}
+                    onClick={() => setTabHistorial("consultas")}>
+                    Consultas
+                    {consultasHistorial.length > 0 && <span className="panel-v2-tab-badge">{consultasHistorial.length}</span>}
+                  </button>
+                </div>
+
+                {tabHistorial === "reservas" && (<>
+                  <div className="panel-v2-filters-row">
+                    <select className="panel-v2-select" value={filtroHistorialReservas}
+                      onChange={(e) => setFiltroHistorialReservas(e.target.value)}>
+                      <option value="todas">Estado: Todas</option>
+                      <option value="confirmada">Confirmadas</option>
+                      <option value="cancelada">Canceladas</option>
+                      <option value="eliminada">Eliminadas</option>
+                    </select>
                   </div>
-                )}
-                {fechasHistorial.map((fecha) => (
-                  <div key={fecha}>
-                    <p className="panel-seccion-titulo">Historial · {fecha.split("-").reverse().join("-")}</p>
-                    <div className="panel-lista">
-                      {historialPorFecha[fecha].map((r) => (
-                        <div key={r.id} className={`panel-card panel-card--${r.estado}`}>
-                          <div className="panel-card-info">
-                            <div className="panel-card-nombre-row">
-                              <span className="panel-card-nombre">{r.nombre}</span>
-                              <span className={`panel-badge panel-badge--${r.estado}`}>
-                                {r.estado.charAt(0).toUpperCase() + r.estado.slice(1)}
-                              </span>
-                            </div>
-                            <span className="panel-card-meta">
-                              {r.hora} · {r.personas} {r.personas === 1 ? "persona" : "personas"}
-                              {r.servicio ? ` · ${r.servicio}` : ""}
-                            </span>
-                            <div className="panel-card-tel">
-                              <a href={`tel:${r.telefono}`}>{r.telefono}</a>
-                              <a href={`https://wa.me/${r.telefono.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer">
-                                <img src={iconWa} alt="WhatsApp" className="panel-wa-icon" />
-                              </a>
-                            </div>
+                  {fechasHistorialFiltradas.length === 0 ? (
+                    <p className="res-hint res-hint--center">Sin reservas en el historial.</p>
+                  ) : (
+                    <div className="panel-v2-grupos">
+                      {fechasHistorialFiltradas.map(fecha => (
+                        <div key={fecha} className="panel-v2-grupo">
+                          <div className="panel-v2-grupo-header">
+                            <span className="panel-v2-grupo-label">{fechaLarga(fecha)}</span>
+                            <span className="panel-v2-grupo-badge">{historialPorFechaFiltrado[fecha].length} reserva{historialPorFechaFiltrado[fecha].length !== 1 ? "s" : ""}</span>
                           </div>
+                          <div className="panel-v2-lista">{historialPorFechaFiltrado[fecha].map(r => renderCard(r, true))}</div>
                         </div>
                       ))}
                     </div>
-                  </div>
-                ))}
-                {fechasHistorial.length === 0 && (
-                  <p className="res-hint res-hint--center">Sin historial de días anteriores.</p>
-                )}
-              </div>
+                  )}
+                </>)}
 
+                {tabHistorial === "consultas" && (<>
+                  <div className="panel-v2-filters-row">
+                    <select className="panel-v2-select" value={filtroHistorialConsultas}
+                      onChange={(e) => setFiltroHistorialConsultas(e.target.value)}>
+                      <option value="todas">Estado: Todas</option>
+                      <option value="confirmada">Confirmadas</option>
+                      <option value="cancelada">Canceladas</option>
+                      <option value="eliminada">Eliminadas</option>
+                    </select>
+                  </div>
+                  {consultasHistorialFiltradas.length === 0 ? (
+                    <p className="res-hint res-hint--center">Sin consultas en el historial.</p>
+                  ) : (
+                    <div className="panel-v2-lista">{consultasHistorialFiltradas.map(r => renderConsultaCard(r, true))}</div>
+                  )}
+                </>)}
+              </div>
             )}
           </div>
         </form>

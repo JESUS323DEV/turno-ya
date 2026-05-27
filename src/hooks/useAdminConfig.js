@@ -72,6 +72,7 @@ export function useAdminConfig() {
     fechasBloqueadas: config.fechasBloqueadas ?? [],
     perfil: config.perfil ?? "reserva",
     googleCalendarLink: config.googleCalendarLink ?? false,
+    minutosParaHistorial: config.minutosParaHistorial ?? 120,
     modoEnvio: config.modoEnvio ?? "whatsapp",
     perfilEmail: config.perfilEmail ?? "reserva",
     emailNegocio: config.emailNegocio ?? "",

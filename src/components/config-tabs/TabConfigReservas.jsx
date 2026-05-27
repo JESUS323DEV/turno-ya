@@ -1,4 +1,4 @@
-import { Clock, Users, SlidersHorizontal } from "lucide-react";
+import { Clock, Users, SlidersHorizontal, Archive } from "lucide-react";
 import "../../styles/config-tabs/tabConfigReservas.css";
 
 export default function TabConfigReservas({ draft, setField }) {
@@ -92,6 +92,32 @@ export default function TabConfigReservas({ draft, setField }) {
             <input className="cfg-input cfg-rsv-input" type="number" min="0" max="999"
               value={draft.aforoPorSlot}
               onChange={(e) => setField("aforoPorSlot", Number(e.target.value))} />
+          </div>
+        </div>
+
+        {/* ── HISTORIAL ── */}
+        <div className="cfg-rsv-section cfg-rsv-section--historial">
+          <div className="cfg-rsv-section-head">
+            <span className="cfg-rsv-badge"><Archive size={14} /></span>
+            <h3 className="cfg-rsv-section-title">Historial</h3>
+          </div>
+          <div className="cfg-rsv-row">
+            <div className="cfg-rsv-row-label">
+              <h5 className="cfg-rsv-label">Archivar al historial tras</h5>
+              <p className="cfg-rsv-hint">Tiempo desde la cita para mover al historial.</p>
+            </div>
+            <select className="cfg-input cfg-rsv-input" value={draft.minutosParaHistorial ?? 120}
+              onChange={(e) => setField("minutosParaHistorial", Number(e.target.value))}>
+              <option value={20}>20 min</option>
+              <option value={30}>30 min</option>
+              <option value={60}>1 hora</option>
+              <option value={120}>2 horas</option>
+              <option value={180}>3 horas</option>
+              <option value={240}>4 horas</option>
+              <option value={360}>6 horas</option>
+              <option value={720}>12 horas</option>
+              <option value={1440}>24 horas</option>
+            </select>
           </div>
         </div>
 

@@ -54,7 +54,7 @@ function MenuContent({ onCuenta, draft, temaPanel, aplicarTemaPanel, onBack }) {
   );
 }
 
-export default function ConfigPanel({ config, onBack }) {
+export default function ConfigPanel({ config, onBack, openCuenta = false, onCuentaClose }) {
   const {
     draft, setField, setDia, setTurno, addTurno, removeTurno,
     nuevaFecha, setNuevaFecha, addFechaBloqueada, removeFechaBloqueada,
@@ -69,7 +69,7 @@ export default function ConfigPanel({ config, onBack }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [menuPos, setMenuPos] = useState({ top: 0, left: 0 });
   const [temaPanel, setTemaPanel] = useState(() => localStorage.getItem("reservaq-tema-panel") || "claro");
-  const [cuentaOpen, setCuentaOpen] = useState(false);
+  const [cuentaOpen, setCuentaOpen] = useState(openCuenta);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [headerH, setHeaderH] = useState(0);
   const avatarBtnRef = useRef(null);
@@ -126,7 +126,7 @@ export default function ConfigPanel({ config, onBack }) {
         errorGuardado={errorGuardado}
         exportarWidget={exportarWidget}
         temaPanel={temaPanel}
-        onClose={() => { setCuentaOpen(false); window.scrollTo(0, 0); }}
+        onClose={onCuentaClose ?? (() => { setCuentaOpen(false); window.scrollTo(0, 0); })}
       />
     );
   }
