@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { Search, Users, User, Settings, FlaskConical, ScrollText, ArrowLeft, Bell, CalendarDays, Mail, Eye, Trash2, Check, X, Clock, Phone, MoreVertical, MessageSquare } from "lucide-react";
+import { Search, Users, User, Settings, FlaskConical, ScrollText, ArrowLeft, Bell, CalendarDays, Mail, Eye, Trash2, Check, X, Clock, Phone, MoreVertical, MessageSquare, ChevronDown, ChevronUp } from "lucide-react";
 import iconWa from "../assets/icon-whatsapp.png";
 import { fetchReservas, accionReserva, SLUG } from "../lib/supabase";
 import { getPanelVars, TEMAS_PANEL } from "../config/temasPanel";
@@ -76,6 +76,8 @@ export default function ReservasPanel({ pin, onBack, onCuenta, draft = {} }) {
   const [menuPos, setMenuPos] = useState({ top: 0, left: 0 });
   const [menuCardId, setMenuCardId] = useState(null);
   const [expandedMsgId, setExpandedMsgId] = useState(null);
+  const [filtrosPanelOpen, setFiltrosPanelOpen] = useState(false);
+  const [filtrosConsultasOpen, setFiltrosConsultasOpen] = useState(false);
   const avatarBtnRef = useRef(null);
 
   const panelVars = getPanelVars(temaPanel);
@@ -269,18 +271,22 @@ export default function ReservasPanel({ pin, onBack, onCuenta, draft = {} }) {
           </div>
         )}
         {r.email && <span className="panel-v2-card-meta"><Mail size={11} className="pv2-icon" />{r.email}</span>}
-        {(r.fecha || r.hora || Number(r.personas) > 0 || r.servicio) && (
+        {(r.fecha || r.hora || (!esConsulta(r) && Number(r.personas) > 0) || r.servicio) && (
           <div className="notif-nueva-fila">
             {r.fecha && <span className="panel-v2-card-meta"><CalendarDays size={11} className="pv2-icon" />{r.fecha.split("-").reverse().join("/")}</span>}
             {r.hora && <span className="panel-v2-card-meta"><Clock size={11} className="pv2-icon" />{r.hora}</span>}
-            {Number(r.personas) > 0 && <span className="panel-v2-card-meta"><Users size={11} className="pv2-icon" />{r.personas}p</span>}
+            {!esConsulta(r) && Number(r.personas) > 0 && <span className="panel-v2-card-meta"><Users size={11} className="pv2-icon" />{r.personas}p</span>}
             {r.servicio && <span className="panel-v2-card-meta">{r.servicio}</span>}
           </div>
         )}
-        {r.mensaje && <p className="panel-v2-consulta-msg">{r.mensaje}</p>}
-        {extrasRellenos.map(p => (
-          <p key={p.id} className="panel-v2-consulta-msg"><strong>{p.label}:</strong> {r.extras[p.id]}</p>
-        ))}
+        {(r.mensaje || extrasRellenos.length > 0) && (
+          <div className="notif-msg-scroll">
+            {r.mensaje && <p className="panel-v2-consulta-msg">{r.mensaje}</p>}
+            {extrasRellenos.map(p => (
+              <p key={p.id} className="panel-v2-consulta-msg"><strong>{p.label}:</strong> {r.extras[p.id]}</p>
+            ))}
+          </div>
+        )}
         <div className="panel-card-actions">
           <button type="button" className="panel-btn-confirmar" onClick={() => cambiarEstado(r.id, "confirmada")}><Check size={13} />Confirmar</button>
           <button type="button" className="panel-btn-cancelar" onClick={() => cambiarEstado(r.id, "cancelada")}><X size={13} />Cancelar</button>
@@ -325,6 +331,7 @@ export default function ReservasPanel({ pin, onBack, onCuenta, draft = {} }) {
               <a href={`https://wa.me/${(r.telefono || "").replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer" className="pv2c-icon-btn">
                 <img src={iconWa} alt="WA" className="panel-wa-icon" />
               </a>
+              {r.email && <a href={`mailto:${r.email}`} className="pv2c-icon-btn"><Mail size={15} /></a>}
             </div>
           </div>
           {tieneStats && (<>
@@ -411,6 +418,7 @@ export default function ReservasPanel({ pin, onBack, onCuenta, draft = {} }) {
             <a href={`https://wa.me/${(r.telefono || "").replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer" className="pv2c-icon-btn">
               <img src={iconWa} alt="WA" className="panel-wa-icon" />
             </a>
+            {r.email && <a href={`mailto:${r.email}`} className="pv2c-icon-btn"><Mail size={15} /></a>}
           </div>
         </div>
         <div className="pv2c-vsep" />
@@ -492,14 +500,14 @@ export default function ReservasPanel({ pin, onBack, onCuenta, draft = {} }) {
           </div>
 
           {/* ── Pendientes ── */}
-          {pendientes.length > 0 && (
-            <div className="notif-nueva">
+          {pendientes.map(r => (
+            <div key={r.id} className="notif-nueva">
               <div className="notif-nueva-header">
-                <span className="notif-nueva-titulo"><Bell size={13} /> {pendientes.length === 1 ? "1 reserva pendiente" : `${pendientes.length} reservas pendientes`}</span>
+                <span className="notif-nueva-titulo"><Bell size={13} /> 1 reserva pendiente</span>
               </div>
-              {pendientes.map(r => renderPendienteCard(r))}
+              {renderPendienteCard(r)}
             </div>
-          )}
+          ))}
 
           <div className="res-tabs">
             {Object.entries(TABS).map(([key, label]) => {
@@ -528,29 +536,34 @@ export default function ReservasPanel({ pin, onBack, onCuenta, draft = {} }) {
                     <input type="text" className="panel-v2-search" placeholder="Buscar por nombre o teléfono..."
                       value={busqueda} onChange={(e) => { setBusqueda(e.target.value); setPaginaPanel(1); }} />
                   </div>
-                  <div className="panel-v2-filters-row">
-                    <select className="panel-v2-select" value={filtroPanel} onChange={(e) => { setFiltroPanel(e.target.value); setPaginaPanel(1); }}>
-                      <option value="todas">Estado: Todos</option>
-                      <option value="pendiente">Pendiente</option>
-                      <option value="confirmada">Confirmada</option>
-                      <option value="cancelada">Cancelada</option>
-                    </select>
-                    <select className="panel-v2-select" value={filtroServicio} onChange={(e) => { setFiltroServicio(e.target.value); setPaginaPanel(1); }}>
-                      <option value="todos">Servicio: Todos</option>
-                      {serviciosEnReservas.map(s => <option key={s} value={s}>{s}</option>)}
-                    </select>
-                    <select className="panel-v2-select" value={filtroPersonas} onChange={(e) => { setFiltroPersonas(e.target.value); setPaginaPanel(1); }}>
-                      <option value="todos">Personas: Todas</option>
-                      <option value="1-2">1 – 2</option>
-                      <option value="3-5">3 – 5</option>
-                      <option value="6+">6 +</option>
-                    </select>
-                    {hayFiltros && (
-                      <button type="button" className="panel-v2-clear" onClick={() => { limpiarFiltros(); setPaginaPanel(1); }}>
-                        Limpiar filtros
-                      </button>
-                    )}
-                  </div>
+                  <button type="button" className="panel-v2-filtros-toggle" onClick={() => setFiltrosPanelOpen(o => !o)}>
+                    Filtros {hayFiltros && <span className="panel-v2-filtros-dot" />}{filtrosPanelOpen ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+                  </button>
+                  {filtrosPanelOpen && (
+                    <div className="panel-v2-filters-row">
+                      <select className="panel-v2-select" value={filtroPanel} onChange={(e) => { setFiltroPanel(e.target.value); setPaginaPanel(1); }}>
+                        <option value="todas">Estado: Todos</option>
+                        <option value="pendiente">Pendiente</option>
+                        <option value="confirmada">Confirmada</option>
+                        <option value="cancelada">Cancelada</option>
+                      </select>
+                      <select className="panel-v2-select" value={filtroServicio} onChange={(e) => { setFiltroServicio(e.target.value); setPaginaPanel(1); }}>
+                        <option value="todos">Servicio: Todos</option>
+                        {serviciosEnReservas.map(s => <option key={s} value={s}>{s}</option>)}
+                      </select>
+                      <select className="panel-v2-select" value={filtroPersonas} onChange={(e) => { setFiltroPersonas(e.target.value); setPaginaPanel(1); }}>
+                        <option value="todos">Personas: Todas</option>
+                        <option value="1-2">1 – 2</option>
+                        <option value="3-5">3 – 5</option>
+                        <option value="6+">6 +</option>
+                      </select>
+                      {hayFiltros && (
+                        <button type="button" className="panel-v2-clear" onClick={() => { limpiarFiltros(); setPaginaPanel(1); }}>
+                          Limpiar filtros
+                        </button>
+                      )}
+                    </div>
+                  )}
                 </div>
 
                 <div className="panel-v2-tabs-fecha">
@@ -618,37 +631,42 @@ export default function ReservasPanel({ pin, onBack, onCuenta, draft = {} }) {
             {/* ── TAB: CONSULTAS ── */}
             {tab === "consultas" && (
               <div className="panel-v2">
-                {pendientesConsultasList.length > 0 && (
-                  <div className="notif-nueva">
+                {pendientesConsultasList.map(r => (
+                  <div key={r.id} className="notif-nueva">
                     <div className="notif-nueva-header">
-                      <span className="notif-nueva-titulo"><Bell size={13} /> {pendientesConsultasList.length === 1 ? "1 consulta pendiente" : `${pendientesConsultasList.length} consultas pendientes`}</span>
+                      <span className="notif-nueva-titulo"><Bell size={13} /> 1 consulta pendiente</span>
                     </div>
-                    {pendientesConsultasList.map(r => renderPendienteCard(r))}
+                    {renderPendienteCard(r)}
                   </div>
-                )}
+                ))}
                 <div className="panel-v2-toolbar">
                   <div className="panel-v2-search-wrap">
                     <Search size={14} className="panel-v2-search-icon" />
                     <input type="text" className="panel-v2-search" placeholder="Buscar por nombre o teléfono..."
                       value={busquedaConsultas} onChange={(e) => setBusquedaConsultas(e.target.value)} />
                   </div>
-                  <div className="panel-v2-filters-row">
-                    <select className="panel-v2-select" value={filtroEstadoConsultas} onChange={(e) => setFiltroEstadoConsultas(e.target.value)}>
-                      <option value="todas">Estado: Todos</option>
-                      <option value="pendiente">Pendiente</option>
-                      <option value="confirmada">Confirmada</option>
-                      <option value="cancelada">Cancelada</option>
-                    </select>
-                    <select className="panel-v2-select" value={filtroServicioConsultas} onChange={(e) => setFiltroServicioConsultas(e.target.value)}>
-                      <option value="todos">Servicio: Todos</option>
-                      {serviciosEnConsultas.map(s => <option key={s} value={s}>{s}</option>)}
-                    </select>
-                    {hayFiltrosConsultas && (
-                      <button type="button" className="panel-v2-clear" onClick={limpiarFiltrosConsultas}>
-                        Limpiar filtros
-                      </button>
-                    )}
-                  </div>
+                  <button type="button" className="panel-v2-filtros-toggle" onClick={() => setFiltrosConsultasOpen(o => !o)}>
+                    Filtros {hayFiltrosConsultas && <span className="panel-v2-filtros-dot" />}{filtrosConsultasOpen ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+                  </button>
+                  {filtrosConsultasOpen && (
+                    <div className="panel-v2-filters-row">
+                      <select className="panel-v2-select" value={filtroEstadoConsultas} onChange={(e) => setFiltroEstadoConsultas(e.target.value)}>
+                        <option value="todas">Estado: Todos</option>
+                        <option value="pendiente">Pendiente</option>
+                        <option value="confirmada">Confirmada</option>
+                        <option value="cancelada">Cancelada</option>
+                      </select>
+                      <select className="panel-v2-select" value={filtroServicioConsultas} onChange={(e) => setFiltroServicioConsultas(e.target.value)}>
+                        <option value="todos">Servicio: Todos</option>
+                        {serviciosEnConsultas.map(s => <option key={s} value={s}>{s}</option>)}
+                      </select>
+                      {hayFiltrosConsultas && (
+                        <button type="button" className="panel-v2-clear" onClick={limpiarFiltrosConsultas}>
+                          Limpiar filtros
+                        </button>
+                      )}
+                    </div>
+                  )}
                 </div>
                 <div className="panel-v2-tabs-fecha">
                   {[
@@ -671,9 +689,39 @@ export default function ReservasPanel({ pin, onBack, onCuenta, draft = {} }) {
                   else if (tabConsultas === "hoy") lista = consultasConFecha.filter(r => r.fecha === hoyStr);
                   else if (tabConsultas === "manana") lista = consultasConFecha.filter(r => r.fecha === mananaStr);
                   else lista = consultasConFecha.filter(r => r.fecha >= pasadoMananaStr);
-                  return lista.length === 0
-                    ? <p className="res-hint res-hint--center">{hayFiltrosConsultas ? "No hay consultas con esos filtros." : "Sin consultas."}</p>
-                    : <div className="panel-v2-lista">{lista.map(r => renderConsultaCard(r))}</div>;
+
+                  if (lista.length === 0) {
+                    return <p className="res-hint res-hint--center">{hayFiltrosConsultas ? "No hay consultas con esos filtros." : "Sin consultas."}</p>;
+                  }
+
+                  if (tabConsultas === "proximos") {
+                    const porFecha = lista.reduce((acc, r) => { if (!acc[r.fecha]) acc[r.fecha] = []; acc[r.fecha].push(r); return acc; }, {});
+                    const fechas = Object.keys(porFecha).sort();
+                    return (
+                      <div className="panel-v2-grupos">
+                        {fechas.map(fecha => (
+                          <div key={fecha} className="panel-v2-grupo">
+                            <div className="panel-v2-grupo-header">
+                              <span className="panel-v2-grupo-label"><CalendarDays size={13} />{fechaLarga(fecha)}</span>
+                              <span className="panel-v2-grupo-badge">{porFecha[fecha].length} consulta{porFecha[fecha].length !== 1 ? "s" : ""}</span>
+                            </div>
+                            <div className="panel-v2-lista">{porFecha[fecha].map(r => renderConsultaCard(r))}</div>
+                          </div>
+                        ))}
+                      </div>
+                    );
+                  }
+
+                  const headerFecha = tabConsultas === "hoy" ? hoyStr : tabConsultas === "manana" ? mananaStr : hoyStr;
+                  return (
+                    <>
+                      <div className="panel-v2-grupo-header">
+                        <span className="panel-v2-grupo-label"><CalendarDays size={13} />{fechaLarga(headerFecha)}</span>
+                        <span className="panel-v2-grupo-badge">{lista.length} consulta{lista.length !== 1 ? "s" : ""}</span>
+                      </div>
+                      <div className="panel-v2-lista">{lista.map(r => renderConsultaCard(r))}</div>
+                    </>
+                  );
                 })()}
               </div>
             )}

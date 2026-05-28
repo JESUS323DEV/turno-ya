@@ -534,6 +534,18 @@
   min-width: 0;
 }
 
+.notif-msg-scroll {
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.notif-msg-scroll .panel-v2-consulta-msg {
+  display: block;
+  -webkit-line-clamp: unset;
+  line-clamp: unset;
+  overflow: visible;
+}
+
 /* ── Historial ── */
 .panel-reservas {
   display: flex;
@@ -750,6 +762,34 @@
 .panel-v2-clear:hover {
   border-color: var(--accent);
   color: var(--accent);
+}
+
+.panel-v2-filtros-toggle {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 12px;
+  font-family: inherit;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.panel-v2-filtros-toggle:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.panel-v2-filtros-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
 }
 
 /* Tabs de fecha */

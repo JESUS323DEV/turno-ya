@@ -76,6 +76,7 @@ export default function FormFinal({ configOverride = null } = {}) {
     canSend,
     diaOk,
     nombreOk,
+    apellidosOk,
     telefonoOk,
     emailOk,
     horaOk,
@@ -84,6 +85,7 @@ export default function FormFinal({ configOverride = null } = {}) {
     touched,
     handleChange,
     touch,
+    fieldState,
     limpiar,
     onSubmit,
     negocio,
@@ -238,15 +240,16 @@ export default function FormFinal({ configOverride = null } = {}) {
 
                   {campos.apellidos && (
                     <label className="reserva-label ">
-                      <span className="reserva-label-row">Apellidos*</span>
+                      <span className="reserva-label-row">Apellidos* {fieldIcon("apellidos", apellidosOk)}</span>
                       <input
-                        className="reserva-input"
+                        className={`reserva-input ${fieldState("apellidos", apellidosOk)}`}
                         type="text"
                         name="apellidos"
                         value={form.apellidos}
                         placeholder="Apellidos"
                         autoComplete="family-name"
                         onChange={(e) => handleChange("apellidos", e.target.value)}
+                        onBlur={() => touch("apellidos")}
                       />
                     </label>
                   )}
@@ -414,12 +417,16 @@ export default function FormFinal({ configOverride = null } = {}) {
                         {p.opciones?.map((o) => <option key={o} value={o}>{o}</option>)}
                       </select>
                     ) : p.campoTipo === "textarea" ? (
-                      <textarea
-                        className="reserva-textarea"
-                        rows={3}
-                        value={form.extras?.[p.id] ?? ""}
-                        onChange={(e) => handleExtra(p.id, e.target.value)}
-                      />
+                      <>
+                        <textarea
+                          className="reserva-textarea"
+                          rows={3}
+                          maxLength={300}
+                          value={form.extras?.[p.id] ?? ""}
+                          onChange={(e) => handleExtra(p.id, e.target.value)}
+                        />
+                        <span className="reserva-char-count">{(form.extras?.[p.id] ?? "").length}/300</span>
+                      </>
                     ) : (
                       <input
                         className="reserva-input"
@@ -445,8 +452,10 @@ export default function FormFinal({ configOverride = null } = {}) {
                     value={form.mensaje}
                     placeholder="Cuéntanos algo más (alergias, ocasiones especiales, etc.)"
                     rows={4}
+                    maxLength={500}
                     onChange={(e) => handleChange("mensaje", e.target.value)}
                   />
+                  <span className="reserva-char-count">{form.mensaje.length}/500</span>
                 </label>
               )}
 
@@ -460,7 +469,7 @@ export default function FormFinal({ configOverride = null } = {}) {
                   type="button"
                   className="reserva-btn"
                   onClick={() => {
-                    ["nombre", "email", "telefono", "personas", "servicio", "dia", "hora"].forEach(f => touch(f));
+                    ["nombre", "apellidos", "email", "telefono", "personas", "servicio", "dia", "hora"].forEach(f => touch(f));
                     if (canSend && aceptaPrivacidad) setStep(2);
                   }}
                 >

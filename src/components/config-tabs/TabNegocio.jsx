@@ -1,37 +1,8 @@
-import { useState } from "react";
-import { User, UserCheck, Phone, Mail, Users, Calendar, Clock, MessageSquare, ChevronLeft, ChevronRight } from "lucide-react";
+import { User, UserCheck, Phone, Mail, Users, Calendar, Clock, MessageSquare } from "lucide-react";
 import { PERFILES } from "../../config/perfiles";
-import { TEMAS } from "../../config/temas";
 import "../../styles/config-tabs/tabNegocio.css";
 
-const TEMAS_PREVIEW = TEMAS.filter(t => t.id !== "personalizado");
-
-function getPreviewBg(theme) {
-  if (theme.bgImage) return { backgroundImage: `url(${theme.bgImage})`, backgroundSize: "cover", backgroundPosition: "center" };
-  return { background: theme.gradient || theme.bg || "transparent" };
-}
-
 export default function TabNegocio({ draft, setField }) {
-  const [previewHistory, setPreviewHistory] = useState([0]);
-  const [historyPos, setHistoryPos] = useState(0);
-  const currentTheme = TEMAS_PREVIEW[previewHistory[historyPos]];
-
-  const goNext = () => {
-    if (historyPos < previewHistory.length - 1) {
-      setHistoryPos(p => p + 1);
-      return;
-    }
-    const len = TEMAS_PREVIEW.length;
-    let nextIdx;
-    do { nextIdx = Math.floor(Math.random() * len); }
-    while (nextIdx === previewHistory[historyPos] && len > 1);
-    setPreviewHistory(h => [...h, nextIdx]);
-    setHistoryPos(p => p + 1);
-  };
-
-  const goPrev = () => {
-    if (historyPos > 0) setHistoryPos(p => p - 1);
-  };
   return (
     <div className="acc-body">
 
@@ -172,37 +143,8 @@ export default function TabNegocio({ draft, setField }) {
 
           </div>
 
-          {/* ── preview ── */}
-          <div className="neg-identity-preview" style={getPreviewBg(currentTheme)}>
-            <div className="neg-preview-row">
-              <button type="button"
-                className={`neg-preview-arrow neg-preview-arrow--${currentTheme.base}`}
-                onClick={goPrev} disabled={historyPos === 0}>
-                <ChevronLeft size={14} />
-              </button>
-              <div className="neg-preview-body">
-                {draft.logoUrl && <img src={draft.logoUrl} alt="" className="neg-preview-logo" />}
-                <div className="neg-preview-text">
-                  <span className="neg-preview-nombre" style={{ color: draft.colorNegocio }}>
-                    {draft.nombre || "Nombre del negocio"}
-                  </span>
-                  {draft.descripcion && (
-                    <span className="neg-preview-desc" style={{ color: currentTheme.textDesc }}>
-                      {draft.descripcion}
-                    </span>
-                  )}
-                </div>
-              </div>
-              <button type="button"
-                className={`neg-preview-arrow neg-preview-arrow--${currentTheme.base}`}
-                onClick={goNext}>
-                <ChevronRight size={14} />
-              </button>
-            </div>
-            <span className={`neg-preview-theme-label neg-preview-theme-label--${currentTheme.base}`}>
-             Tema: {currentTheme.label}
-            </span>
-          </div>
+
+
         </div>
       </div>
 

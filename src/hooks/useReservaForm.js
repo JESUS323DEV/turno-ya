@@ -143,6 +143,7 @@ export function useReservaForm(configOverride = null) {
 
   // Validaciones
   const nombreOk = form.nombre.trim().length >= 2;
+  const apellidosOk = form.apellidos.trim().length >= 2;
   const telefonoOk = /^\+[1-9]\d{6,14}$/.test(form.telefono.replace(/[\s\-().]/g, ""));
   const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email);
   const diaOk = form.dia !== "" && !isDiaCerrado(form.dia, negocio.horarios, negocio.fechasBloqueadas ?? []);
@@ -157,6 +158,7 @@ export function useReservaForm(configOverride = null) {
 
   const canSend =
     (!campos.nombre    || nombreOk) &&
+    (!campos.apellidos || apellidosOk) &&
     (!campos.telefono  || telefonoOk) &&
     (!emailRequired    || emailOk) &&
     (!campos.personas  || personasOk) &&
@@ -228,7 +230,10 @@ export function useReservaForm(configOverride = null) {
       setEnviando(true);
       setErrorEnvio("");
       try {
-        await enviarReserva(form, SLUG, negocio.perfilEmail ?? "reserva");
+        const formParaEnviar = form.apellidos
+          ? { ...form, nombre: [form.nombre, form.apellidos].filter(Boolean).join(" ") }
+          : form;
+        await enviarReserva(formParaEnviar, SLUG, negocio.perfilEmail ?? "reserva");
         try { localStorage.setItem(negocio.storageKey, JSON.stringify(form)); } catch { /* ignorar */ }
         setEnviado(true);
       } catch {
@@ -263,6 +268,7 @@ export function useReservaForm(configOverride = null) {
     emailRequired,
     diaOk,
     nombreOk,
+    apellidosOk,
     telefonoOk,
     emailOk,
     horaOk,

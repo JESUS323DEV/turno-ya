@@ -238,6 +238,14 @@
   min-height: 80px;
 }
 
+.reserva-char-count {
+  display: block;
+  text-align: right;
+  font-size: 11px;
+  color: var(--text-muted, #888);
+  margin-top: 3px;
+}
+
 /* Estados de validación */
 .reserva-label-row {
   display: flex;
