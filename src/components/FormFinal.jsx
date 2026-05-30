@@ -1,6 +1,6 @@
 // ─── Imports ────────────────────────────────────────────────────────────────
 import { useState } from "react";
-import { PhoneCall, Globe, Calendar, Clock, X } from "lucide-react";
+import { PhoneCall, Globe, Calendar, Clock, X, User, Phone, Mail, Users, Briefcase, MessageSquare, Lock } from "lucide-react";
 import { DayPicker } from "react-day-picker";
 import { es } from "date-fns/locale/es";
 import "react-day-picker/style.css";
@@ -494,15 +494,15 @@ export default function FormFinal({ configOverride = null } = {}) {
               <p className="form-section-title">Revisa tu reserva</p>
               <div className="reserva-resumen">
                 {[
-                  campos.nombre && form.nombre && { icon: "👤", valor: [form.nombre, form.apellidos].filter(Boolean).join(" ") },
-                  campos.telefono && form.telefono && { icon: "📞", valor: form.telefono },
-                  emailRequired && form.email && { icon: "📧", valor: form.email },
-                  campos.personas && { icon: "👥", valor: `${form.personas} ${Number(form.personas) === 1 ? "persona" : "personas"}` },
-                  form.servicio && { icon: "🛎️", valor: form.servicio },
-                  campos.fecha && form.dia && { icon: "📅", valor: form.dia.split("-").reverse().join("/") },
-                  campos.hora && form.hora && { icon: "🕐", valor: form.hora },
-                  ...(negocio.preguntasExtra?.filter(p => p.guardado && form.extras?.[p.id]).map(p => ({ icon: "📝", valor: `${p.label}: ${form.extras[p.id]}` })) ?? []),
-                  form.mensaje && { icon: "💬", valor: form.mensaje },
+                  campos.nombre && form.nombre && { icon: <User size={14} />, valor: [form.nombre, form.apellidos].filter(Boolean).join(" ") },
+                  campos.telefono && form.telefono && { icon: <Phone size={14} />, valor: form.telefono },
+                  emailRequired && form.email && { icon: <Mail size={14} />, valor: form.email },
+                  campos.personas && { icon: <Users size={14} />, valor: `${form.personas} ${Number(form.personas) === 1 ? "persona" : "personas"}` },
+                  form.servicio && { icon: <Briefcase size={14} />, valor: form.servicio },
+                  campos.fecha && form.dia && { icon: <Calendar size={14} />, valor: form.dia.split("-").reverse().join("/") },
+                  campos.hora && form.hora && { icon: <Clock size={14} />, valor: form.hora },
+                  ...(negocio.preguntasExtra?.filter(p => p.guardado && form.extras?.[p.id]).map(p => ({ icon: <MessageSquare size={14} />, valor: `${p.label}: ${form.extras[p.id]}` })) ?? []),
+                  form.mensaje && { icon: <MessageSquare size={14} />, valor: form.mensaje },
                 ].filter(Boolean).map(({ icon, valor }, i) => (
                   <div key={i} className="reserva-resumen-row">
                     <span className="reserva-resumen-icon">{icon}</span>
@@ -523,7 +523,7 @@ export default function FormFinal({ configOverride = null } = {}) {
             </>
           )}
 
-          <p className="form-footer">🔒 Tu información está segura y no será compartida.</p>
+          <p className="form-footer"><Lock size={12} /> Tu información está segura y no será compartida.</p>
 
         </form>
 
