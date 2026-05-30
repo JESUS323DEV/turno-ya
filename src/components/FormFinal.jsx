@@ -158,44 +158,40 @@ export default function FormFinal({ configOverride = null } = {}) {
       <div className="reserva-layout">
         <form className="reserva-form" onSubmit={onSubmit}>
 
-          <div className="reserva-cabecera">
-
-            {/* Cabecera: logo, nombre, descripción*/}
-            <div className="cabecera">
-              {negocio.logoUrl && (
-                <img src={negocio.logoUrl} alt={negocio.nombre} className="reserva-logo" />
-              )}
-
-              {(negocio.mostrarNombre ?? true) && (
-                <div className="reserva-tittle-negocio">
-                  <h1 className={`reserva-negocio-nombre reserva-negocio-nombre--${negocio.nombreSize ?? "md"}`} style={{ color: negocio.colorNegocio }}>{negocio.nombre}</h1>
+          {step === 1 && (
+            <>
+              <div className="reserva-cabecera">
+                <div className="cabecera">
+                  {negocio.logoUrl && (
+                    <img src={negocio.logoUrl} alt={negocio.nombre} className="reserva-logo" />
+                  )}
+                  {(negocio.mostrarNombre ?? true) && (
+                    <div className="reserva-tittle-negocio">
+                      <h1 className={`reserva-negocio-nombre reserva-negocio-nombre--${negocio.nombreSize ?? "md"}`} style={{ color: negocio.colorNegocio }}>{negocio.nombre}</h1>
+                    </div>
+                  )}
+                  {negocio.descripcion && (
+                    <p className="reserva-descripcion">{negocio.descripcion}</p>
+                  )}
                 </div>
-              )}
-
-
-              {negocio.descripcion && (
-                <p className="reserva-descripcion">{negocio.descripcion}</p>
-              )}
-
-            </div>
-            {/* Cabecera: links*/}
-            {negocio.links?.some(l => l) && (
-              <div className="reserva-links">
-                {negocio.links.filter(l => l).map((url, i) => {
-                  const Icon = url.includes("instagram") ? InstagramIcon : Globe;
-                  const label = url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");
-                  return (
-                    <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="reserva-link-item">
-                      <Icon size={15} />
-                      <span>{label}</span>
-                    </a>
-                  );
-                })}
+                {negocio.links?.some(l => l) && (
+                  <div className="reserva-links">
+                    {negocio.links.filter(l => l).map((url, i) => {
+                      const Icon = url.includes("instagram") ? InstagramIcon : Globe;
+                      const label = url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");
+                      return (
+                        <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="reserva-link-item">
+                          <Icon size={15} />
+                          <span>{label}</span>
+                        </a>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-
-          <h2 className="reserva-title">{negocio.tituloFormulario || "Reservas"}</h2>
+              <h2 className="reserva-title">{negocio.tituloFormulario || "Reservas"}</h2>
+            </>
+          )}
 
           {/* Aviso cierre temporal */}
           {cerradoHoy && (
