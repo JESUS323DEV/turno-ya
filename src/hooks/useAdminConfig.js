@@ -117,6 +117,7 @@ export function useAdminConfig() {
       const configInicial = { ...getConfigFinal(), pinAdmin: pin };
       await saveConfig(configInicial, pin);
       localStorage.setItem(CONFIG_KEY, JSON.stringify({ data: configInicial, cachedAt: Date.now() }));
+      setField("pinAdmin", pin);
       window.__RESERVAQ_NUEVO__ = false;
       setAutenticado(true);
       setCrearError("");
