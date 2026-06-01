@@ -38,7 +38,15 @@ Deno.serve(async (req) => {
       });
     }
 
-    const pinGuardado = data.datos?.pinAdmin ?? "1234";
+    const pinGuardado = data.datos?.pinAdmin;
+
+    if (!pinGuardado) {
+      return new Response(JSON.stringify({ ok: false, error: "PIN no configurado" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const ok = pin === pinGuardado;
 
     return new Response(JSON.stringify({ ok }), {
