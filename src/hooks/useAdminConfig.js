@@ -53,6 +53,8 @@ export function useAdminConfig() {
     descripcion: config.descripcion ?? "",
     links: config.links ?? ["", ""],
     logoUrl: config.logoUrl ?? "",
+    mostrarLogo: config.mostrarLogo ?? true,
+    mostrarLegal: config.mostrarLegal ?? true,
     mostrarNombre: config.mostrarNombre ?? true,
     mostrarPanelAyuda: config.mostrarPanelAyuda ?? true,
     colorNegocio: config.colorNegocio ?? "#7c3aed",

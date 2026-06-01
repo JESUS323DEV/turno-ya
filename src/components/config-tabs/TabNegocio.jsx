@@ -130,6 +130,14 @@ export default function TabNegocio({ draft, setField }) {
                   onChange={(e) => setField("logoUrl", e.target.value)} />
                 <span className="cfg-hint">Recomendado: imagen cuadrada sin márgenes, mínimo 200×200px.</span>
               </label>
+              <div className="cfg-toggle-row">
+                <span className="cfg-toggle-label1">Mostrar logo en el formulario</span>
+                <label className="cfg-toggle">
+                  <input type="checkbox" checked={draft.mostrarLogo ?? true}
+                    onChange={(e) => setField("mostrarLogo", e.target.checked)} />
+                  <span className="cfg-toggle-track" />
+                </label>
+              </div>
             </div>
 
             <label className="cfg-label">

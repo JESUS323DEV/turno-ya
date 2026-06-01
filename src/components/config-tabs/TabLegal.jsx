@@ -6,6 +6,14 @@ export default function TabLegal({ draft, setField }) {
       <div className="cfg-card">
         <h2 className="cfg-card-title">Textos legales</h2>
         <p className="cfg-card-subtitle">Estos textos aparecen en las páginas de privacidad y aviso legal de tu formulario.</p>
+        <div className="cfg-toggle-row">
+          <span className="cfg-toggle-label1">Mostrar links legales en el formulario</span>
+          <label className="cfg-toggle">
+            <input type="checkbox" checked={draft.mostrarLegal ?? true}
+              onChange={(e) => setField("mostrarLegal", e.target.checked)} />
+            <span className="cfg-toggle-track" />
+          </label>
+        </div>
       </div>
 
       <label className="cfg-label">

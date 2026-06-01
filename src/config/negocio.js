@@ -25,6 +25,8 @@ export const NEGOCIO_DEFAULT = {
   telefono: "+34695078648",  // con prefijo para el enlace tel:
   storageKey: "reservaq_reserva",
   pinAdmin: "",
+  mostrarLogo: true,
+  mostrarLegal: true,
   minPersonas: 1,
   maxPersonas: 20,
   slotInterval: 30,          // minutos entre slots de hora

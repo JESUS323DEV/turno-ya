@@ -160,7 +160,7 @@ export default function FormFinal({ configOverride = null } = {}) {
 
           <div className="reserva-cabecera">
             <div className="cabecera">
-              {negocio.logoUrl && (
+              {negocio.logoUrl && (negocio.mostrarLogo ?? true) && (
                 <img src={negocio.logoUrl} alt={negocio.nombre} className="reserva-logo" />
               )}
               {(negocio.mostrarNombre ?? true) && (
@@ -451,10 +451,12 @@ export default function FormFinal({ configOverride = null } = {}) {
                 </label>
               )}
 
-              <label className="reserva-privacidad-check">
-                <input type="checkbox" checked={aceptaPrivacidad} onChange={e => setAceptaPrivacidad(e.target.checked)} />
-                <span>He leído y acepto la <a href={`/${SLUG}/privacidad`} target="_blank" rel="noopener noreferrer">Política de privacidad</a></span>
-              </label>
+              {(negocio.mostrarLegal ?? true) && (
+                <label className="reserva-privacidad-check">
+                  <input type="checkbox" checked={aceptaPrivacidad} onChange={e => setAceptaPrivacidad(e.target.checked)} />
+                  <span>He leído y acepto la <a href={`/${SLUG}/privacidad`} target="_blank" rel="noopener noreferrer">Política de privacidad</a></span>
+                </label>
+              )}
 
               <div className="reserva-actions">
                 <button
@@ -462,7 +464,7 @@ export default function FormFinal({ configOverride = null } = {}) {
                   className="reserva-btn"
                   onClick={() => {
                     ["nombre", "apellidos", "email", "telefono", "personas", "servicio", "dia", "hora"].forEach(f => touch(f));
-                    if (canSend && aceptaPrivacidad) setStep(2);
+                    if (canSend && (aceptaPrivacidad || !(negocio.mostrarLegal ?? true))) setStep(2);
                   }}
                 >
                   Continuar →
@@ -542,11 +544,13 @@ export default function FormFinal({ configOverride = null } = {}) {
 
     <footer className="reserva-footer">
       <span className="reserva-footer-brand">Powered by <strong>Reservaq</strong></span>
-      <nav className="reserva-footer-links">
-        <a href={`/${SLUG}/privacidad`} target="_blank" rel="noopener noreferrer">Política de privacidad</a>
-        <span className="reserva-footer-sep">·</span>
-        <a href={`/${SLUG}/legal`} target="_blank" rel="noopener noreferrer">Aviso legal</a>
-      </nav>
+      {(negocio.mostrarLegal ?? true) && (
+        <nav className="reserva-footer-links">
+          <a href={`/${SLUG}/privacidad`} target="_blank" rel="noopener noreferrer">Política de privacidad</a>
+          <span className="reserva-footer-sep">·</span>
+          <a href={`/${SLUG}/legal`} target="_blank" rel="noopener noreferrer">Aviso legal</a>
+        </nav>
+      )}
     </footer>
     </>
   );
