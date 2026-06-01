@@ -33,8 +33,8 @@ export async function fetchConfig() {
     .single();
 
   if (error || !data) return null;
-  const { pinAdmin: _, ...datosSeguros } = data.datos ?? {};
-  return datosSeguros;
+  const { pinAdmin, ...datosSeguros } = data.datos ?? {};
+  return { ...datosSeguros, _hasPinAdmin: !!(pinAdmin) };
 }
 
 /** Guarda la config via Edge Function (verifica el PIN en el servidor).

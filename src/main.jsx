@@ -22,8 +22,9 @@ async function init() {
   try {
     const remota = await fetchConfig();
     if (remota) {
-      localStorage.setItem(CONFIG_KEY, JSON.stringify({ data: { ...NEGOCIO_DEFAULT, ...remota }, cachedAt: Date.now() }));
-      window.__RESERVAQ_NUEVO__ = false;
+      const { _hasPinAdmin, ...configData } = remota;
+      localStorage.setItem(CONFIG_KEY, JSON.stringify({ data: { ...NEGOCIO_DEFAULT, ...configData }, cachedAt: Date.now() }));
+      window.__RESERVAQ_NUEVO__ = !_hasPinAdmin;
     } else {
       localStorage.removeItem(CONFIG_KEY);
       window.__RESERVAQ_NUEVO__ = true;
