@@ -30,9 +30,13 @@ export { DIAS, horariosToForm, formToHorarios };
 export function useAdminConfig() {
   const config = getConfig();
 
+  const esNuevo = window.__RESERVAQ_NUEVO__ === true;
+
   const [pin, setPin] = useState("");
   const [autenticado, setAutenticado] = useState(false);
   const [pinError, setPinError] = useState("");
+  const [pinConfirmar, setPinConfirmar] = useState("");
+  const [crearError, setCrearError] = useState("");
 
   const [draft, setDraft] = useState({
     nombre: config.nombre,
@@ -102,6 +106,22 @@ export function useAdminConfig() {
   };
 
   const [guardado, setGuardado] = useState(false);
+
+  const crearPerfil = async (e) => {
+    e.preventDefault();
+    if (!pin) { setCrearError("Introduce un PIN"); return; }
+    if (pin !== pinConfirmar) { setCrearError("Los PINs no coinciden"); return; }
+    try {
+      const configInicial = { ...getConfigFinal(), pinAdmin: pin };
+      await saveConfig(configInicial, pin);
+      localStorage.setItem(CONFIG_KEY, JSON.stringify({ data: configInicial, cachedAt: Date.now() }));
+      window.__RESERVAQ_NUEVO__ = false;
+      setAutenticado(true);
+      setCrearError("");
+    } catch (err) {
+      setCrearError(err.message);
+    }
+  };
 
   const verificarPin = async (e) => {
     e.preventDefault();
@@ -272,6 +292,10 @@ export function useAdminConfig() {
     autenticado,
     pinError,
     verificarPin,
+    esNuevo,
+    pinConfirmar, setPinConfirmar,
+    crearError,
+    crearPerfil,
     draft,
     setField,
     setDia,

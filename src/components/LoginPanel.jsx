@@ -13,7 +13,7 @@ import "../styles/responsiveReservasPanel.css";
 
 export default function LoginPanel() {
   const adminConfig = useAdminConfig();
-  const { pin, setPin, autenticado, pinError, verificarPin } = adminConfig;
+  const { pin, setPin, autenticado, pinError, verificarPin, esNuevo, pinConfirmar, setPinConfirmar, crearError, crearPerfil } = adminConfig;
   const [seccion, setSeccion] = useState(null);
 
   const temaPanel = localStorage.getItem("reservaq-tema-panel") || "claro";
@@ -29,7 +29,46 @@ export default function LoginPanel() {
     return () => { document.body.style.removeProperty("background-color"); };
   }, [temaPanel]);
 
-  // ── 1. PIN (siempre primero) ───────────────────────────────────────────────
+  // ── 1. Nuevo negocio: crear PIN ───────────────────────────────────────────
+  if (esNuevo) {
+    return (
+      <section className="login-section" style={panelVars}>
+        <div className="login-wrap">
+          <img src={loginImg} alt="" className="login-hero-img" />
+          <form className="login-card" onSubmit={crearPerfil}>
+            <h2 className="login-title">Bienvenido</h2>
+            <p className="login-sub">Elige un PIN para tu panel de administración</p>
+            <div className="login-field">
+              <input
+                className={`login-input ${crearError ? "input-bad" : ""}`}
+                type="password"
+                inputMode="numeric"
+                maxLength={8}
+                placeholder="Elige tu PIN"
+                value={pin}
+                onChange={(e) => setPin(e.target.value)}
+                autoFocus
+              />
+              <input
+                className={`login-input ${crearError ? "input-bad" : ""}`}
+                type="password"
+                inputMode="numeric"
+                maxLength={8}
+                placeholder="Confirma tu PIN"
+                value={pinConfirmar}
+                onChange={(e) => setPinConfirmar(e.target.value)}
+                style={{ marginTop: "10px" }}
+              />
+              {crearError && <p className="login-error">{crearError}</p>}
+            </div>
+            <button className="login-btn" type="submit">Crear perfil</button>
+          </form>
+        </div>
+      </section>
+    );
+  }
+
+  // ── 2. PIN (siempre primero) ───────────────────────────────────────────────
   if (!autenticado) {
     return (
       <section className="login-section" style={panelVars}>

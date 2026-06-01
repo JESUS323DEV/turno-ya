@@ -23,11 +23,13 @@ async function init() {
     const remota = await fetchConfig();
     if (remota) {
       localStorage.setItem(CONFIG_KEY, JSON.stringify({ data: { ...NEGOCIO_DEFAULT, ...remota }, cachedAt: Date.now() }));
+      window.__RESERVAQ_NUEVO__ = false;
     } else {
       localStorage.removeItem(CONFIG_KEY);
+      window.__RESERVAQ_NUEVO__ = true;
     }
   } catch {
-    // Sin conexión, usa lo que haya en localStorage o defaults
+    window.__RESERVAQ_NUEVO__ = false;
   }
 
   createRoot(document.getElementById('root')).render(
