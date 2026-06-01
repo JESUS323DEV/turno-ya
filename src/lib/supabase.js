@@ -59,29 +59,30 @@ export async function saveConfig(datos, pin) {
   return json;
 }
 
-/** Lee las reservas del negocio desde Supabase. */
-export async function fetchReservas(slug) {
-  if (!supabase) return [];
-  const { data, error } = await supabase
-    .from("reservas")
-    .select("*")
-    .eq("slug", slug)
-    .order("created_at", { ascending: false });
-  if (error) return [];
-  return data ?? [];
+/** Lee las reservas del negocio via Edge Function (requiere PIN). */
+export async function fetchReservas(slug, pin) {
+  if (!url || !key) return [];
+  const res = await fetch(`${url}/functions/v1/obtener-reservas`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "apikey": key, "Authorization": `Bearer ${key}` },
+    body: JSON.stringify({ slug, pin }),
+  });
+  const json = await res.json();
+  if (!res.ok) return [];
+  return json.data ?? [];
 }
 
-/** Devuelve las horas de reservas confirmadas para una fecha concreta. */
+/** Devuelve las horas ocupadas para una fecha concreta (sin datos personales). */
 export async function fetchReservasByFecha(slug, fecha) {
-  if (!supabase) return [];
-  const { data, error } = await supabase
-    .from("reservas")
-    .select("hora")
-    .eq("slug", slug)
-    .eq("dia", fecha)
-    .eq("estado", "confirmada");
-  if (error) return [];
-  return data ?? [];
+  if (!url || !key) return [];
+  const res = await fetch(`${url}/functions/v1/obtener-slots-ocupados`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "apikey": key, "Authorization": `Bearer ${key}` },
+    body: JSON.stringify({ slug, fecha }),
+  });
+  const json = await res.json();
+  if (!res.ok) return [];
+  return json.data ?? [];
 }
 
 /** Confirma, cancela o elimina una reserva via Edge Function (verifica PIN). */

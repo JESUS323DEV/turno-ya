@@ -111,7 +111,7 @@ export default function ReservasPanel({ pin, onBack, onCuenta, draft = {} }) {
 
   useEffect(() => {
     const cargar = () => {
-      fetchReservas(SLUG).then((data) => {
+      fetchReservas(SLUG, pin).then((data) => {
         setReservasMock(data.map((r) => ({ ...r, fecha: r.dia })));
         setUltimaActualizacion(new Date());
       });
@@ -119,7 +119,7 @@ export default function ReservasPanel({ pin, onBack, onCuenta, draft = {} }) {
     cargar();
     const id = setInterval(cargar, 30000);
     return () => clearInterval(id);
-  }, []);
+  }, [pin]);
 
   // ── Historial ────────────────────────────────────────────────────────────────
   const esConsulta = (r) => (r.perfil ?? "") === "consulta" || (!r.fecha || r.fecha === "");
