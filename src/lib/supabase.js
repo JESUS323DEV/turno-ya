@@ -33,7 +33,8 @@ export async function fetchConfig() {
     .single();
 
   if (error || !data) return null;
-  return data.datos;
+  const { pinAdmin: _, ...datosSeguros } = data.datos ?? {};
+  return datosSeguros;
 }
 
 /** Guarda la config via Edge Function (verifica el PIN en el servidor).
@@ -94,6 +95,19 @@ export async function accionReserva(id, accion, pin, slug) {
   const json = await res.json();
   if (!res.ok) throw new Error(json.error || "Error");
   return json;
+}
+
+/** Verifica el PIN del admin en el servidor. Nunca compara en el cliente. */
+export async function verificarPinRemoto(pin, slug) {
+  if (!url || !key) throw new Error("Supabase no configurado");
+  const res = await fetch(`${url}/functions/v1/verificar-pin`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "apikey": key, "Authorization": `Bearer ${key}` },
+    body: JSON.stringify({ pin, slug }),
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.error || "Error al verificar PIN");
+  return json.ok === true;
 }
 
 /** Envía la reserva por email via Edge Function. */

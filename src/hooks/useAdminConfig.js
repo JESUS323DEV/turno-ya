@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { getConfig, CONFIG_KEY } from "../config/negocio";
-import { saveConfig, SLUG } from "../lib/supabase";
+import { saveConfig, verificarPinRemoto, SLUG } from "../lib/supabase";
 
 const DIAS = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
 
@@ -103,13 +103,18 @@ export function useAdminConfig() {
 
   const [guardado, setGuardado] = useState(false);
 
-  const verificarPin = (e) => {
+  const verificarPin = async (e) => {
     e.preventDefault();
-    if (pin === getConfig().pinAdmin) {
-      setAutenticado(true);
-      setPinError("");
-    } else {
-      setPinError("PIN incorrecto");
+    try {
+      const ok = await verificarPinRemoto(pin, SLUG);
+      if (ok) {
+        setAutenticado(true);
+        setPinError("");
+      } else {
+        setPinError("PIN incorrecto");
+      }
+    } catch {
+      setPinError("Error al verificar PIN");
     }
   };
 

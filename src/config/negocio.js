@@ -24,7 +24,7 @@ export const NEGOCIO_DEFAULT = {
   whatsapp: "34695078648",   // sin espacios ni +
   telefono: "+34695078648",  // con prefijo para el enlace tel:
   storageKey: "reservaq_reserva",
-  pinAdmin: "1234",
+  pinAdmin: "",
   minPersonas: 1,
   maxPersonas: 20,
   slotInterval: 30,          // minutos entre slots de hora
