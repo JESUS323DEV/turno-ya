@@ -116,6 +116,7 @@ Este sitio web ha sido desarrollado con la plataforma Reservaq (www.reservaq.com
 };
 
 export const CONFIG_KEY = "reservaq_config";
+const CONFIG_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
 /** Lee la config en este orden: widget > localStorage > defaults.
  *  La config de Supabase se carga al iniciar la app en main.jsx
@@ -128,7 +129,15 @@ export function getConfig() {
   // 2. Config cacheada (viene de Supabase o del admin)
   try {
     const saved = localStorage.getItem(CONFIG_KEY);
-    if (saved) return { ...NEGOCIO_DEFAULT, ...JSON.parse(saved) };
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      const data = parsed.cachedAt ? parsed.data : parsed;
+      const cachedAt = parsed.cachedAt ?? 0;
+      if (Date.now() - cachedAt < CONFIG_TTL_MS) {
+        return { ...NEGOCIO_DEFAULT, ...data };
+      }
+      localStorage.removeItem(CONFIG_KEY);
+    }
   } catch {
     // config corrupta, usa defaults
   }

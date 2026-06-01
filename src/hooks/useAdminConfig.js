@@ -249,7 +249,7 @@ export function useAdminConfig() {
     const configFinal = getConfigFinal();
     try {
       await saveConfig(configFinal, pin);
-      localStorage.setItem(CONFIG_KEY, JSON.stringify(configFinal));
+      localStorage.setItem(CONFIG_KEY, JSON.stringify({ data: configFinal, cachedAt: Date.now() }));
       window.dispatchEvent(new StorageEvent("storage", { key: CONFIG_KEY }));
       window.dispatchEvent(new CustomEvent("reservaq:tema", { detail: configFinal }));
       setPin(configFinal.pinAdmin);

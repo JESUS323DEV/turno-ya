@@ -22,7 +22,7 @@ async function init() {
   try {
     const remota = await fetchConfig();
     if (remota) {
-      localStorage.setItem(CONFIG_KEY, JSON.stringify({ ...NEGOCIO_DEFAULT, ...remota }));
+      localStorage.setItem(CONFIG_KEY, JSON.stringify({ data: { ...NEGOCIO_DEFAULT, ...remota }, cachedAt: Date.now() }));
     } else {
       localStorage.removeItem(CONFIG_KEY);
     }
