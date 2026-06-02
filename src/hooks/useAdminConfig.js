@@ -269,13 +269,12 @@ export function useAdminConfig() {
 
   const guardar = async (e) => {
     e.preventDefault();
-    const configFinal = getConfigFinal();
+    const configFinal = { ...getConfigFinal(), pinAdmin: pin };
     try {
       await saveConfig(configFinal, pin);
       localStorage.setItem(CONFIG_KEY, JSON.stringify({ data: configFinal, cachedAt: Date.now() }));
       window.dispatchEvent(new StorageEvent("storage", { key: CONFIG_KEY }));
       window.dispatchEvent(new CustomEvent("reservaq:tema", { detail: configFinal }));
-      setPin(configFinal.pinAdmin);
       setErrorGuardado("");
       setGuardado(true);
       setTimeout(() => setGuardado(false), 2500);

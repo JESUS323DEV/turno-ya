@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import FormFinal from "./components/FormFinal";
 import LoginPanel from "./components/LoginPanel";
 import PrivacidadPage from "./components/PrivacidadPage";
-import LegalPage from "./components/LegalPage";
 import { getConfig } from "./config/negocio";
 import { TEMAS } from "./config/temas";
 import { getSubpage } from "./lib/supabase";
@@ -126,8 +125,8 @@ function App() {
     return () => window.removeEventListener("hashchange", onHash);
   }, []);
 
-  if (subpage === "privacidad") return <PrivacidadPage />;
-  if (subpage === "legal") return <LegalPage />;
+  if (subpage === "privacidad") return <PrivacidadPage tipo="privacidad" />;
+  if (subpage === "legal") return <PrivacidadPage tipo="legal" />;
   if (vista === "admin") return <LoginPanel />;
   return <div id="reservaq-form"><FormFinal /></div>;
 }

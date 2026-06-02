@@ -2,18 +2,20 @@ import { useEffect, useState } from "react";
 import { getConfig } from "../config/negocio";
 import "../styles/privacidadPage.css";
 
-export default function PrivacidadPage() {
+export default function PrivacidadPage({ tipo = "privacidad" }) {
   const [texto, setTexto] = useState("");
 
   useEffect(() => {
     const config = getConfig();
-    setTexto(config.textoPoliticaPrivacidad || "");
-  }, []);
+    setTexto(tipo === "privacidad" ? config.textoPoliticaPrivacidad : config.textoAvisoLegal);
+  }, [tipo]);
 
   return (
     <div className="legal-page">
       <div className="legal-page-content">
-        <h1 className="legal-page-title">Política de privacidad</h1>
+        <h1 className="legal-page-title">
+          {tipo === "privacidad" ? "Política de privacidad" : "Aviso legal"}
+        </h1>
         <div className="legal-page-body">
           {texto.split("\n").map((linea, i) =>
             linea.trim() === ""

@@ -55,7 +55,6 @@ export default function ReservasPanel({ pin, onBack, onCuenta, draft = {} }) {
   const [tab, setTab] = useState("panel");
   const [reservasMock, setReservasMock] = useState([]);
   const [filtroPanel, setFiltroPanel] = useState("todas");
-  const [modalMensaje, setModalMensaje] = useState(null);
   const [confirmarEliminar, setConfirmarEliminar] = useState(null);
   const [busqueda, setBusqueda] = useState("");
   const [filtroServicio, setFiltroServicio] = useState("todos");
@@ -122,7 +121,7 @@ export default function ReservasPanel({ pin, onBack, onCuenta, draft = {} }) {
   }, [pin]);
 
   // ── Historial ────────────────────────────────────────────────────────────────
-  const esConsulta = (r) => (r.perfil ?? "") === "consulta" || (!r.fecha || r.fecha === "");
+  const esConsulta = (r) => (r.perfil ?? "") === "consulta";
   const minutosParaHistorial = draft.minutosParaHistorial ?? 120;
   const estaEnHistorial = (r) => {
     if (r.estado === "eliminada") return true;
@@ -227,7 +226,7 @@ export default function ReservasPanel({ pin, onBack, onCuenta, draft = {} }) {
     try {
       await accionReserva(id, estado === "confirmada" ? "confirmar" : "cancelar", pin, SLUG);
     } catch {
-      fetchReservas(SLUG).then((data) => setReservasMock(data.map((r) => ({ ...r, fecha: r.dia }))));
+      fetchReservas(SLUG, pin).then((data) => setReservasMock(data.map((r) => ({ ...r, fecha: r.dia }))));
     }
   };
 
@@ -237,7 +236,7 @@ export default function ReservasPanel({ pin, onBack, onCuenta, draft = {} }) {
     try {
       await accionReserva(id, "eliminar", pin, SLUG);
     } catch {
-      fetchReservas(SLUG).then((data) => setReservasMock(data.map((r) => ({ ...r, fecha: r.dia }))));
+      fetchReservas(SLUG, pin).then((data) => setReservasMock(data.map((r) => ({ ...r, fecha: r.dia }))));
     }
   };
 
@@ -867,19 +866,6 @@ export default function ReservasPanel({ pin, onBack, onCuenta, draft = {} }) {
           </div>
         )}
 
-        {modalMensaje && (
-          <div className="res-modal-overlay" onClick={() => setModalMensaje(null)}>
-            <div className="res-modal" onClick={(e) => e.stopPropagation()}>
-              <div className="res-modal-header">
-                <span className="res-modal-title">Mensaje del cliente</span>
-                <button type="button" className="res-modal-close" onClick={() => setModalMensaje(null)}>✕</button>
-              </div>
-              <div className="res-modal-body">
-                <p className="res-modal-text">💬 {modalMensaje}</p>
-              </div>
-            </div>
-          </div>
-        )}
       </section>
     </>
   );

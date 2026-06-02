@@ -9,7 +9,7 @@ export default function TabCuenta({ draft, setField, guardar, guardado, errorGua
 
   const copiarWidget = () => {
     const json = exportarWidget();
-    const snippet = `<div id="reservaq" data-config='${json}'></div>\n<link rel="stylesheet" href="https://turnoya-demo.netlify.app/reservaq.css">\n<script src="https://turnoya-demo.netlify.app/reservaq.js"></script>`;
+    const snippet = `<div id="reservaq" data-config='${json}'></div>\n<link rel="stylesheet" href="https://reservaq.com/reservaq.css">\n<script src="https://reservaq.com/reservaq.js"></script>`;
     navigator.clipboard.writeText(snippet).then(() => {
       setCopiado(true);
       setTimeout(() => setCopiado(false), 2500);
@@ -159,7 +159,7 @@ export default function TabCuenta({ draft, setField, guardar, guardado, errorGua
               <input className="cfg-input" type="password" inputMode="numeric"
                 maxLength={8} placeholder="Nuevo PIN" value={draft.pinAdmin}
                 onChange={(e) => setField("pinAdmin", e.target.value)} />
-              <span className="cfg-counter">{draft.pinAdmin.length} / 8</span>
+              <span className="cfg-counter">{(draft.pinAdmin ?? "").length} / 8</span>
             </label>
           </div>
         </div>

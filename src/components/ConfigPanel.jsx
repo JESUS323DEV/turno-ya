@@ -178,9 +178,12 @@ export default function ConfigPanel({ config, onBack, openCuenta = false, onCuen
             {/* ── Topbar desktop ── */}
             <div className="cfg-topbar">
               <button type="button" className="cfg-seccion-back" onClick={onBack}>← Volver</button>
-              <button className="cfg-btn-primary" type="button" onClick={guardar}>
-                {guardado ? "✓ Guardado" : "Guardar cambios"}
-              </button>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                {errorGuardado && <span style={{ fontSize: "12px", color: "#dc2626" }}>{errorGuardado}</span>}
+                <button className="cfg-btn-primary" type="button" onClick={guardar}>
+                  {guardado ? "✓ Guardado" : "Guardar cambios"}
+                </button>
+              </div>
             </div>
 
             {/* ── Header móvil + Tabnav (sticky) ── */}
