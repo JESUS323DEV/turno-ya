@@ -9,7 +9,7 @@ export default function TabCuenta({ draft, setField, guardar, guardado, errorGua
 
   const copiarWidget = () => {
     const json = exportarWidget();
-    const snippet = `<div id="reservaq" data-config='${json}'></div>\n<link rel="stylesheet" href="https://reservaq.com/reservaq.css">\n<script src="https://reservaq.com/reservaq.js"></script>`;
+    const snippet = `<div id="reservaq" data-config='${json}'></div>\n<link rel="stylesheet" href="https://app.reservaq.com/reservaq.css">\n<script src="https://app.reservaq.com/reservaq.js"></script>`;
     navigator.clipboard.writeText(snippet).then(() => {
       setCopiado(true);
       setTimeout(() => setCopiado(false), 2500);
