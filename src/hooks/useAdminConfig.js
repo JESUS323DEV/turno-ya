@@ -285,7 +285,16 @@ export function useAdminConfig() {
 
   const exportarWidget = () => {
     const config = getConfigFinal();
-    const { pinAdmin: _, storageKey: __, ...configPublica } = config;
+    const {
+      pinAdmin: _,
+      storageKey: __,
+      emailNegocio: ___,
+      emailConfirmacion: ____,
+      temasGuardados: _____,
+      temasFavoritos: ______,
+      minutosParaHistorial: _______,
+      ...configPublica
+    } = config;
     return JSON.stringify({ ...configPublica, slug: SLUG });
   };
 
