@@ -111,6 +111,19 @@ export async function verificarPinRemoto(pin, slug) {
   return json.ok === true;
 }
 
+/** Lee la config pública de un negocio sin PIN (para el widget embebido). */
+export async function fetchConfigPublica(slug) {
+  if (!url || !key) return null;
+  const res = await fetch(`${url}/functions/v1/config-publica`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "apikey": key, "Authorization": `Bearer ${key}` },
+    body: JSON.stringify({ slug }),
+  });
+  const json = await res.json();
+  if (!res.ok) return null;
+  return json.config ?? null;
+}
+
 /** Envía la reserva por email via Edge Function. */
 export async function enviarReserva(form, slug, perfil = "reserva") {
   if (!url || !key) throw new Error("Supabase no configurado");

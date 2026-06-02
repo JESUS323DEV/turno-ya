@@ -4,6 +4,25 @@ import FormFinal from "./components/FormFinal";
 import { getConfig } from "./config/negocio";
 import { TEMAS } from "./config/temas";
 
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+async function fetchConfigPublica(slug) {
+  if (!SUPABASE_URL || !SUPABASE_KEY) return null;
+  try {
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/config-publica`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` },
+      body: JSON.stringify({ slug }),
+    });
+    const json = await res.json();
+    if (!res.ok) return null;
+    return json.config ?? null;
+  } catch {
+    return null;
+  }
+}
+
 /* ── CSS vars base inyectados en <head> (sin contaminar el host con body/root resets) ── */
 function injectWidgetStyles() {
   if (document.getElementById("reservaq-styles")) return;
@@ -90,20 +109,36 @@ function WidgetRoot() {
   return <div id="reservaq-form"><FormFinal /></div>;
 }
 
-/* ── Auto-init al encontrar <div id="reservaq" data-config='...'> ── */
-(function () {
+/* ── Auto-init: soporta data-slug (nuevo) y data-config (legado) ── */
+(async function () {
   const el = document.getElementById("reservaq");
   if (!el) return;
 
   injectWidgetStyles();
 
-  const raw = el.getAttribute("data-config");
-  if (raw) {
+  const slug = el.getAttribute("data-slug");
+  const rawConfig = el.getAttribute("data-config");
+
+  if (slug) {
+    // Nuevo flujo: mostrar skeleton mientras carga la config del servidor
+    el.innerHTML = `<div id="reservaq-form" style="min-height:180px;display:flex;align-items:center;justify-content:center;font-family:system-ui,sans-serif;color:#9ca3af;font-size:14px">Cargando...</div>`;
+    const config = await fetchConfigPublica(slug);
+    if (config) {
+      window.__RESERVAQ_CONFIG__ = { ...config, slug };
+    } else {
+      console.warn("[Reservaq] No se pudo cargar la config para el slug:", slug);
+    }
+    el.innerHTML = "";
+  } else if (rawConfig) {
+    // Flujo legado: config embebida en el HTML
     try {
-      window.__RESERVAQ_CONFIG__ = JSON.parse(raw);
+      window.__RESERVAQ_CONFIG__ = JSON.parse(rawConfig);
     } catch {
       console.warn("[Reservaq] data-config inválido, usando config por defecto.");
     }
+  } else {
+    console.warn("[Reservaq] Añade data-slug al elemento #reservaq.");
+    return;
   }
 
   createRoot(el).render(

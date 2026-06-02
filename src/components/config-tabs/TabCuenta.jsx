@@ -2,14 +2,14 @@ import { useState } from "react";
 import { getPanelVars } from "../../config/temasPanel";
 import { ArrowLeft, Settings, FlaskConical, ScrollText, User } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
+import { SLUG } from "../../lib/supabase";
 import "../../styles/config-tabs/tabCuenta.css";
 
-export default function TabCuenta({ draft, setField, guardar, guardado, errorGuardado, exportarWidget, temaPanel, onClose }) {
+export default function TabCuenta({ draft, setField, guardar, guardado, errorGuardado, temaPanel, onClose }) {
   const [copiado, setCopiado] = useState(false);
 
   const copiarWidget = () => {
-    const json = exportarWidget();
-    const snippet = `<div id="reservaq" data-config='${json}'></div>\n<link rel="stylesheet" href="https://app.reservaq.com/reservaq.css">\n<script src="https://app.reservaq.com/reservaq.js"></script>`;
+    const snippet = `<div id="reservaq" data-slug="${SLUG}"></div>\n<link rel="stylesheet" href="https://app.reservaq.com/reservaq.css">\n<script src="https://app.reservaq.com/reservaq.js"></script>`;
     navigator.clipboard.writeText(snippet).then(() => {
       setCopiado(true);
       setTimeout(() => setCopiado(false), 2500);
