@@ -158,6 +158,10 @@ export default function FormFinal({ configOverride = null } = {}) {
       <div className="reserva-layout">
         <form className="reserva-form" onSubmit={onSubmit}>
 
+          {((negocio.logoUrl && (negocio.mostrarLogo ?? true)) ||
+            (negocio.mostrarNombre ?? true) ||
+            (step === 1 && negocio.descripcion) ||
+            (step === 1 && negocio.links?.some(l => l))) && (
           <div className="reserva-cabecera">
             <div className="cabecera">
               {negocio.logoUrl && (negocio.mostrarLogo ?? true) && (
@@ -187,6 +191,7 @@ export default function FormFinal({ configOverride = null } = {}) {
               </div>
             )}
           </div>
+          )}
           {step === 1 && <h2 className="reserva-title">{negocio.tituloFormulario || "Reservas"}</h2>}
 
           {/* Aviso cierre temporal */}
