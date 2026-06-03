@@ -13,6 +13,8 @@
     .cfg-card-subtitle {
         grid-column: 1 / -1 !important;
     }
+
+    
 }
 
 /* XL (1280px – 1399px): ídem */
@@ -37,6 +39,8 @@
         align-items: stretch;
         overflow: hidden;
     }
+
+  
 
     .cfg-wrapper {
         display: grid;

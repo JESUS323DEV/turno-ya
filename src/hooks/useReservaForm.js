@@ -263,6 +263,7 @@ export function useReservaForm(configOverride = null) {
     touched,
     today,
     canSend,
+    extrasOk,
     enviando,
     errorEnvio,
     emailRequired,

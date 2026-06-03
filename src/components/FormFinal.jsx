@@ -1,5 +1,5 @@
 // ─── Imports ────────────────────────────────────────────────────────────────
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { PhoneCall, Globe, Calendar, Clock, X, User, Phone, Mail, Users, Briefcase, MessageSquare, Lock } from "lucide-react";
 import { DayPicker } from "react-day-picker";
 import { es } from "date-fns/locale/es";
@@ -74,6 +74,7 @@ export default function FormFinal({ configOverride = null } = {}) {
     form,
     today,
     canSend,
+    extrasOk,
     diaOk,
     nombreOk,
     apellidosOk,
@@ -105,6 +106,21 @@ export default function FormFinal({ configOverride = null } = {}) {
   const [helpOpen, setHelpOpen] = useState(false);
   const [step, setStep] = useState(1);
   const [aceptaPrivacidad, setAceptaPrivacidad] = useState(false);
+  const formRef = useRef(null);
+  const esFormSimple = !campos.fecha && !campos.hora;
+
+  const canGoStep2 =
+    (!campos.nombre    || nombreOk) &&
+    (!campos.apellidos || apellidosOk) &&
+    (!emailRequired    || emailOk) &&
+    (!campos.telefono  || telefonoOk) &&
+    (!campos.personas  || personasOk) &&
+    extrasOk;
+
+  const canGoStep3 =
+    (!campos.fecha || diaOk) &&
+    (!campos.hora  || horaOk) &&
+    (aceptaPrivacidad || !(negocio.mostrarLegal ?? true));
 
   // ─── Helper: icono de validación por campo ─────────────────────────────────
   const fieldIcon = (field, isOk) => {
@@ -156,7 +172,7 @@ export default function FormFinal({ configOverride = null } = {}) {
     <>
     <section className="reserva-section">
       <div className="reserva-layout">
-        <form className="reserva-form" onSubmit={onSubmit}>
+        <form ref={formRef} className="reserva-form" onSubmit={onSubmit}>
 
           {((negocio.logoUrl && (negocio.mostrarLogo ?? true)) ||
             (negocio.mostrarNombre ?? true) ||
@@ -212,11 +228,10 @@ export default function FormFinal({ configOverride = null } = {}) {
             </div>
           </div>*/}
 
-          {/* ── Paso 1: formulario completo ── */}
+          {/* ── Paso 1: datos personales + extras ── */}
           {step === 1 && (
             <>
               <div className="cont-form-fields">
-
                 <div className="form-fields-grid">
                   <h4 className="form-section-title col-span-2">Tus datos:</h4>
                   {campos.nombre && (
@@ -234,9 +249,8 @@ export default function FormFinal({ configOverride = null } = {}) {
                       />
                     </label>
                   )}
-
                   {campos.apellidos && (
-                    <label className="reserva-label ">
+                    <label className="reserva-label">
                       <span className="reserva-label-row">Apellidos* {fieldIcon("apellidos", apellidosOk)}</span>
                       <input
                         className={`reserva-input ${fieldState("apellidos", apellidosOk)}`}
@@ -265,7 +279,6 @@ export default function FormFinal({ configOverride = null } = {}) {
                       />
                     </label>
                   )}
-
                   {campos.telefono && (
                     <label className={`reserva-label${!campos.personas ? " col-span-2" : ""}`}>
                       <span className="reserva-label-row">Teléfono* {fieldIcon("telefono", telefonoOk)}</span>
@@ -314,8 +327,111 @@ export default function FormFinal({ configOverride = null } = {}) {
                     </label>
                   )}
                 </div>
+              </div>
 
-                {(campos.fecha || campos.hora) && <div className="form-fields-grid2">
+              <div className="cont-reserva-extra">
+                {negocio.tituloPreguntasExtra && negocio.preguntasExtra?.some(p => p.guardado) && (
+                  <h4 className="form-section-title">{negocio.tituloPreguntasExtra}</h4>
+                )}
+                {negocio.preguntasExtra?.filter((p) => p.guardado && p.label.trim()).map((p) => (
+                  <label key={p.id} className="reserva-label-extra">
+                    <span className="reserva-label2">
+                      <span>{p.label}{p.requerida && "*"}</span>
+                    </span>
+                    {p.tipo === "seleccion" ? (
+                      <select
+                        className="reserva-input"
+                        value={form.extras?.[p.id] ?? ""}
+                        onChange={(e) => handleExtra(p.id, e.target.value)}
+                      >
+                        <option value="">Selecciona una opción</option>
+                        {p.opciones?.map((o) => <option key={o} value={o}>{o}</option>)}
+                      </select>
+                    ) : p.campoTipo === "textarea" ? (
+                      <>
+                        <textarea
+                          className="reserva-textarea"
+                          rows={3}
+                          maxLength={300}
+                          value={form.extras?.[p.id] ?? ""}
+                          onChange={(e) => handleExtra(p.id, e.target.value)}
+                        />
+                        <span className="reserva-char-count">{(form.extras?.[p.id] ?? "").length}/300</span>
+                      </>
+                    ) : (
+                      <input
+                        className="reserva-input"
+                        type="text"
+                        value={form.extras?.[p.id] ?? ""}
+                        onChange={(e) => handleExtra(p.id, e.target.value)}
+                      />
+                    )}
+                  </label>
+                ))}
+              </div>
+
+              {/* En modo simple: mensaje y legal también en paso 1 */}
+              {esFormSimple && campos.mensaje && (
+                <label className="reserva-label">
+                  <span className="reserva-label2">Mensaje (opcional)</span>
+                  <textarea
+                    className="reserva-textarea"
+                    name="mensaje"
+                    value={form.mensaje}
+                    placeholder="Cuéntanos algo más (alergias, ocasiones especiales, etc.)"
+                    rows={4}
+                    maxLength={500}
+                    onChange={(e) => handleChange("mensaje", e.target.value)}
+                  />
+                  <span className="reserva-char-count">{form.mensaje.length}/500</span>
+                </label>
+              )}
+              {esFormSimple && (negocio.mostrarLegal ?? true) && (
+                <label className="reserva-privacidad-check">
+                  <input type="checkbox" checked={aceptaPrivacidad} onChange={e => setAceptaPrivacidad(e.target.checked)} />
+                  <span>He leído y acepto la <a href={`/${SLUG}/privacidad`} target="_blank" rel="noopener noreferrer">Política de privacidad</a></span>
+                </label>
+              )}
+
+              <div className="reserva-actions">
+                <button
+                  type="button"
+                  className="reserva-btn"
+                  disabled={esFormSimple && enviando}
+                  onClick={() => {
+                    ["nombre", "apellidos", "email", "telefono", "personas", "servicio"].forEach(f => touch(f));
+                    if (esFormSimple) {
+                      if (canSend && (aceptaPrivacidad || !(negocio.mostrarLegal ?? true))) {
+                        formRef.current?.requestSubmit();
+                      }
+                    } else {
+                      if (canGoStep2) setStep(2);
+                    }
+                  }}
+                >
+                  {esFormSimple
+                    ? (enviando ? "Enviando..." : (negocio.textoBtnReservar || "Confirmar reserva"))
+                    : "Continuar →"}
+                  {esFormSimple && !enviando && negocio.modoEnvio !== "email" && <img src={icon1} alt="WhatsApp" />}
+                </button>
+                <button className="reserva-btn-secondary" type="button" onClick={limpiar}>
+                  Limpiar
+                </button>
+                {(negocio.mostrarTelefono ?? true) && (
+                  <div className="reserva-tel">
+                    <p>{negocio.textoTelefono || "También puedes reservar por teléfono"}</p>
+                    <a href={`tel:${negocio.telefono}`}><PhoneCall className="icon-tel" /></a>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+
+          {/* ── Paso 2: fecha, hora, mensaje y legal ── */}
+          {step === 2 && !esFormSimple && (
+            <>
+              <div className="cont-form-fields">
+                <div className="form-fields-grid2">
                   <h4 className="form-section-title col-span-2">Fecha:</h4>
                   {campos.fecha && (
                     <div className="reserva-label">
@@ -356,13 +472,9 @@ export default function FormFinal({ configOverride = null } = {}) {
                       </div>
                     </div>
                   )}
-
                   {campos.hora && (
                     <div className="reserva-label">
-                      <span className="reserva-label2">
-                        Hora*
-                      </span>
-
+                      <span className="reserva-label2">Hora*</span>
                       {!form.dia || !diaOk ? (
                         <p className="slots-placeholder">Selecciona un día primero</p>
                       ) : slots.length === 0 ? (
@@ -390,59 +502,12 @@ export default function FormFinal({ configOverride = null } = {}) {
                       )}
                     </div>
                   )}
-                </div>}
-              </div>
-
-              <div className="cont-reserva-extra">
-                {negocio.tituloPreguntasExtra && negocio.preguntasExtra?.some(p => p.guardado) && (
-                  <h4 className="form-section-title">{negocio.tituloPreguntasExtra}</h4>
-                )}
-                {negocio.preguntasExtra?.filter((p) => p.guardado && p.label.trim()).map((p) => (
-                  <label key={p.id} className="reserva-label-extra">
-                    <span className="reserva-label2">
-                      <span>{p.label}{p.requerida && "*"}</span>
-                    </span>
-
-
-                    {p.tipo === "seleccion" ? (
-                      <select
-                        className="reserva-input "
-                        value={form.extras?.[p.id] ?? ""}
-                        onChange={(e) => handleExtra(p.id, e.target.value)}
-                      >
-                        <option value="">Selecciona una opción</option>
-                        {p.opciones?.map((o) => <option key={o} value={o}>{o}</option>)}
-                      </select>
-                    ) : p.campoTipo === "textarea" ? (
-                      <>
-                        <textarea
-                          className="reserva-textarea"
-                          rows={3}
-                          maxLength={300}
-                          value={form.extras?.[p.id] ?? ""}
-                          onChange={(e) => handleExtra(p.id, e.target.value)}
-                        />
-                        <span className="reserva-char-count">{(form.extras?.[p.id] ?? "").length}/300</span>
-                      </>
-                    ) : (
-                      <input
-                        className="reserva-input"
-                        type="text"
-                        value={form.extras?.[p.id] ?? ""}
-                        onChange={(e) => handleExtra(p.id, e.target.value)}
-                      />
-                    )}
-                  </label>
-                ))}
+                </div>
               </div>
 
               {campos.mensaje && (
                 <label className="reserva-label">
-                  <span className="reserva-label2">
-
-                    Mensaje (opcional)
-                  </span>
-
+                  <span className="reserva-label2">Mensaje (opcional)</span>
                   <textarea
                     className="reserva-textarea"
                     name="mensaje"
@@ -468,27 +533,21 @@ export default function FormFinal({ configOverride = null } = {}) {
                   type="button"
                   className="reserva-btn"
                   onClick={() => {
-                    ["nombre", "apellidos", "email", "telefono", "personas", "servicio", "dia", "hora"].forEach(f => touch(f));
-                    if (canSend && (aceptaPrivacidad || !(negocio.mostrarLegal ?? true))) setStep(2);
+                    ["dia", "hora"].forEach(f => touch(f));
+                    if (canGoStep3) setStep(3);
                   }}
                 >
                   Continuar →
                 </button>
-                <button className="reserva-btn-secondary" type="button" onClick={limpiar}>
-                  Limpiar
+                <button className="reserva-btn-secondary" type="button" onClick={() => setStep(1)}>
+                  ← Volver
                 </button>
-                {(negocio.mostrarTelefono ?? true) && (
-                  <div className="reserva-tel">
-                    <p>{negocio.textoTelefono || "También puedes reservar por teléfono"}</p>
-                    <a href={`tel:${negocio.telefono}`}><PhoneCall className="icon-tel" /></a>
-                  </div>
-                )}
               </div>
             </>
           )}
 
-          {/* ── Paso 2: resumen y confirmación ── */}
-          {step === 2 && (
+          {/* ── Paso 3: resumen y confirmación ── */}
+          {step === 3 && !esFormSimple && (
             <>
               <p className="form-section-title">Revisa tu reserva</p>
               <div className="reserva-resumen">
@@ -515,7 +574,7 @@ export default function FormFinal({ configOverride = null } = {}) {
                   {enviando ? "Enviando..." : (negocio.textoBtnReservar || "Confirmar reserva")}
                   {!enviando && negocio.modoEnvio !== "email" && <img src={icon1} alt="WhatsApp" />}
                 </button>
-                <button className="reserva-btn-secondary" type="button" onClick={() => setStep(1)}>
+                <button className="reserva-btn-secondary" type="button" onClick={() => setStep(2)}>
                   ← Volver y editar
                 </button>
               </div>
